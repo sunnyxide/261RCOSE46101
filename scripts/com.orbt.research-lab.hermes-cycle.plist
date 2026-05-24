@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!--
+    com.orbt.research-lab.hermes-cycle — runs hermes_research_cycle.sh every
+    2 hours. Picks the next unstarted brief from briefs/lab/ and dispatches
+    via Xiaomi Plan endpoint. 12 briefs * 2h = 24h continuous coverage.
+
+    Namespace: com.orbt.research-lab.* — isolated from existing
+    com.orbt.ralph-lab-24x7 and com.orbt.daily-growth.
+
+    Install:
+      cp scripts/com.orbt.research-lab.hermes-cycle.plist ~/Library/LaunchAgents/
+      launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.orbt.research-lab.hermes-cycle.plist
+      launchctl kickstart -k gui/$UID/com.orbt.research-lab.hermes-cycle
+
+    Uninstall:
+      launchctl bootout gui/$UID/com.orbt.research-lab.hermes-cycle
+
+    Logs:
+      ~/Library/Logs/orbt-research-lab/hermes-cycle.{out,err}.log
+      results/hermes_outputs/<brief>.tick.log (per-tick detail)
+
+    Auto-stops:
+      When all briefs in briefs/lab/ have outputs, cycle posts a "queue
+      drained" Slack message and exits cleanly. Cron keeps firing but is a
+      no-op. Manually uninstall when done.
+  -->
+  <key>Label</key>
+  <string>com.orbt.research-lab.hermes-cycle</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/orbt/Desktop/orbt/projects/orbt-research-lab/scripts/hermes_research_cycle.sh</string>
+  </array>
+
+  <!-- Every 7200 seconds (2 hours). -->
+  <key>StartInterval</key>
+  <integer>7200</integer>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>LAB</key>
+    <string>/Users/orbt/Desktop/orbt/projects/orbt-research-lab</string>
+    <key>DISPATCH</key>
+    <string>/Users/orbt/Desktop/orbt/overnight-agents/scripts/openclaw/dispatch_plan_research.sh</string>
+    <key>MODEL</key>
+    <string>mimo-v2.5-pro</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>/Users/orbt/Library/Logs/orbt-research-lab/hermes-cycle.out.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/orbt/Library/Logs/orbt-research-lab/hermes-cycle.err.log</string>
+
+  <key>KeepAlive</key>
+  <false/>
+
+  <!-- Throttle: never run faster than once per 5 minutes regardless of crashes. -->
+  <key>ThrottleInterval</key>
+  <integer>300</integer>
+
+  <!-- Resource caps. A single brief can use a lot of memory (Python +
+       request body), but caps protect against unbounded leaks. -->
+  <key>HardResourceLimits</key>
+  <dict>
+    <key>CPU</key>
+    <integer>1800</integer>
+    <key>FileSize</key>
+    <integer>52428800</integer>
+  </dict>
+</dict>
+</plist>
