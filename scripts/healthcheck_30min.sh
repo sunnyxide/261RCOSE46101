@@ -61,9 +61,12 @@ _slack() {
 
 aws_status=""
 aws_gpu=""
+aws_disk=""
+aws_disk_pct=""
+aws_train=""
 ssh_result=$(ssh -o ConnectTimeout=8 -o BatchMode=yes "$SSH_HOST" \
   'nvidia-smi --query-gpu=name,memory.used,memory.free --format=csv,noheader 2>/dev/null; \
-   df -h ~/orbt-research-lab 2>/dev/null | tail -1 | awk "{print \"disk_free=\" \$4}"; \
+   df -h / 2>/dev/null | tail -1 | awk "{print \"disk_free=\" \$4 \" disk_pct=\" \$5}"; \
    pgrep -af "python.*train.py" | head -1 || echo "no_training_pid"' \
   2>/dev/null) || ssh_result=""
 
@@ -73,7 +76,9 @@ if [[ -z "$ssh_result" ]]; then
 else
   aws_status="UP"
   aws_gpu=$(echo "$ssh_result" | head -1)
-  aws_disk=$(echo "$ssh_result" | grep '^disk_free=' | cut -d= -f2)
+  disk_line=$(echo "$ssh_result" | grep '^disk_free=')
+  aws_disk=$(echo "$disk_line" | sed -E 's/^disk_free=([^ ]+).*/\1/')
+  aws_disk_pct=$(echo "$disk_line" | sed -E 's/.*disk_pct=([0-9]+)%.*/\1/')
   aws_train=$(echo "$ssh_result" | grep -vE '^(NVIDIA|disk_free=)' | head -1)
 fi
 
@@ -111,6 +116,14 @@ band="green"
 [[ "$aws_status" == "DOWN" && "$queue_pending" -gt 0 ]] && band="yellow"
 [[ "$queue_failed" -gt 0 ]] && band="orange"
 [[ "$queue_failed" -gt 3 ]] && band="red"
+# Disk pressure — catches "100% full" before it kills training.
+# 90%+ → orange, 95%+ → red. Saved from the 2026-05-24 Qwen14B fail.
+if [[ -n "$aws_disk_pct" ]]; then
+  if (( aws_disk_pct >= 95 )); then band="red"
+  elif (( aws_disk_pct >= 90 )); then [[ "$band" == "green" || "$band" == "yellow" ]] && band="orange"
+  elif (( aws_disk_pct >= 80 )); then [[ "$band" == "green" ]] && band="yellow"
+  fi
+fi
 
 ICON="✅"
 [[ "$band" == "yellow" ]] && ICON="⚠️"
@@ -120,7 +133,7 @@ ICON="✅"
 # Compose 4-line compact summary
 summary=$(cat <<EOF
 $ICON *research-lab healthcheck* — $TS_KST — \`$band\`
-• AWS: $aws_status — $aws_gpu${aws_disk:+ disk=$aws_disk}${aws_train:+ train_pid=$aws_train}
+• AWS: $aws_status — $aws_gpu${aws_disk:+ disk=$aws_disk (${aws_disk_pct}%)}${aws_train:+ train_pid=$aws_train}
 • Queue: pending=$queue_pending failed=$queue_failed   Budget: today=\$$budget_today total=\$$budget_total/\$400
 • QA: $qa_recent
 EOF
