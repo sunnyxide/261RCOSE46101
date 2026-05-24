@@ -29,18 +29,19 @@ data/orchestrator.db
 data/orchestrator.db-*
 data/state/
 
-# Results — produced by autonomous agents, tracked by DVC + manifests
-results/
-# Whitelist exceptions: text artifacts we DO want in git for paper drafting
+# Results — produced by autonomous agents.
+# Ignore everything under results/ EXCEPT the text artifacts we want in git.
+# Use results/* (not results/) so children can be re-included via ! negation.
+results/*
 !results/hermes_outputs/
-!results/hermes_outputs/**
 !results/baselines/
-!results/baselines/**
 !results/benchmarks/
-!results/benchmarks/**
 !results/personas_pilot/
-!results/personas_pilot/**
 !results/PIPELINE_STATUS.json
+# Inside the whitelisted subdirs, ignore large binary artifacts.
+results/baselines/*.bin
+results/benchmarks/*.bin
+results/hermes_outputs/*.bin
 
 # Models — local MLX checkpoints, HF cache
 models/
