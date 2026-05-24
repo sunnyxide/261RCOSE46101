@@ -17,11 +17,18 @@ from peft import PeftModel
 t0 = time.time()
 ROOT = os.path.expanduser("~/orbt-research-lab")
 
-# Find the latest adapter
-adapters = sorted(glob.glob(f"{ROOT}/runs/pilot-koalpaca-*/adapter_final"))
-if not adapters:
-    print("ERROR: no adapter found"); sys.exit(2)
-adapter_path = adapters[-1]
+# Find the latest adapter — match any run-* or pilot-* dir with adapter_final
+# Optional CLI arg overrides discovery (lets us re-run after-a after fixing the glob bug)
+if len(sys.argv) > 1 and sys.argv[1].startswith("--adapter="):
+    adapter_path = sys.argv[1].split("=", 1)[1]
+else:
+    candidates = (
+        glob.glob(f"{ROOT}/runs/run-*/adapter_final")
+        + glob.glob(f"{ROOT}/runs/pilot-*/adapter_final")
+    )
+    if not candidates:
+        print("ERROR: no adapter found"); sys.exit(2)
+    adapter_path = max(candidates, key=lambda p: os.path.getmtime(p))
 print(f"[init] adapter: {adapter_path}", flush=True)
 
 # Load BEFORE corpus
