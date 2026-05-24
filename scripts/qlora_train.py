@@ -121,7 +121,9 @@ def tokenize_batched(tokenizer, max_len: int):
             padding=False,
             return_tensors=None,
         )
-        out["labels"] = [list(ids) for ids in out["input_ids"]]
+        # DataCollatorForLanguageModeling(mlm=False) clones input_ids to labels
+        # automatically AND pads both consistently. Setting labels here causes
+        # excessive-nesting errors during collation.
         return out
 
     return _fn
