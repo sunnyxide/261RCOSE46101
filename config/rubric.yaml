@@ -1,0 +1,114 @@
+# Course rubric extracted from COSE461 lecture materials.
+# Verify against actual syllabus in W1 and update before W3 (Critic depends on this).
+
+course: COSE461 Natural Language Processing
+project_type: research  # alternatives: 'replication', 'analysis'
+
+sections:
+  abstract:
+    - any_of: ["motivation", "동기"]
+      label: "Motivation"
+    - any_of: ["method", "방법론"]
+      label: "Method summary"
+    - any_of: ["result", "결과"]
+      label: "Key result"
+    - any_of: ["contribution", "기여"]
+      label: "Stated contribution"
+
+  introduction:
+    - any_of: ["research question", "rq", "연구 질문"]
+      label: "Research question stated"
+    - any_of: ["hypothesis", "가설"]
+      label: "Hypothesis stated"
+    - any_of: ["contribution"]
+      label: "Contribution list"
+
+  related_work:
+    - any_of: ["culturebank", "hofstede", "world values survey", "wvs"]
+      label: "Cultural NLP prior work"
+    - any_of: ["graphrag", "lightrag", "retrieval", "knowledge graph"]
+      label: "Retrieval prior work"
+    - any_of: ["oasis", "simulation", "agent"]
+      label: "Agent simulation prior work"
+    - any_of: ["nemotron", "synthetic persona"]
+      label: "Synthetic persona work"
+
+  background:
+    - any_of: ["cas", "cultural authenticity"]
+      label: "CAS defined"
+    - any_of: ["had", "hofstede alignment"]
+      label: "HAD defined"
+    - any_of: ["pdi", "persona diversity"]
+      label: "PDI defined"
+    - any_of: ["jsd", "jensen-shannon"]
+      label: "JSD defined"
+    - any_of: ["bas", "behavioral authenticity"]
+      label: "BAS defined"
+
+  methods:
+    # methods is HUMAN-AUTHORED — Critic still checks coverage
+    - any_of: ["6 condition", "ablation", "factorial"]
+      label: "Ablation design described"
+    - any_of: ["equation", "formal definition", "let "]
+      label: "Formal mathematical definitions present"
+    - any_of: ["nemotron", "kosis"]
+      label: "Demographic sampling described"
+    - any_of: ["lightrag", "neo4j", "knowledge graph"]
+      label: "KG construction described"
+    - any_of: ["oasis", "simulation"]
+      label: "Simulation pipeline described"
+    - any_of: ["irb", "human evaluator", "consent"]
+      label: "Human-subject protocol stated"
+
+  results:
+    - any_of: ["table"]
+      label: "Result table present"
+    - any_of: ["significance", "p <", "p<", "confidence"]
+      label: "Statistical significance reported"
+    - any_of: ["ablation"]
+      label: "Ablation results"
+
+  discussion:
+    - any_of: ["limitation"]
+      label: "Limitations acknowledged"
+    - any_of: ["future work"]
+      label: "Future directions"
+    - any_of: ["threat", "validity"]
+      label: "Threats to validity"
+
+  conclusion:
+    - any_of: ["contribution"]
+      label: "Contribution restated"
+
+# Cross-cutting requirements — bar set by last year's top reports
+# (Team 2 Dual-CoCoOp, Team 4 HIES, Team 22 ConRaGen)
+mandatory:
+  - "Code repository link with reproducibility instructions"
+  - "Disclosure of AI-tool usage (per academic integrity policy)"
+  - "Data license attribution (CultureBank, Nemotron, WVS)"
+  - "Minimum 8 numbered equations (formal definitions of CAS, HAD, PDI, JSD, BAS, CCR, AAS, GCS)"
+  - "Minimum 5 baselines in main results table (6 ablation conditions × ≥2 backbones)"
+  - "Minimum 3 figures (architecture diagram + heatmap + ablation curve)"
+  - "Explicit limitations section with ≥3 honest limitations"
+  - "Reference count ≥ 20"
+  - "Appendix with full agent prompts, scenario specs, and KOSIS strata"
+
+# Quality bar inferred from reference reports
+quality_bar:
+  page_count: { min: 8, target: 10, max: 12 }
+  format: NeurIPS-style (\\usepackage{neurips_2024})
+  language: English
+  equation_count_min: 8
+  baseline_count_min: 5
+  figure_count_min: 3
+  ablation_count_min: 2
+  limitation_count_min: 3
+
+ai_disclosure:
+  required: true
+  policy_file: "reports/AI_USAGE_DISCLOSURE.md"
+  must_state:
+    - "Which agents drafted which sections"
+    - "Which decisions were human-made"
+    - "Which prompts were used (link to prompts/ directory)"
+    - "Total API spend and model versions"

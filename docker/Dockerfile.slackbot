@@ -1,0 +1,21 @@
+# Slack bot — listens for human approvals on Tier-2 proposals and posts
+# QA Meta alerts. Runs as a long-lived container alongside Neo4j and
+# LightRAG. Read-only mount of repo; writes only via orchestrator.queue.
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir \
+    slack-bolt==1.20.1 \
+    slack-sdk==3.33.1 \
+    sqlmodel==0.0.22 \
+    pyyaml==6.0.2 \
+    loguru==0.7.2 \
+    pydantic==2.9.2 \
+    pydantic-settings==2.6.0
+
+# Bot module lives in orchestrator/. Repo is bind-mounted read-only at
+# runtime per docker-compose.yml, so we don't COPY anything build-time.
+
+CMD ["python", "-m", "orchestrator.slackbot"]

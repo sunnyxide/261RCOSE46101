@@ -1,0 +1,66 @@
+# Model registry. Edit here when releases land; Writer reads this for citations.
+
+backbones:
+  qwen3.6-27b-q4:
+    family: qwen3.6
+    parameters: 27B
+    quantization: Q4_K_M (MLX)
+    release_date: 2026-04-22
+    license: Apache 2.0
+    served_via: mlx-lm (Mac Mini)
+    primary_role: local backbone for ablation
+    citation_key: qwen3.6
+    rationale: |
+      Asian-language pretraining priors are stronger than Gemma 4.
+      Tested at 27B for the parametric capacity / hardware fit balance.
+
+  gemma-4-26b-moe:
+    family: gemma4
+    parameters: 26B (MoE, ~9B active)
+    quantization: 8-bit
+    release_date: 2026-04-02
+    license: Apache 2.0
+    served_via: transformers (AWS) or MLX (Mac Mini)
+    primary_role: comparison backbone
+    citation_key: gemma4
+    rationale: |
+      Dense vs MoE comparison; Google's RLHF data composition differs from
+      Alibaba's. Bonus: MoE vs Dense as a side-question.
+
+  llama-3.1-8b-instruct:
+    family: llama3.1
+    parameters: 8B
+    quantization: bf16
+    release_date: 2024-07-23
+    license: Llama 3.1 Community License
+    primary_role: legacy comparison (test generational effect)
+    citation_key: llama3.1
+    rationale: |
+      Anchor for "does KG retrieval help even at older capability levels?"
+
+apis:
+  gpt-4o-mini:
+    provider: openai
+    role: cost-efficient API backbone
+    primary_use: 12-cell persona generation; OASIS sim LLM calls
+    pricing_per_1m_input_tokens: 0.15
+    pricing_per_1m_output_tokens: 0.60
+
+  gpt-5:
+    provider: openai
+    role: high-capability ceiling baseline
+    primary_use: critic agent (different family from Writer)
+    pricing_per_1m_input_tokens: 5.00      # placeholder; check actual
+    pricing_per_1m_output_tokens: 15.00
+
+  claude-sonnet-4-6:
+    provider: anthropic
+    role: writer agent (drafting only)
+    primary_use: report section drafts on draft branches
+    pricing_per_1m_input_tokens: 3.00
+    pricing_per_1m_output_tokens: 15.00
+
+  qwen3.6-max:
+    provider: alibaba
+    role: optional comparison API
+    primary_use: cross-vendor sanity check on Asian-language outputs

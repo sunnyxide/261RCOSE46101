@@ -1,0 +1,64 @@
+# Agent registry — maps logical agents to LLM models, permissions, autonomy tier.
+
+agents:
+  data_steward:
+    model: claude-sonnet-4-6
+    max_tokens_per_call: 8000
+    permitted_tools: [read_files, http_get, hf_dataset_download, sqlite_query, dvc_add]
+    forbidden_tools: [git_push, github_pr_create, web_browse]
+    tier: 1
+    deciding_files:
+      - data/raw/**
+      - data/processed/**
+      - data/manifests/**
+
+  experiment_runner:
+    model: claude-sonnet-4-6
+    max_tokens_per_call: 8000
+    permitted_tools: [bash_run, aws_ec2_start_stop, ssh_run, sqlite_query]
+    forbidden_tools: [git_push, write_to_main, modify_config_models]
+    tier: 1
+    deciding_files:
+      - results/sims/**
+      - results/qlora/**
+      - results/personas/**
+
+  analyst:
+    model: claude-sonnet-4-6
+    max_tokens_per_call: 4000
+    permitted_tools: [python_compute, sqlite_query, write_results, write_plots]
+    forbidden_tools: [git_push, modify_data]
+    tier: 1
+    deciding_files:
+      - results/static/**
+      - results/dynamic/**
+      - results/plots/**
+
+  writer:
+    model: claude-sonnet-4-6
+    max_tokens_per_call: 16000
+    permitted_tools: [read_files, write_to_draft_branch, git_checkout_branch, git_commit]
+    forbidden_tools: [git_push, write_to_main, modify_data, modify_results]
+    tier: 2
+    deciding_files:
+      - reports/sections/**       # only on draft/* branches
+      - reports/outlines/**       # only on draft/* branches
+    forbidden_sections: [methods]
+
+  critic:
+    model: gpt-5                  # different from Writer on purpose
+    max_tokens_per_call: 8000
+    permitted_tools: [read_files, http_get_semantic_scholar, sqlite_query]
+    forbidden_tools: [write_any, modify_anything]
+    tier: 2
+    deciding_files: []             # read-only
+
+  librarian:
+    model: claude-sonnet-4-6
+    max_tokens_per_call: 4000
+    permitted_tools: [read_files, write_manifests, slack_post, s3_backup]
+    forbidden_tools: [modify_data, modify_results, git_push]
+    tier: 1
+    deciding_files:
+      - data/manifests/**
+      - reports/digests/**

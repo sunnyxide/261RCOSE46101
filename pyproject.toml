@@ -1,0 +1,57 @@
+[project]
+name = "orbt-research-lab"
+version = "0.1.0"
+description = "Autonomous Korean persona research orchestration for COSE461 + ORBT R&D"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.40.0",
+    "claude-agent-sdk>=0.2.0",
+    "openai>=1.50.0",
+    "datasets>=3.0.0",
+    "huggingface-hub>=0.26.0",
+    "neo4j>=5.20.0",
+    "lightrag-hku>=1.0.0",
+    "camel-ai[oasis]>=0.2.0",
+    "sentence-transformers>=3.0.0",
+    "pandas>=2.2.0",
+    "polars>=1.0.0",
+    "pydantic>=2.8.0",
+    "pydantic-settings>=2.4.0",
+    "sqlmodel>=0.0.22",
+    "apscheduler>=3.10.0",
+    "slack-bolt>=1.20.0",
+    "rich>=13.7.0",
+    "typer>=0.12.0",
+    "loguru>=0.7.0",
+    "tenacity>=9.0.0",
+    "gitpython>=3.1.0",
+    "dvc>=3.50.0",
+]
+
+[project.optional-dependencies]
+mac = [
+    "mlx>=0.20.0",
+    "mlx-lm>=0.20.0",
+]
+aws = [
+    "boto3>=1.35.0",
+    "transformers>=4.45.0",
+    "peft>=0.13.0",
+    "bitsandbytes>=0.44.0",
+    "accelerate>=1.0.0",
+    "unsloth",
+]
+dev = [
+    "pytest>=8.3.0",
+    "ruff>=0.7.0",
+    "mypy>=1.13.0",
+    "streamlit>=1.40.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true

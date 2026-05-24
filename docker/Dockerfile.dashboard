@@ -1,0 +1,23 @@
+# Streamlit dashboard for orchestrator state — read-only view of queue,
+# budget, recent decisions, and KPI projections.
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir \
+    streamlit==1.40.0 \
+    sqlmodel==0.0.22 \
+    pyyaml==6.0.2 \
+    pandas==2.2.3 \
+    altair==5.4.1
+
+COPY orchestrator/ /app/orchestrator/
+COPY notebooks/dashboard.py /app/dashboard.py 2>/dev/null || true
+
+# Falls back to a minimal placeholder if dashboard.py not yet implemented.
+RUN test -f /app/dashboard.py || echo "import streamlit as st; st.title('ORBT lab — dashboard pending'); st.info('See notebooks/dashboard.py')" > /app/dashboard.py
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "/app/dashboard.py", "--server.port=8501", "--server.address=0.0.0.0"]

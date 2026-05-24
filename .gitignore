@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+service-account*.json
+
+# Data — tracked by DVC, not git
+data/raw/
+data/processed/
+data/neo4j/
+data/lightrag/
+data/orchestrator.db
+data/orchestrator.db-*
+data/state/
+
+# Results — produced by autonomous agents, tracked by DVC + manifests
+results/
+
+# Models — local MLX checkpoints, HF cache
+models/
+.cache/huggingface/
+
+# Reports build artifacts
+reports/build/
+reports/sections/*.docx
+reports/*.pdf
+
+# OS
+.DS_Store
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# DVC internals
+.dvc/cache
+.dvc/tmp
+*.pem
+id_*
+ku-*

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!--
+    Namespace: com.orbt.research-lab.* — isolated from existing
+    com.orbt.ralph-lab-24x7 and com.orbt.daily-growth. No shared paths,
+    no shared lock files, no shared kill signals.
+
+    Install: cp this plist to ~/Library/LaunchAgents/, then
+      launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.orbt.research-lab.healthcheck.plist
+      launchctl kickstart -k gui/$UID/com.orbt.research-lab.healthcheck
+
+    Uninstall:
+      launchctl bootout gui/$UID/com.orbt.research-lab.healthcheck
+
+    Logs:
+      ~/Library/Logs/orbt-research-lab/healthcheck.{out,err}.log
+      (Internal tick log: $LAB_ROOT/data/state/healthcheck.log)
+  -->
+  <key>Label</key>
+  <string>com.orbt.research-lab.healthcheck</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/orbt/Desktop/orbt/projects/orbt-research-lab/scripts/healthcheck_30min.sh</string>
+  </array>
+
+  <!-- Every 1800 seconds (30 minutes). Drift acceptable; we don't need
+       precise scheduling. -->
+  <key>StartInterval</key>
+  <integer>1800</integer>
+
+  <!-- Run on load + on every interval. Don't run if Mac is asleep. -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Read-only job; no extra environment needed beyond user's shell PATH. -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>LAB_ROOT</key>
+    <string>/Users/orbt/Desktop/orbt/projects/orbt-research-lab</string>
+    <key>SSH_HOST</key>
+    <string>ku-aws</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>/Users/orbt/Library/Logs/orbt-research-lab/healthcheck.out.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/orbt/Library/Logs/orbt-research-lab/healthcheck.err.log</string>
+
+  <!-- Don't keep alive — let it exit after each tick. The next tick is
+       scheduled by StartInterval. -->
+  <key>KeepAlive</key>
+  <false/>
+
+  <!-- Throttle in case the script ever blows up: don't restart faster than
+       once per 60 seconds. -->
+  <key>ThrottleInterval</key>
+  <integer>60</integer>
+
+  <!-- Resource limits: this is a tiny read-only probe; cap it tight so a
+       bug can't eat the Mac's resources. -->
+  <key>HardResourceLimits</key>
+  <dict>
+    <key>CPU</key>
+    <integer>30</integer>
+    <key>FileSize</key>
+    <integer>10485760</integer>
+  </dict>
+</dict>
+</plist>

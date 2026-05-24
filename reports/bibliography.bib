@@ -1,0 +1,136 @@
+% Bibliography for the ORBT autonomous research lab paper.
+%
+% Writer agent uses these keys exclusively (see prompts/writer.md). New
+% citations are added by the Writer + Critic loop after a librarian lit-
+% search task confirms the source exists and is correctly attributed.
+%
+% Conventions:
+% - bibkey format: firstAuthorLast + year + firstSignificantWord
+% - All entries must have venue / journal — pre-prints get `note = "preprint"`
+% - Tier-A claims (used in abstract/intro) require peer-reviewed venue
+
+% =====================================================================
+% Cultural-bias evaluation benchmarks
+% =====================================================================
+
+@inproceedings{chiu2024culturalbench,
+    author = {Yu Ying Chiu and others},
+    title = {{CulturalBench}: a Robust, Diverse and Challenging Benchmark
+             on Measuring the (Lack of) Cultural Knowledge of {LLMs}},
+    booktitle = {arXiv preprint arXiv:2410.02677},
+    year = {2024},
+    note = {preprint},
+}
+
+@inproceedings{jin2024kobbq,
+    author = {Jiho Jin and others},
+    title = {{KoBBQ}: {Korean} Bias Benchmark for Question Answering},
+    booktitle = {Transactions of the ACL},
+    year = {2024},
+}
+
+@inproceedings{kim2024click,
+    author = {Eunsu Kim and others},
+    title = {{CLIcK}: A Benchmark Dataset of Cultural and Linguistic
+             Intelligence in {Korean}},
+    booktitle = {Proceedings of LREC-COLING},
+    year = {2024},
+}
+
+@inproceedings{haerae2023,
+    author = {Hanwool Lee and others},
+    title = {{HAE-RAE} Bench: Evaluation of {Korean} Knowledge in Language Models},
+    booktitle = {Proceedings of LREC-COLING},
+    year = {2024},
+}
+
+% =====================================================================
+% Cultural alignment methods
+% =====================================================================
+
+@inproceedings{li2024cultureLLM,
+    author = {Cheng Li and others},
+    title = {{CultureLLM}: Incorporating Cultural Differences into Large
+             Language Models},
+    booktitle = {NeurIPS},
+    year = {2024},
+}
+
+@inproceedings{shen2024culturebank,
+    author = {Weiyan Shen and others},
+    title = {{CultureBank}: An Online Community-Driven Knowledge Base for
+             Culturally Aware Language Technologies},
+    booktitle = {ACL Findings},
+    year = {2024},
+}
+
+% =====================================================================
+% Persona generation & demographic grounding
+% =====================================================================
+
+@misc{nvidia2024nemotron,
+    author = {{NVIDIA}},
+    title = {{Nemotron-Personas-Korea}: Synthetic Korean Persona Dataset},
+    howpublished = {\url{https://huggingface.co/datasets/nvidia/Nemotron-Personas-Korea}},
+    year = {2024},
+}
+
+@inproceedings{ge2024scaling,
+    author = {Tao Ge and Xin Chan and others},
+    title = {Scaling Synthetic Data Creation with 1{,}000{,}000{,}000 Personas},
+    booktitle = {arXiv preprint arXiv:2406.20094},
+    year = {2024},
+    note = {preprint},
+}
+
+% =====================================================================
+% Retrieval augmentation
+% =====================================================================
+
+@inproceedings{guo2024lightrag,
+    author = {Zirui Guo and others},
+    title = {{LightRAG}: Simple and Fast Retrieval-Augmented Generation},
+    booktitle = {arXiv preprint arXiv:2410.05779},
+    year = {2024},
+    note = {preprint},
+}
+
+% =====================================================================
+% Behavioral simulation
+% =====================================================================
+
+@inproceedings{yang2024oasis,
+    author = {Ziyi Yang and others},
+    title = {{OASIS}: Open Agent Social Interaction Simulations on
+             One Million Agents},
+    booktitle = {arXiv preprint arXiv:2411.11581},
+    year = {2024},
+    note = {preprint},
+}
+
+% =====================================================================
+% Korean ground-truth data sources (cited in MEAS mapping spec)
+% =====================================================================
+
+@misc{kosis2024,
+    author = {{Statistics Korea}},
+    title = {{KOSIS}: {Korean} Statistical Information Service},
+    howpublished = {\url{https://kosis.kr}},
+    year = {2024},
+}
+
+@misc{naverdatalab2024,
+    author = {{Naver}},
+    title = {{Naver Datalab}: Search Trends and Shopping Insights},
+    howpublished = {\url{https://datalab.naver.com}},
+    year = {2024},
+}
+
+@misc{kofice2024,
+    author = {{Korean Foundation for International Cultural Exchange}},
+    title = {{KOFICE} {Hallyu} White Paper},
+    year = {2024},
+}
+
+% [TODO citation: KAIO benchmark 2026 — find authoritative venue once paper published]
+% [TODO citation: inter-rater reliability — McGraw & Wong 1996 ICC formulas]
