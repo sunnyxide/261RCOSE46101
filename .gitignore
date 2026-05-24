@@ -31,6 +31,16 @@ data/state/
 
 # Results — produced by autonomous agents, tracked by DVC + manifests
 results/
+# Whitelist exceptions: text artifacts we DO want in git for paper drafting
+!results/hermes_outputs/
+!results/hermes_outputs/**
+!results/baselines/
+!results/baselines/**
+!results/benchmarks/
+!results/benchmarks/**
+!results/personas_pilot/
+!results/personas_pilot/**
+!results/PIPELINE_STATUS.json
 
 # Models — local MLX checkpoints, HF cache
 models/
