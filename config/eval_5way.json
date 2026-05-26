@@ -1,0 +1,28 @@
+{
+  "_comment": "5-way controlled comparison: 3 base models × {Vanilla, + KoAlpaca QLoRA}. Drives Section 4 main table.",
+  "models": [
+    {
+      "label": "Vanilla-3B-Qwen",
+      "base": "Qwen/Qwen2.5-3B-Instruct"
+    },
+    {
+      "label": "Run-A-3B-Qwen+KoAlpaca",
+      "base": "Qwen/Qwen2.5-3B-Instruct",
+      "adapter": "~/orbt-research-lab/runs/run-a-rank16-attn-*/adapter_final"
+    },
+    {
+      "label": "Run-B-3B-Qwen+KoAlpaca-bigger",
+      "base": "Qwen/Qwen2.5-3B-Instruct",
+      "adapter": "~/orbt-research-lab/runs/run-b-rank32-alllinear-*/adapter_final"
+    },
+    {
+      "label": "Vanilla-7B-Qwen",
+      "base": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit"
+    },
+    {
+      "label": "Run-D-7B-Qwen+KoAlpaca",
+      "base": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+      "adapter": "~/orbt-research-lab/runs/run-d-7b-rank16-attn-*/adapter_final"
+    }
+  ]
+}

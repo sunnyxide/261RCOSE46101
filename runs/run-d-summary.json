@@ -1,0 +1,15 @@
+{
+  "run_id": "run-d-7b-rank16-attn-20260526T053015Z",
+  "base_model": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+  "dataset": "beomi/KoAlpaca-v1.1a",
+  "n_train": 7600,
+  "n_eval": 400,
+  "final_train_loss": 1.5325231572201377,
+  "final_eval_loss": 1.480413794517517,
+  "perplexity": 4.394763946533203,
+  "trainable_params": 10092544,
+  "total_params": 4363064832,
+  "trainable_pct": 0.2313,
+  "total_sec": 4741.3,
+  "converged": true
+}

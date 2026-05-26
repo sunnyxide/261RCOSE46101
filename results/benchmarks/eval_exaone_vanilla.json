@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-05-26T07:31:14Z",
+  "results": {
+    "Vanilla-EXAONE-2.4B": {
+      "base": "LGAI-EXAONE/EXAONE-3.5-2.4B-Instruct",
+      "adapter": null,
+      "error": "cannot import name 'RopeParameters' from 'transformers.modeling_rope_utils' (/home/ubuntu/orbt-research-lab/.venv/lib/python3.12/site-packages/transformers/modeling_rope_utils.py)"
+    }
+  },
+  "elapsed_sec": 1.7
+}
