@@ -121,15 +121,38 @@ TICK_LOG="$OUT_DIR/$NEXT_NAME.tick.log"
 OUT_FILE="$OUT_DIR/$NEXT_NAME.md"
 
 # ---------- dispatch ----------
+# TCC workaround: launchd-spawned Python cannot open files under ~/Desktop/
+# (macOS Privacy & Security restricts non-GUI processes). Copy the brief
+# and system prompt to /tmp first, point dispatch there. /tmp has no TCC.
+TMP_RUN_DIR=$(mktemp -d /tmp/orbt-hermes-XXXXXX)
+trap 'rm -rf "$LOCK_DIR" "$TMP_RUN_DIR"' EXIT
+SYS_PROMPT_SRC=/Users/orbt/Desktop/orbt/overnight-agents/prompts/openclaw/research_v2.md
+TMP_BRIEF="$TMP_RUN_DIR/brief.md"
+TMP_SYSTEM="$TMP_RUN_DIR/system.md"
+TMP_OUT="$TMP_RUN_DIR/out.md"
+cp "$NEXT_BRIEF" "$TMP_BRIEF" 2>/dev/null
+cp "$SYS_PROMPT_SRC" "$TMP_SYSTEM" 2>/dev/null
 
 {
   echo "=== hermes-cycle tick $TS_UTC ==="
-  echo "brief: $NEXT_BRIEF"
+  echo "brief: $NEXT_BRIEF (copied to $TMP_BRIEF)"
   echo "model: $MODEL"
-  echo "out:   $OUT_FILE"
+  echo "out:   $OUT_FILE (via $TMP_OUT)"
+  echo "system: $SYS_PROMPT_SRC (copied to $TMP_SYSTEM)"
   echo
-  "$DISPATCH" --model "$MODEL" --brief "$NEXT_BRIEF" --out "$OUT_FILE"
-  RC=$?
+  if [[ ! -s "$TMP_BRIEF" || ! -s "$TMP_SYSTEM" ]]; then
+    echo "ERROR: failed to copy files to /tmp (TCC blocks bash too?)"
+    RC=2
+  else
+    "$DISPATCH" --model "$MODEL" --brief "$TMP_BRIEF" --out "$TMP_OUT" \
+      --system "$TMP_SYSTEM"
+    RC=$?
+    # Copy output back to its real home so other tools see it
+    if [[ -s "$TMP_OUT" ]]; then
+      cp "$TMP_OUT" "$OUT_FILE" 2>/dev/null
+      [[ -f "$TMP_OUT.raw.json" ]] && cp "$TMP_OUT.raw.json" "$OUT_FILE.raw.json" 2>/dev/null
+    fi
+  fi
   echo
   echo "=== dispatch exit: $RC ==="
 } > "$TICK_LOG" 2>&1
