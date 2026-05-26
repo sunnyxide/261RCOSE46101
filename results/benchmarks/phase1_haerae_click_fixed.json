@@ -1,5 +1,17 @@
 {
-  "phase1_results": {
+  "timestamp": "2026-05-26T10:40:57Z",
+  "args": {
+    "config": "config/eval_5way.json",
+    "out": "results/benchmarks/phase1_haerae_click_fixed.json",
+    "few_shot": 3,
+    "n_kobbq": 200,
+    "n_kmmlu": 100,
+    "n_haerae": 100,
+    "n_click": 100,
+    "skip_haerae": false,
+    "skip_click": false
+  },
+  "results": {
     "Vanilla-3B-Qwen": {
       "base": "Qwen/Qwen2.5-3B-Instruct",
       "adapter": null,
@@ -1251,19 +1263,5 @@
       }
     }
   },
-  "cultural_runs": {
-    "cn": [
-      "cultural_cn_20260526T114540Z.json"
-    ],
-    "jp": [
-      "cultural_jp_20260526T104105Z.json"
-    ],
-    "kr": [
-      "cultural_kr_20260526T095149Z.json"
-    ],
-    "us": [
-      "cultural_us_20260526T113703Z.json"
-    ]
-  },
-  "cross_cultural_evals": []
+  "elapsed_sec": 822.2
 }
