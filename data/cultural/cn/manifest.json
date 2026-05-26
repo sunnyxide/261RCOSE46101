@@ -1,0 +1,27 @@
+{
+  "culture": "cn",
+  "hofstede": {
+    "pdi": 80,
+    "idv": 20,
+    "mas": 66,
+    "uai": 30,
+    "lto": 87,
+    "ivr": 24,
+    "lang": "zh",
+    "country_label": "中国",
+    "country_en": "China"
+  },
+  "target": 12000,
+  "actual_total": 740,
+  "train_count": 690,
+  "eval_count": 50,
+  "source_counts": {
+    "culturebank": 740,
+    "wvs": 0,
+    "nemotron": 0,
+    "kobbq": 0
+  },
+  "seed": 42,
+  "built_at": "2026-05-26T09:44:39Z",
+  "elapsed_sec": 5.2
+}

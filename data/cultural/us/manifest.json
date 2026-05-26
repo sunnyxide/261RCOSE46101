@@ -1,0 +1,27 @@
+{
+  "culture": "us",
+  "hofstede": {
+    "pdi": 40,
+    "idv": 91,
+    "mas": 62,
+    "uai": 46,
+    "lto": 26,
+    "ivr": 68,
+    "lang": "en",
+    "country_label": "United States",
+    "country_en": "United States"
+  },
+  "target": 12000,
+  "actual_total": 3600,
+  "train_count": 3420,
+  "eval_count": 180,
+  "source_counts": {
+    "culturebank": 3600,
+    "wvs": 0,
+    "nemotron": 0,
+    "kobbq": 0
+  },
+  "seed": 42,
+  "built_at": "2026-05-26T09:44:37Z",
+  "elapsed_sec": 3.3
+}

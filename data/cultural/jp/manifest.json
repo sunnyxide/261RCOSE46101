@@ -1,0 +1,27 @@
+{
+  "culture": "jp",
+  "hofstede": {
+    "pdi": 54,
+    "idv": 46,
+    "mas": 95,
+    "uai": 92,
+    "lto": 88,
+    "ivr": 42,
+    "lang": "ja",
+    "country_label": "日本",
+    "country_en": "Japan"
+  },
+  "target": 12000,
+  "actual_total": 916,
+  "train_count": 866,
+  "eval_count": 50,
+  "source_counts": {
+    "culturebank": 916,
+    "wvs": 0,
+    "nemotron": 0,
+    "kobbq": 0
+  },
+  "seed": 42,
+  "built_at": "2026-05-26T09:44:39Z",
+  "elapsed_sec": 5.2
+}
