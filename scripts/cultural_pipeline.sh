@@ -118,7 +118,19 @@ if [[ -f "$LAB/results/baselines/before_after_diff.md" ]]; then
 fi
 
 # ============================================================================
-# Phase E: Mark complete for monitor
+# Phase E: Cross-cultural alignment eval (GlobalOpinionQA + BLEnD) — paper's main metric
+# ============================================================================
+_log "===== E: cross-cultural eval (GlobalOpinionQA + BLEnD) ====="
+python scripts/cross_cultural_eval.py \
+  --base "$BASE_MODEL" \
+  --adapter "$ADAPTER" \
+  --culture "$CULTURE" \
+  --n-globalopinion 200 --n-blend 100 --n-samples-globalopinion 8 \
+  --out "$LAB/results/benchmarks/cross_cultural_${CULTURE}_${TS}.json" \
+  2>&1 | tee -a "$LOG"
+
+# ============================================================================
+# Phase F: Mark complete for monitor
 # ============================================================================
 mkdir -p "$LAB/results"
 cat > "$LAB/results/PIPELINE_STATUS_${CULTURE}.json" <<JSON
