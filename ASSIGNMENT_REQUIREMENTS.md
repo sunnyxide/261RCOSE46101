@@ -16,13 +16,23 @@
 | Submission deadline | 2026-06-02 via Google Form | ⏳ Sunwoo action |
 | Survey URL | https://docs.google.com/forms/d/e/1FAIpQLSd3sPqlhaFTEHI4KwONjPq9ziVRow5YSheqiDpcRbavkoJx6A/viewform | ⏳ |
 
-### 1.2 Final Report (Overleaf template)
+### 1.2 Final Report (Overleaf template — confirmed 2026-05-26)
 
 | Item | Requirement | Status |
 |---|---|---|
-| Template source | https://www.overleaf.com/project/6195195f77e7633c9a87b74d (and ZIP attachment) | ⏳ ZIP not in lab repo |
-| Format | LaTeX from provided template | W7 task — Writer agent produces .tex |
-| Submission | TA to email at the2ndlaw@korea.ac.kr | ⏳ end of W8 |
+| Template source | NeurIPS 2020 style (.tex + .sty in ZIP) | ✅ landed in `reports/overleaf/` |
+| Page limit | **8 content pages MAX** (excluding references) | confirmed — "no bonus for full 8p; be brief" |
+| Style file | `neurips_2020.sty` (NeurIPS 2020 template) | ✅ ready |
+| Required sections | Introduction, Related Work, **Approach**, Experiments (Data / Eval / Details / Results), **Analysis**, Conclusion | Writer briefs 07-08-14 align ✅ |
+| Abstract | < 300 words | W7 task |
+| Appendix | NOT counted in 8p; include **Team contributions** section | required for multi-person teams |
+| Submission | **PDF via BlackBoard** (one per team) | ≠ GitHub URL Google Form |
+| Citation style | `unsrt` (NeurIPS default) | ✅ bibliography.bib uses standard BibTeX |
+
+**Note**: BlackBoard submission is DIFFERENT from the GitHub Google Form.
+Two separate submissions required:
+1. GitHub repo URL via Google Form (deadline 2026-06-02) — EVERY team member submits with SAME team repo URL
+2. Final PDF via BlackBoard (one per team) — end of W8
 
 ### 1.3 AWS Account
 
@@ -34,13 +44,22 @@
 | Credit pool | $97.92/student × 2 students = ~$195.84 | ✅ confirmed (179 credits combined after pilot use) |
 | Cross-member credit transfer | Allowed (TA message him) | available |
 
-## 2. Team identification
+## 2. Team identification (confirmed via TA spreadsheet 2026-05-26)
 
-| Member | Student ID | GitHub | Role |
-|---|---|---|---|
-| 김민수 | 2022320337 | (unknown) | development support |
-| 주선우 (Sunwoo) | 2023320312 | sunnyxide | lead developer + lab operator |
-| (Josh / teammate) | — | — | presentation, slides (separate from this repo) |
+| Field | Value |
+|---|---|
+| **Team number** | **8** |
+| **Team name** | **토큰해적단 (Token Pirates)** |
+| Member 1 | **주선우 (Sunwoo)** — Student ID **2023320312** — GitHub: sunnyxide |
+| Member 2 | **김민수 (Min-su)** — Student ID **2022320337** — GitHub: (unknown, optional collaborator add) |
+| (Josh / teammate) | — | external presentation, NOT in COSE461 team |
+
+**Final report format**: Team 8 should use the format corresponding to team
+number 8 in the TA's spreadsheet:
+https://docs.google.com/spreadsheets/d/1z86LURwobe29ZGp8SArp9PXniMtY1akSRoyPjEep1lU/edit?gid=0#gid=0
+
+(Most likely NeurIPS-style 8-page-max — confirmed via Overleaf template ZIP
+landed in `reports/overleaf/`.)
 
 ## 3. Course-policy considerations
 
@@ -88,13 +107,25 @@ These are blockers I cannot resolve without you:
    until paper near-final? My recommendation: submit now since URL is
    stable; minor commits don't affect submission link.
 
+## 5b. Course-policy updates (2026-05-26 TA messages)
+
+- **Survey deadline**: 2026-06-02 (hard) — both Sunwoo AND Min-su submit
+  Google Form individually but enter the SAME team repo URL
+- **Collaborator add**: Add 김민수 as collaborator to sunnyxide/261R0136COSE34102
+  once we have their GitHub handle (Sunwoo to ask)
+- **Slack workspace**: `cose461012026-hfu6687.slack.com` — both members
+  should be in the workspace, name format `{name}_{student_id}`
+- **Repo visibility**: PRIVATE until final grades release, then flip to
+  PUBLIC. We can flip after 2026-06-30 (estimated grade release).
+
 ## 6. Gate conformance — current paper quality bar vs targets
 
-Per KPI_FRAMEWORK.md §7 ("KPIs for the paper itself"):
+Per KPI_FRAMEWORK.md §7 ("KPIs for the paper itself") — UPDATED with
+template constraints:
 
-| Dimension | Target | Reference | Current |
+| Dimension | Target (HANDOFF) | Template constraint | Current |
 |---|---|---|---|
-| Length | 8-12p NeurIPS-style | Team 4 (12p) | Not yet drafted |
+| Length | 8-12p NeurIPS-style | **8p MAX** (not 12) | Not yet drafted |
 | Numbered equations | ≥ 8 | Team 2 (14 eq) | 0 (W7 task) |
 | Baselines compared | ≥ 5 in main table | Team 22 (4+ours) | Run-A, Run-B, vanilla = 3; aiming for 6+ |
 | Distinct evaluation regimes | ≥ 3 | Team 2 (5 datasets) | KoBBQ, KMMLU, custom CAS = 3 ✅ |
