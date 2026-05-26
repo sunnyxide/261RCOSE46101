@@ -1,0 +1,556 @@
+{
+  "phase1_results": {
+    "Vanilla-3B-Qwen": {
+      "base": "Qwen/Qwen2.5-3B-Instruct",
+      "adapter": null,
+      "kobbq": {
+        "n": 400,
+        "n_shot": 3,
+        "correct_rate": 0.66,
+        "bias_rate": 0.4375,
+        "by_category": {
+          "Nationality": {
+            "correct_rate": 0.7,
+            "bias_rate": 0.35,
+            "total": 40
+          },
+          "Race_ethnicity": {
+            "correct_rate": 0.7,
+            "bias_rate": 0.475,
+            "total": 40
+          },
+          "null": {
+            "correct_rate": 0.675,
+            "bias_rate": 0.65,
+            "total": 40
+          },
+          "SES": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.375,
+            "total": 40
+          },
+          "Age": {
+            "correct_rate": 0.625,
+            "bias_rate": 0.325,
+            "total": 40
+          },
+          "Religion": {
+            "correct_rate": 0.625,
+            "bias_rate": 0.425,
+            "total": 40
+          },
+          "Gender_identity": {
+            "correct_rate": 0.825,
+            "bias_rate": 0.325,
+            "total": 40
+          },
+          "Physical_appearance": {
+            "correct_rate": 0.55,
+            "bias_rate": 0.525,
+            "total": 40
+          },
+          "Disability_status": {
+            "correct_rate": 0.525,
+            "bias_rate": 0.625,
+            "total": 40
+          },
+          "Sexual_orientation": {
+            "correct_rate": 0.575,
+            "bias_rate": 0.3,
+            "total": 40
+          }
+        },
+        "by_context_type": {
+          "ambig": {
+            "correct_rate": 0.4752,
+            "bias_rate": 0.3564,
+            "total": 202
+          },
+          "disambig": {
+            "correct_rate": 0.8485,
+            "bias_rate": 0.5202,
+            "total": 198
+          }
+        }
+      },
+      "kmmlu": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.3,
+        "unparsed": 0,
+        "by_subject": {
+          "default": {
+            "accuracy": 0.3,
+            "total": 100
+          }
+        }
+      },
+      "haerae": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.0,
+        "unparsed": 12,
+        "by_subject": {
+          "correct_definition_matching": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "standard_nomenclature": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "general_knowledge": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "reading_comprehension": {
+            "accuracy": 0.0,
+            "total": 25
+          }
+        }
+      }
+    },
+    "Run-A-3B-Qwen+KoAlpaca": {
+      "base": "Qwen/Qwen2.5-3B-Instruct",
+      "adapter": "/home/ubuntu/orbt-research-lab/runs/run-a-rank16-attn-20260524T133846Z/adapter_final",
+      "kobbq": {
+        "n": 400,
+        "n_shot": 3,
+        "correct_rate": 0.68,
+        "bias_rate": 0.4075,
+        "by_category": {
+          "Nationality": {
+            "correct_rate": 0.675,
+            "bias_rate": 0.325,
+            "total": 40
+          },
+          "Race_ethnicity": {
+            "correct_rate": 0.675,
+            "bias_rate": 0.425,
+            "total": 40
+          },
+          "null": {
+            "correct_rate": 0.725,
+            "bias_rate": 0.575,
+            "total": 40
+          },
+          "SES": {
+            "correct_rate": 0.7,
+            "bias_rate": 0.375,
+            "total": 40
+          },
+          "Age": {
+            "correct_rate": 0.7,
+            "bias_rate": 0.25,
+            "total": 40
+          },
+          "Religion": {
+            "correct_rate": 0.775,
+            "bias_rate": 0.35,
+            "total": 40
+          },
+          "Gender_identity": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.275,
+            "total": 40
+          },
+          "Physical_appearance": {
+            "correct_rate": 0.6,
+            "bias_rate": 0.575,
+            "total": 40
+          },
+          "Disability_status": {
+            "correct_rate": 0.425,
+            "bias_rate": 0.65,
+            "total": 40
+          },
+          "Sexual_orientation": {
+            "correct_rate": 0.725,
+            "bias_rate": 0.275,
+            "total": 40
+          }
+        },
+        "by_context_type": {
+          "ambig": {
+            "correct_rate": 0.5347,
+            "bias_rate": 0.302,
+            "total": 202
+          },
+          "disambig": {
+            "correct_rate": 0.8283,
+            "bias_rate": 0.5152,
+            "total": 198
+          }
+        }
+      },
+      "kmmlu": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.27,
+        "unparsed": 0,
+        "by_subject": {
+          "default": {
+            "accuracy": 0.27,
+            "total": 100
+          }
+        }
+      },
+      "haerae": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.0,
+        "unparsed": 13,
+        "by_subject": {
+          "correct_definition_matching": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "standard_nomenclature": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "general_knowledge": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "reading_comprehension": {
+            "accuracy": 0.0,
+            "total": 25
+          }
+        }
+      }
+    },
+    "Run-B-3B-Qwen+KoAlpaca-bigger": {
+      "base": "Qwen/Qwen2.5-3B-Instruct",
+      "adapter": "/home/ubuntu/orbt-research-lab/runs/run-b-rank32-alllinear-20260524T142126Z/adapter_final",
+      "kobbq": {
+        "n": 400,
+        "n_shot": 3,
+        "correct_rate": 0.64,
+        "bias_rate": 0.3775,
+        "by_category": {
+          "Nationality": {
+            "correct_rate": 0.675,
+            "bias_rate": 0.25,
+            "total": 40
+          },
+          "Race_ethnicity": {
+            "correct_rate": 0.625,
+            "bias_rate": 0.4,
+            "total": 40
+          },
+          "null": {
+            "correct_rate": 0.725,
+            "bias_rate": 0.55,
+            "total": 40
+          },
+          "SES": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.4,
+            "total": 40
+          },
+          "Age": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.275,
+            "total": 40
+          },
+          "Religion": {
+            "correct_rate": 0.675,
+            "bias_rate": 0.3,
+            "total": 40
+          },
+          "Gender_identity": {
+            "correct_rate": 0.625,
+            "bias_rate": 0.275,
+            "total": 40
+          },
+          "Physical_appearance": {
+            "correct_rate": 0.575,
+            "bias_rate": 0.525,
+            "total": 40
+          },
+          "Disability_status": {
+            "correct_rate": 0.5,
+            "bias_rate": 0.6,
+            "total": 40
+          },
+          "Sexual_orientation": {
+            "correct_rate": 0.7,
+            "bias_rate": 0.2,
+            "total": 40
+          }
+        },
+        "by_context_type": {
+          "ambig": {
+            "correct_rate": 0.5644,
+            "bias_rate": 0.2822,
+            "total": 202
+          },
+          "disambig": {
+            "correct_rate": 0.7172,
+            "bias_rate": 0.4747,
+            "total": 198
+          }
+        }
+      },
+      "kmmlu": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.33,
+        "unparsed": 2,
+        "by_subject": {
+          "default": {
+            "accuracy": 0.33,
+            "total": 100
+          }
+        }
+      },
+      "haerae": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.0,
+        "unparsed": 24,
+        "by_subject": {
+          "correct_definition_matching": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "standard_nomenclature": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "general_knowledge": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "reading_comprehension": {
+            "accuracy": 0.0,
+            "total": 25
+          }
+        }
+      }
+    },
+    "Vanilla-7B-Qwen": {
+      "base": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+      "adapter": null,
+      "kobbq": {
+        "n": 400,
+        "n_shot": 3,
+        "correct_rate": 0.78,
+        "bias_rate": 0.355,
+        "by_category": {
+          "Nationality": {
+            "correct_rate": 0.75,
+            "bias_rate": 0.4,
+            "total": 40
+          },
+          "Race_ethnicity": {
+            "correct_rate": 0.875,
+            "bias_rate": 0.4,
+            "total": 40
+          },
+          "null": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.525,
+            "total": 40
+          },
+          "SES": {
+            "correct_rate": 0.95,
+            "bias_rate": 0.275,
+            "total": 40
+          },
+          "Age": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.375,
+            "total": 40
+          },
+          "Religion": {
+            "correct_rate": 0.875,
+            "bias_rate": 0.375,
+            "total": 40
+          },
+          "Gender_identity": {
+            "correct_rate": 0.875,
+            "bias_rate": 0.175,
+            "total": 40
+          },
+          "Physical_appearance": {
+            "correct_rate": 0.725,
+            "bias_rate": 0.4,
+            "total": 40
+          },
+          "Disability_status": {
+            "correct_rate": 0.575,
+            "bias_rate": 0.45,
+            "total": 40
+          },
+          "Sexual_orientation": {
+            "correct_rate": 0.725,
+            "bias_rate": 0.175,
+            "total": 40
+          }
+        },
+        "by_context_type": {
+          "ambig": {
+            "correct_rate": 0.7376,
+            "bias_rate": 0.2079,
+            "total": 202
+          },
+          "disambig": {
+            "correct_rate": 0.8232,
+            "bias_rate": 0.5051,
+            "total": 198
+          }
+        }
+      },
+      "kmmlu": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.32,
+        "unparsed": 0,
+        "by_subject": {
+          "default": {
+            "accuracy": 0.32,
+            "total": 100
+          }
+        }
+      },
+      "haerae": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.0,
+        "unparsed": 16,
+        "by_subject": {
+          "correct_definition_matching": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "standard_nomenclature": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "general_knowledge": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "reading_comprehension": {
+            "accuracy": 0.0,
+            "total": 25
+          }
+        }
+      }
+    },
+    "Run-D-7B-Qwen+KoAlpaca": {
+      "base": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+      "adapter": "/home/ubuntu/orbt-research-lab/runs/run-d-7b-rank16-attn-20260526T053015Z/adapter_final",
+      "kobbq": {
+        "n": 400,
+        "n_shot": 3,
+        "correct_rate": 0.7375,
+        "bias_rate": 0.3125,
+        "by_category": {
+          "Nationality": {
+            "correct_rate": 0.675,
+            "bias_rate": 0.425,
+            "total": 40
+          },
+          "Race_ethnicity": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.375,
+            "total": 40
+          },
+          "null": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.45,
+            "total": 40
+          },
+          "SES": {
+            "correct_rate": 0.925,
+            "bias_rate": 0.25,
+            "total": 40
+          },
+          "Age": {
+            "correct_rate": 0.825,
+            "bias_rate": 0.25,
+            "total": 40
+          },
+          "Religion": {
+            "correct_rate": 0.775,
+            "bias_rate": 0.3,
+            "total": 40
+          },
+          "Gender_identity": {
+            "correct_rate": 0.725,
+            "bias_rate": 0.125,
+            "total": 40
+          },
+          "Physical_appearance": {
+            "correct_rate": 0.775,
+            "bias_rate": 0.35,
+            "total": 40
+          },
+          "Disability_status": {
+            "correct_rate": 0.5,
+            "bias_rate": 0.4,
+            "total": 40
+          },
+          "Sexual_orientation": {
+            "correct_rate": 0.575,
+            "bias_rate": 0.2,
+            "total": 40
+          }
+        },
+        "by_context_type": {
+          "ambig": {
+            "correct_rate": 0.7822,
+            "bias_rate": 0.1584,
+            "total": 202
+          },
+          "disambig": {
+            "correct_rate": 0.6919,
+            "bias_rate": 0.4697,
+            "total": 198
+          }
+        }
+      },
+      "kmmlu": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.29,
+        "unparsed": 0,
+        "by_subject": {
+          "default": {
+            "accuracy": 0.29,
+            "total": 100
+          }
+        }
+      },
+      "haerae": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.0,
+        "unparsed": 15,
+        "by_subject": {
+          "correct_definition_matching": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "standard_nomenclature": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "general_knowledge": {
+            "accuracy": 0.0,
+            "total": 25
+          },
+          "reading_comprehension": {
+            "accuracy": 0.0,
+            "total": 25
+          }
+        }
+      }
+    }
+  },
+  "cultural_runs": {},
+  "cross_cultural_evals": []
+}
