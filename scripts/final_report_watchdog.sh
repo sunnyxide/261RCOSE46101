@@ -7,7 +7,7 @@
 set -uo pipefail
 LAB="$(cd "$(dirname "$0")/.." && pwd)"
 KEY=~/.ssh/ku-lbj-key.pem
-AWS_A=34.224.91.69
+AWS_A=3.91.69.217
 AWS_B=3.84.130.149
 LOG="$LAB/logs/final_report_watchdog.log"
 DURATION=$((14 * 3600))  # 14h max so we don't run forever

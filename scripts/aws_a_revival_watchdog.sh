@@ -7,7 +7,7 @@
 set -uo pipefail
 LAB="$(cd "$(dirname "$0")/.." && pwd)"
 KEY=~/.ssh/ku-lbj-key.pem
-AWS_A=34.224.91.69
+AWS_A=3.91.69.217
 LOG="$LAB/logs/aws_a_revival.log"
 DURATION=$((12 * 3600))
 INTERVAL=600   # 10 min
