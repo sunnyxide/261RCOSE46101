@@ -71,3 +71,8 @@ logs/
 *.pem
 id_*
 ku-*
+
+# Cultural training data — regeneratable from build_cultural_dataset.py
+data/cultural/*/train.jsonl
+data/cultural/*/eval.jsonl
+data/wvs/*.csv

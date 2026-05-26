@@ -1,0 +1,27 @@
+{
+  "culture": "kr",
+  "hofstede": {
+    "pdi": 60,
+    "idv": 18,
+    "mas": 39,
+    "uai": 85,
+    "lto": 100,
+    "ivr": 29,
+    "lang": "ko",
+    "country_label": "한국",
+    "country_en": "Korea"
+  },
+  "target": 12000,
+  "actual_total": 5826,
+  "train_count": 5535,
+  "eval_count": 291,
+  "source_counts": {
+    "culturebank": 1026,
+    "wvs": 0,
+    "nemotron": 4800,
+    "kobbq": 0
+  },
+  "seed": 42,
+  "built_at": "2026-05-26T09:43:28Z",
+  "elapsed_sec": 16.5
+}
