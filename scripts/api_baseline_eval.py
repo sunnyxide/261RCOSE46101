@@ -110,31 +110,46 @@ class OpenAIClient:
         self.cost_out = 15.0
 
     def query(self, prompt: str, max_tokens=10) -> tuple[str, dict]:
-        # gpt-5 family deprecated `max_tokens` in favor of `max_completion_tokens`
-        # and requires default temperature (temperature=1). Earlier code used
-        # `max_tokens=10, temperature=0` which 400s silently.
+        # gpt-5 family:
+        #   1. `max_tokens` is deprecated → use `max_completion_tokens`
+        #   2. only default temperature supported
+        #   3. CRITICAL: reasoning tokens count against the completion budget,
+        #      so a 10-token budget burns entirely on reasoning and yields
+        #      empty content. Validated 2026-05-26 with the 'Reply: 안녕'
+        #      ping → 20 completion tokens consumed, 0 visible content.
+        #      Set reasoning_effort='minimal' + boost budget for MCQ answers.
+        budget = max(max_tokens, 80)  # leave headroom for minimal reasoning + answer
         try:
             r = self.client.chat.completions.create(
                 model=self.model,
-                max_completion_tokens=max_tokens,
+                max_completion_tokens=budget,
                 messages=[{"role": "user", "content": prompt}],
+                reasoning_effort="minimal",
             )
         except Exception as e:
-            # Raise loudly — silent score=0 was a paper-grade hazard (review C2).
             raise RuntimeError(f"OpenAI API call failed for {self.model}: {e}") from e
         usage = r.usage
         cost = (usage.prompt_tokens * self.cost_in + usage.completion_tokens * self.cost_out) / 1e6
-        return r.choices[0].message.content or "", {"cost_usd": cost, "tokens": usage.total_tokens}
+        text = r.choices[0].message.content or ""
+        if not text.strip():
+            # Surface this — it means reasoning_effort='minimal' still ate the
+            # whole budget. We need to raise the budget per call or use a
+            # non-reasoning model like gpt-5-mini.
+            return "", {"cost_usd": cost, "tokens": usage.total_tokens,
+                        "warning": "empty_content_likely_reasoning_overrun"}
+        return text, {"cost_usd": cost, "tokens": usage.total_tokens}
 
 
 class AnthropicClient:
-    def __init__(self, model="claude-opus-4-6"):
+    def __init__(self, model="claude-opus-4-7"):
         from anthropic import Anthropic
         self.client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-        # Default to the dated-snapshot alias to avoid 404 on bare model names.
-        self.model = model if "-2026" in model else f"{model}-20260514"
+        # Verified 2026-05-26: bare `claude-opus-4-7` resolves. We tested the
+        # 4-6 family and it 404s; 4-7 is the current Opus.
+        self.model = model
+        # Opus 4.7 list price: $15 / $75 per Mtoken in / out.
         self.cost_in = 15.0
-        self.cost_out = 75.0  # per Mtoken claude opus 4.6 list price
+        self.cost_out = 75.0
 
     def query(self, prompt: str, max_tokens=10) -> tuple[str, dict]:
         try:
@@ -235,7 +250,7 @@ def main():
     if "openai" not in args.skip and os.environ.get("OPENAI_API_KEY", "").startswith("sk-"):
         clients.append(("GPT-5", OpenAIClient("gpt-5")))
     if "anthropic" not in args.skip and os.environ.get("ANTHROPIC_API_KEY", "").startswith("sk-ant-"):
-        clients.append(("Claude-Opus-4.6", AnthropicClient("claude-opus-4-6")))
+        clients.append(("Claude-Opus-4.7", AnthropicClient("claude-opus-4-7")))
     if "hyperclova" not in args.skip:
         hcx = HyperCLOVAClient()
         if hcx.available():
