@@ -106,7 +106,14 @@ def load_kmmlu_subset(n: int = 200, subject: str = "Korean-History"):
 
 
 def load_haerae(n: int = 100):
-    """HAE-RAE Bench 1.1 — Korean knowledge/reasoning, MCQ format."""
+    """HAE-RAE Bench 1.1 — Korean knowledge/reasoning, MCQ format.
+
+    Verified schema 2026-05-26: keys=['query','options','answer'].
+      - options: list[str] (4-5 choices, variable length)
+      - answer: str like '(A)' or '(B)' — letter wrapped in parens
+    Earlier loader assumed separate A/B/C/D fields and bare letter; both wrong.
+    """
+    import re
     rows = []
     for sub in ["correct_definition_matching", "standard_nomenclature",
                 "general_knowledge", "reading_comprehension"]:
@@ -115,50 +122,77 @@ def load_haerae(n: int = 100):
         except Exception as e:
             print(f"HAE-RAE {sub} load failed: {e}")
             continue
-        # Schema: query, A/B/C/D, answer (str like 'A')
         per_sub = max(5, n // 4)
         for r in ds.shuffle(seed=42).select(range(min(per_sub, len(ds)))):
-            choices = [r.get(c, "") for c in ["A", "B", "C", "D"]]
-            ans_letter = str(r.get("answer", "A")).strip()
-            ans_idx = ord(ans_letter[0]) - ord("A") if ans_letter else 0
+            choices = list(r.get("options") or [])
+            if len(choices) < 2:
+                continue
+            ans_raw = str(r.get("answer", "")).strip()
+            m = re.search(r"[A-Ea-e]", ans_raw)
+            if not m:
+                continue
+            ans_idx = ord(m.group(0).upper()) - ord("A")
+            if ans_idx < 0 or ans_idx >= len(choices):
+                continue
             rows.append({"subject": sub, "question": r["query"],
-                         "choices": choices, "answer_idx": ans_idx})
+                         "choices": [str(c) for c in choices], "answer_idx": ans_idx})
         if len(rows) >= n:
             break
     return rows[:n]
 
 
 def load_click(n: int = 100):
-    """CLIcK — Cultural and Linguistic Intelligence in Korean."""
+    """CLIcK — Cultural and Linguistic Intelligence in Korean.
+
+    Verified schema 2026-05-26: keys=['id','paragraph','question','choices','answer']
+      - choices: list[str] (4 options)
+      - answer: actual answer **text** (not letter or index) — match against choices
+      - paragraph: often empty (e.g., KIIP_economy_* rows)
+      - id: subject prefix (KIIP_economy, ...) — use as category
+    Earlier loader treated answer as letter/index and missed text-matching case,
+    so every row was rejected (n=0).
+    """
     try:
         ds = load_dataset("EunsuKim/CLIcK", split="train", streaming=False)
     except Exception as e:
         print(f"CLIcK load failed: {e}"); return []
     rows = []
-    for r in ds.shuffle(seed=42).select(range(min(n, len(ds)))):
-        # Schema: paragraph, question, choices (list of 4), answer (idx 0-3 or letter)
+    for r in ds.shuffle(seed=42).select(range(min(n * 3, len(ds)))):
         choices = r.get("choices") or r.get("options")
         if isinstance(choices, str):
             choices = _normalize_choices(choices)
         if not isinstance(choices, list) or len(choices) < 2:
             continue
-        ans = r.get("answer", 0)
-        if isinstance(ans, str):
-            if ans in "ABCD":
+        ans = r.get("answer", "")
+        ans_idx = None
+        if isinstance(ans, int):
+            ans_idx = ans
+        elif isinstance(ans, str):
+            ans = ans.strip()
+            # Try text-match first (the actual CLIcK schema)
+            for i, c in enumerate(choices):
+                if str(c).strip() == ans:
+                    ans_idx = i
+                    break
+            # Letter / digit fallback
+            if ans_idx is None and len(ans) == 1 and ans in "ABCDE":
                 ans_idx = ord(ans) - ord("A")
-            elif ans.isdigit():
+            elif ans_idx is None and ans.isdigit():
                 ans_idx = int(ans) - 1
-            else:
-                continue
-        else:
-            ans_idx = int(ans)
+        if ans_idx is None or ans_idx < 0 or ans_idx >= len(choices):
+            continue
+        # Use id-prefix as category (KIIP_economy_1 → "KIIP_economy")
+        rid = str(r.get("id", "?"))
+        category = "_".join(rid.split("_")[:-1]) if "_" in rid else rid
         rows.append({
-            "category": r.get("category", "?"),
+            "category": category,
             "question": r.get("question", ""),
             "context": r.get("paragraph", "") or "",
             "choices": [str(c) for c in choices],
             "answer_idx": ans_idx,
         })
+        if len(rows) >= n:
+            break
     return rows
 
 
