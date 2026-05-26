@@ -30,6 +30,30 @@ ROOT = os.path.expanduser("~/orbt-research-lab")
 BASE_MODEL = "Qwen/Qwen2.5-3B-Instruct"
 
 
+def _normalize_choices(raw):
+    """KoBBQ stores `choices` as a stringified Python list. Normalize to list[str].
+    Pure string parsing (no eval) — split on commas inside brackets, strip quotes.
+    """
+    if isinstance(raw, list):
+        return [str(c).strip() for c in raw]
+    if not isinstance(raw, str):
+        return []
+    s = raw.strip()
+    if s.startswith("[") and s.endswith("]"):
+        s = s[1:-1]
+    # Replace single quotes with double for JSON parsing
+    import json as _json
+    try:
+        parsed = _json.loads("[" + s.replace("'", '"') + "]")
+        if isinstance(parsed, list):
+            return [str(c).strip() for c in parsed]
+    except Exception:
+        pass
+    # Last-resort split
+    parts = [p.strip().strip("'\"") for p in s.split(",") if p.strip()]
+    return parts
+
+
 def load_kobbq_subset(n: int = 80):
     """Mix of ambiguous + disambiguated contexts across all categories."""
     try:
@@ -41,16 +65,19 @@ def load_kobbq_subset(n: int = 80):
     by_cat = defaultdict(int)
     for r in ds.shuffle(seed=42):
         cat = r.get("bbq_category", "?")
-        if by_cat[cat] >= n // 8:  # spread across categories
+        if by_cat[cat] >= max(2, n // 8):
+            continue
+        choices = _normalize_choices(r.get("choices", []))
+        if len(choices) < 2:
             continue
         rows.append({
             "id": r.get("sample_id"),
             "category": cat,
             "context": r.get("context", ""),
             "question": r.get("question", ""),
-            "choices": r.get("choices", []),
-            "answer": r.get("answer", ""),
-            "biased_answer": r.get("biased_answer", ""),
+            "choices": choices,
+            "answer": str(r.get("answer", "")).strip(),
+            "biased_answer": str(r.get("biased_answer", "")).strip(),
             "label_annotation": r.get("label_annotation", ""),
         })
         by_cat[cat] += 1
