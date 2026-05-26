@@ -85,7 +85,8 @@ def load_cultural_jsonl(path, tokenizer, max_samples=None, max_length=1024):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--culture", required=True, choices=["kr", "jp", "us", "cn"])
+    ap.add_argument("--culture", required=True,
+                    help="culture code or ablation variant (e.g. kr, kr_idv_only)")
     ap.add_argument("--base-model", default="Qwen/Qwen2.5-3B-Instruct")
     ap.add_argument("--run-id", required=True)
     ap.add_argument("--max-samples", type=int, default=None)
