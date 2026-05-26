@@ -144,6 +144,35 @@ sections, the autonomy tier drops to Medium and Sunwoo writes more
 sections manually. Lab infrastructure (data fetch, sims, metrics) still
 runs autonomously regardless.
 
+## 7. NEW (2026-05-26): MiroFish reference + 6-axis differentiation framing
+
+| Aspect | Original (none) | v2 |
+|--------|-----------------|----|
+| Reference engine cited | n/a | MiroFish (Ji et al. 2026, 62K stars) + OASIS (Yang et al. 2024) |
+| Adjacent forks surveyed | n/a | MiroFish-Offline (Neo4j+Ollama), miroclaw, MiroFish-DE/ESP, hermes-geopolitical-market-sim (~30 derivatives) |
+| Differentiation axes | implicit | 6 explicit axes: market specificity, persona grounding, cultural injection paths, backbone diversity, standard benchmarks, autonomous methodology — see RESEARCH_PLAN_v2.md §3 |
+
+**Why.** Without MiroFish reference, reviewers slot us into "cultural-LLM bucket" (CultureLLM, CAReDiO peers). With it, our positioning sharpens to: *cultural-grounding extension to the leading multi-agent prediction engine, applied to Korean D2C market*. Sentence-level paper pitch becomes much clearer.
+
+**Cost.** None — bibliography.bib + Related Work §2.2 expansion only.
+
+**Risk if reversed.** Genuine omission of most-relevant prior work — reviewer weakness.
+
+## 8. NEW (2026-05-26): KoAlpaca QLoRA pilot — negative result reframes Section 4
+
+| Aspect | Original | v2 |
+|--------|----------|----|
+| W3 pilot scope | Validate pipeline | + Demonstrate general Korean SFT is INSUFFICIENT (KoBBQ correct 78.8% → 56.2%, KMMLU 42.5% → 32.5%) |
+| Paper Section 4 structure | Single static-metrics table | 4.1 Why general Korean SFT fails / 4.2 Cultural-specific QLoRA result / 4.3 Capacity ablation / 4.4 Standard benchmarks |
+
+**Why.** Run-A and Run-B both showed catastrophic forgetting on Korean knowledge benchmarks (KoBBQ correct rate dropped 17.5pp / 22.6pp; KMMLU dropped 2.5pp / 10pp). Run-B's bias reduction (-6.2pp) was paid for with massive accuracy loss. This is **the strongest empirical argument** for requiring cultural-specific training data (Nemotron-Personas-Korea + CultureBank-Korean) in W4.
+
+See `decisions/2026-05-26-koalpaca-negative-result.md` for the full analysis.
+
+**Cost.** None — restructure prose, no extra experiments. Adds Proposition 4 to MOTIVATION_v2 ("general Korean SFT ≠ cultural fix").
+
+**Risk if reversed.** Negative results are assets in ML/NLP venues when they sharpen the positive contribution.
+
 ## Aggregate impact on the paper
 
 Comparing the original PPT's expected contributions vs v2:
@@ -153,9 +182,11 @@ Comparing the original PPT's expected contributions vs v2:
 | Pipeline bridging cultural measurement → actionable persona generation | Strengthened (Nemotron + CultureBank + LightRAG) |
 | Empirical comparison: prompting vs RAG vs embedding | Expanded to prompting vs RAG vs QLoRA fine-tuning |
 | Human-validated authenticity benchmarks for Korean and Japanese personas | Korean only, deeper |
-| (none) | **NEW**: BAS — dynamic behavioral authenticity metric |
+| (none) | **NEW**: BAS — dynamic behavioral authenticity metric (pivoted to directional reporting per R4 finding) |
 | (none) | **NEW**: Autonomous research-lab methodology |
 | (none) | **NEW**: ORBT product transfer surface |
+| (none) | **NEW (2026-05-26)**: MiroFish/OASIS as reference engine — 6-axis differentiation |
+| (none) | **NEW (2026-05-26)**: KoAlpaca negative result — quantitatively justifies cultural-specific training data |
 
 ## Where this appears in the paper
 

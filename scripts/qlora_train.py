@@ -62,22 +62,28 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--logging-steps", type=int, default=10)
     p.add_argument("--eval-steps", type=int, default=200)
     p.add_argument("--resume", action="store_true", help="Resume from last checkpoint if present.")
+    p.add_argument("--prequantized", action="store_true",
+                   help="Base model is already bnb-4bit pre-quantized (e.g., unsloth/*-bnb-4bit). Skip BnB config.")
     return p.parse_args()
 
 
-def load_quantized_base(model_id: str):
-    bnb = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_compute_dtype=torch.bfloat16,
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        model_id,
-        quantization_config=bnb,
-        device_map="auto",
-        attn_implementation="sdpa",
-    )
+def load_quantized_base(model_id: str, prequantized: bool = False):
+    kwargs = {
+        "device_map": "auto",
+        "attn_implementation": "sdpa",
+    }
+    if not prequantized:
+        kwargs["quantization_config"] = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_compute_dtype=torch.bfloat16,
+        )
+    else:
+        # Pre-quantized models (unsloth/*-bnb-4bit) already have the BnB config
+        # baked into config.json; passing BitsAndBytesConfig again causes conflicts.
+        kwargs["torch_dtype"] = torch.bfloat16
+    model = AutoModelForCausalLM.from_pretrained(model_id, **kwargs)
     model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=True)
     return model
 
@@ -157,7 +163,7 @@ def main() -> int:
     tokenizer = AutoTokenizer.from_pretrained(args.base_model)
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
-    model = load_quantized_base(args.base_model)
+    model = load_quantized_base(args.base_model, prequantized=args.prequantized)
     print(f"[{time.time()-t0:.1f}s] base loaded, VRAM={torch.cuda.memory_allocated()/1024**3:.2f} GiB",
           flush=True)
 

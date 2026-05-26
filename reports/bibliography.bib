@@ -108,6 +108,68 @@
     note = {preprint},
 }
 
+@misc{ji2026mirofish,
+    author = {{666ghj/MiroFish contributors}},
+    title = {{MiroFish}: A Simple and Universal Swarm Intelligence Engine,
+             Predicting Anything},
+    howpublished = {\url{https://github.com/666ghj/MiroFish}},
+    year = {2026},
+    note = {62K+ GitHub stars (May 2026); incubated by Shanda Group;
+            OASIS-based multi-agent simulation engine with Zep memory.
+            Five-step workflow: Graph Building → Environment Setup →
+            Simulation → Report Generation → Deep Interaction.
+            English fork (nikmcfly/MiroFish-Offline) replaces Zep Cloud
+            with Graphiti+Neo4j.},
+}
+
+@misc{mirofishoffline2026,
+    author = {{nikmcfly/MiroFish-Offline contributors}},
+    title = {{MiroFish-Offline}: Offline multi-agent simulation and
+             prediction engine with {Neo4j} + {Ollama} local stack},
+    howpublished = {\url{https://github.com/nikmcfly/MiroFish-Offline}},
+    year = {2026},
+    note = {2.2K stars; English fork of MiroFish; demonstrates that
+            Zep Cloud dependency can be replaced by Graphiti+Neo4j —
+            relevant for ORBT integration which uses Neo4j-backed LightRAG.},
+}
+
+@misc{exaone2024,
+    author = {{LG AI Research}},
+    title = {{EXAONE 3.0}: A 7.8 Billion Parameter Korean Bilingual Language Model},
+    howpublished = {\url{https://huggingface.co/LGAI-EXAONE/EXAONE-3.0-7.8B-Instruct}},
+    year = {2024},
+    note = {Korean-pretrained large language model; baseline for
+            Korean-pretrained vs Western-multilingual ablation (Run-E).},
+}
+
+@misc{koalpaca2023,
+    author = {Junbum Lee},
+    title = {{KoAlpaca}: Korean Alpaca instruction-following dataset},
+    howpublished = {\url{https://huggingface.co/datasets/beomi/KoAlpaca-v1.1a}},
+    year = {2023},
+    note = {Korean instruction dataset; used for Run-A and Run-B pilot
+            ablation, demonstrating that general Korean instruction tuning
+            is INSUFFICIENT for cultural authenticity gains.},
+}
+
+@misc{kullm2023,
+    author = {{Korea Univ. NLP/AI Lab}},
+    title = {{KULLM v2}: Korean Large Language Model},
+    howpublished = {\url{https://huggingface.co/datasets/nlpai-lab/kullm-v2}},
+    year = {2023},
+    note = {Korean instruction-tuning dataset; alternative to KoAlpaca for
+            data-source ablation (Run-C).},
+}
+
+@misc{kmmlu2024,
+    author = {Guijin Son and others},
+    title = {{KMMLU}: Measuring Massive Multitask Language Understanding in {Korean}},
+    howpublished = {\url{https://huggingface.co/datasets/HAERAE-HUB/KMMLU}},
+    year = {2024},
+    note = {Korean MMLU variant; used for factual knowledge ablation
+            (Run-A vs Run-B catastrophic forgetting observation).},
+}
+
 % =====================================================================
 % Korean ground-truth data sources (cited in MEAS mapping spec)
 % =====================================================================
