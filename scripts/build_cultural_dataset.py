@@ -48,36 +48,57 @@ def system_prompt(culture):
 
 # --- Source loaders --------------------------------------------------------
 def load_culturebank(culture, max_n=3000):
-    """SALT-NLP/CultureBank — cultural descriptors with country tags."""
+    """SALT-NLP/CultureBank — cultural descriptors with country tags.
+
+    Schema (verified 2026-05-26): splits=['tiktok', 'reddit'], key 'cultural group'
+    (space, not underscore). Rich fields: eval_whole_desc, eval_persona, eval_question,
+    actor_behavior, topic.
+    """
     try:
         from datasets import load_dataset
     except ImportError:
         print("[culturebank] datasets package missing — skipping", file=sys.stderr)
         return []
-    country_map = {"kr": "South Korea", "jp": "Japan", "us": "United States", "cn": "China"}
-    target = country_map[culture]
-    try:
-        # CultureBank has tiktok and reddit subsets
-        ds = load_dataset("SALT-NLP/CultureBank", "tiktok", split="train")
-    except Exception as e:
-        print(f"[culturebank] load failed: {e}", file=sys.stderr)
-        return []
+    country_aliases = {
+        "kr": ["korean", "south korea"],
+        "jp": ["japanese", "japan"],
+        "us": ["american", "united states"],
+        "cn": ["chinese", "china"],
+    }
+    targets = [a.lower() for a in country_aliases[culture]]
     out = []
-    for row in ds:
-        culture_tag = (row.get("cultural_group") or "").strip()
-        if target.lower() not in culture_tag.lower():
+    for split in ("tiktok", "reddit"):
+        try:
+            ds = load_dataset("SALT-NLP/CultureBank", split=split)
+        except Exception as e:
+            print(f"[culturebank] {split} load failed: {str(e)[:120]}", file=sys.stderr)
             continue
-        desc = (row.get("cultural_descriptor") or row.get("description") or "").strip()
-        if len(desc) < 20:
-            continue
-        out.append({
-            "instruction": f"Describe a cultural practice or norm common in {HOFSTEDE[culture]['country_en']}.",
-            "input": "",
-            "output": desc,
-            "source": "culturebank",
-        })
-        if len(out) >= max_n:
-            break
+        for row in ds:
+            culture_tag = (row.get("cultural group") or "").strip().lower()
+            if not any(t in culture_tag for t in targets):
+                continue
+            desc = (row.get("eval_whole_desc") or "").strip()
+            persona = (row.get("eval_persona") or "").strip()
+            question = (row.get("eval_question") or "").strip()
+
+            # Variant A: descriptor explanation (norm/practice description)
+            if len(desc) >= 30:
+                out.append({
+                    "instruction": f"Describe a cultural practice or norm common in {HOFSTEDE[culture]['country_en']}.",
+                    "input": (row.get("topic") or "").strip(),
+                    "output": desc,
+                    "source": "culturebank-desc",
+                })
+            # Variant B: persona-question pair (the rich format we'll mine for instruction data)
+            if persona and question and len(desc) >= 30:
+                out.append({
+                    "instruction": f"You are interacting with: {persona}\nThey ask: {question}\nGive a culturally-grounded response that reflects {HOFSTEDE[culture]['country_en']} norms.",
+                    "input": "",
+                    "output": desc,
+                    "source": "culturebank-persona",
+                })
+            if len(out) >= max_n:
+                return out
     return out
 
 def load_wvs_responses(culture, max_n=2000):
@@ -110,7 +131,13 @@ def load_wvs_responses(culture, max_n=2000):
     return rows
 
 def load_nemotron_personas(culture, max_n=3000):
-    """Nemotron-Personas-Korea — currently KR only. For non-KR cultures, returns []."""
+    """Nemotron-Personas-Korea — KR only. Rich multi-facet personas in Korean.
+
+    Verified schema: persona, professional_persona, family_persona, cultural_background,
+    age, sex, district, province, occupation, education_level.
+    Strategy: emit multiple instruction variants per row (persona summary, professional
+    detail, cultural background) → high cultural-signal data points.
+    """
     if culture != "kr":
         return []
     try:
@@ -118,56 +145,58 @@ def load_nemotron_personas(culture, max_n=3000):
     except ImportError:
         return []
     try:
-        ds = load_dataset("nvidia/Nemotron-Personas-Korea", split="train")
+        ds = load_dataset("nvidia/Nemotron-Personas-Korea", split="train", streaming=True)
     except Exception as e:
         print(f"[nemotron] load failed: {e}", file=sys.stderr)
         return []
     out = []
     for row in ds:
-        persona = (row.get("persona") or row.get("description") or "").strip()
+        persona = (row.get("persona") or "").strip()
+        bg = (row.get("cultural_background") or "").strip()
+        prof = (row.get("professional_persona") or "").strip()
+        fam = (row.get("family_persona") or "").strip()
+        age = row.get("age"); sex = row.get("sex"); occ = row.get("occupation")
+        prov = row.get("province"); district = row.get("district")
         if len(persona) < 30:
             continue
+        seed = f"{age}세 {sex}, {prov} {district}, 직업: {occ}".strip()
+        # Variant A: short persona summary
         out.append({
-            "instruction": "다음 한국인 페르소나를 상세히 묘사하세요. 이름, 나이, 배경, 가치관을 포함하세요.",
-            "input": "",
+            "instruction": "다음 인물 정보를 바탕으로 한국인 페르소나를 상세히 묘사하세요.",
+            "input": seed,
             "output": persona,
-            "source": "nemotron-personas-kr",
+            "source": "nemotron-persona-summary",
         })
+        # Variant B: cultural background expansion
+        if len(bg) >= 50:
+            out.append({
+                "instruction": "이 한국인의 문화적 배경과 가치관을 설명하세요.",
+                "input": persona,
+                "output": bg,
+                "source": "nemotron-cultural-bg",
+            })
+        # Variant C: lifestyle facet (rotate professional/family for diversity)
+        facet = prof if (hash(row.get("uuid","")) % 2 == 0 and len(prof) >= 50) else fam
+        if len(facet) >= 50:
+            facet_q = "이 한국인의 직업적 일상을 묘사하세요." if facet == prof else "이 한국인의 가족 관계를 묘사하세요."
+            out.append({
+                "instruction": facet_q,
+                "input": persona,
+                "output": facet,
+                "source": "nemotron-lifestyle",
+            })
         if len(out) >= max_n:
             break
     return out
 
 def load_kobbq_train(culture, max_n=1500):
-    """KoBBQ train split for bias mitigation (kr only; jbbq/bbq for others, TODO)."""
-    if culture != "kr":
-        return []
-    try:
-        from datasets import load_dataset
-        ds = load_dataset("naver-ai/kobbq", split="train")
-    except Exception as e:
-        print(f"[kobbq] load failed: {e}", file=sys.stderr)
-        return []
-    out = []
-    for row in ds:
-        ctx = (row.get("context") or "").strip()
-        q = (row.get("question") or "").strip()
-        # We want the *unbiased* / disambiguated answer to train the model to avoid stereotype reinforcement
-        ans_idx = row.get("answer_label")
-        choices = row.get("choices") or []
-        if ans_idx is None or not choices or ans_idx >= len(choices):
-            continue
-        gold = choices[ans_idx] if isinstance(choices, list) else None
-        if not gold:
-            continue
-        out.append({
-            "instruction": f"{ctx}\n질문: {q}\n위 상황에서 가장 적절한 답변을 고르세요.",
-            "input": " / ".join(str(c) for c in choices),
-            "output": str(gold),
-            "source": "kobbq-train",
-        })
-        if len(out) >= max_n:
-            break
-    return out
+    """KoBBQ has eval-only ('test') split — using it for training would leak.
+
+    Returns []. Bias mitigation training is delegated to Hermes brief 09
+    (synthesize bias-aware demonstrations) or to general Korean instruction
+    mixing via KoAlpaca-style data later. Function kept for interface parity.
+    """
+    return []
 
 # --- Combine and format ----------------------------------------------------
 def format_as_instruction(records, culture):
@@ -202,14 +231,14 @@ def main():
     print(f"[build] culture={culture} target={args.target}")
     t0 = time.time()
 
-    # Per-source budgets (auto-scaled by target)
+    # Per-source budgets (auto-scaled by target). KoBBQ removed (eval-only split, leakage).
+    # Nemotron generates 3 variants per row so 30% target gives ~ that many rows × 3.
     budgets = {
-        "culturebank": int(args.target * 0.25),
+        "culturebank": int(args.target * 0.30),
         "wvs":         int(args.target * 0.15),
-        "nemotron":    int(args.target * 0.30),
-        "kobbq":       int(args.target * 0.10),
+        "nemotron":    int(args.target * 0.40),
+        "kobbq":       0,  # leakage guard; Hermes brief 09 fills bias-mitigation slot synthetically
     }
-    # Remaining 20% is synthesized Hofstede-conditioned prompts (placeholder — Hermes brief 10 fills)
 
     sources = []
     sources += load_culturebank(culture, budgets["culturebank"])
