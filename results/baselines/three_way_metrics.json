@@ -1,0 +1,15 @@
+{
+  "vanilla_tokens": 8494,
+  "run_a_tokens": 9975,
+  "run_b_tokens": 9771,
+  "vanilla_len_chars": 20154,
+  "run_a_len_chars": 16080,
+  "run_b_len_chars": 16225,
+  "n_prompts": 60,
+  "categories": {
+    "A_demographic": 15,
+    "B_purchase": 15,
+    "C_communication": 15,
+    "D_brand": 15
+  }
+}

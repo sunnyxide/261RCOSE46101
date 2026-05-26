@@ -1,0 +1,15 @@
+{
+  "run_id": "run-b-rank32-alllinear-20260524T142126Z",
+  "base_model": "Qwen/Qwen2.5-3B-Instruct",
+  "dataset": "beomi/KoAlpaca-v1.1a",
+  "n_train": 14250,
+  "n_eval": 750,
+  "final_train_loss": 1.5721752472138137,
+  "final_eval_loss": 1.5825979709625244,
+  "perplexity": 4.867585182189941,
+  "trainable_params": 14745600,
+  "total_params": 1713418240,
+  "trainable_pct": 0.8606,
+  "total_sec": 9763.4,
+  "converged": true
+}
