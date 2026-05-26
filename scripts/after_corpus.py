@@ -37,15 +37,36 @@ with open(before_path) as f:
     before = json.load(f)
 print(f"[init] before corpus: {len(before['generations'])} prompts", flush=True)
 
-# Load base + adapter
-mid = "Qwen/Qwen2.5-3B-Instruct"
+# Detect the base model the adapter was trained on (read adapter_config.json).
+# Required because Run-D used 7B base while Run-A/B used 3B.
+adapter_cfg_path = os.path.join(adapter_path, "adapter_config.json")
+adapter_cfg = json.load(open(adapter_cfg_path))
+mid = adapter_cfg.get("base_model_name_or_path")
+if not mid:
+    # Review H7: silent default to Qwen-3B applied an EXAONE/Llama adapter onto
+    # the wrong base and produced superficially-valid garbage. Refuse rather
+    # than corrupt downstream baselines.
+    raise RuntimeError(
+        f"adapter_config.json at {adapter_cfg_path} has no "
+        f"base_model_name_or_path. Cannot determine which base to load."
+    )
+print(f"[init] base from adapter_config: {mid}", flush=True)
+
+# Pre-quantized models (unsloth/*-bnb-4bit) come with quantization baked in;
+# do NOT pass BitsAndBytesConfig in that case.
+prequantized = ("-bnb-4bit" in mid.lower()) or ("4bit" in mid.lower())
 tok = AutoTokenizer.from_pretrained(mid)
-bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
-                          bnb_4bit_use_double_quant=True, bnb_4bit_compute_dtype=torch.bfloat16)
-base = AutoModelForCausalLM.from_pretrained(mid, quantization_config=bnb, device_map="auto",
-                                              attn_implementation="sdpa")
+load_kwargs = {"device_map": "auto", "attn_implementation": "sdpa"}
+if not prequantized:
+    load_kwargs["quantization_config"] = BitsAndBytesConfig(
+        load_in_4bit=True, bnb_4bit_quant_type="nf4",
+        bnb_4bit_use_double_quant=True, bnb_4bit_compute_dtype=torch.bfloat16,
+    )
+else:
+    load_kwargs["torch_dtype"] = torch.bfloat16
+base = AutoModelForCausalLM.from_pretrained(mid, **load_kwargs)
 model = PeftModel.from_pretrained(base, adapter_path)
-model.eval()
+# Inference-only flag set via inference_mode context manager (see generate loop)
 print(f"[{time.time()-t0:.1f}s] base+adapter loaded, VRAM={torch.cuda.memory_allocated()/1024**3:.2f} GiB",
       flush=True)
 

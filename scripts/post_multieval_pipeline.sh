@@ -20,8 +20,8 @@ LOG=/tmp/post_multieval.log
 
 _log() { echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $*" | tee -a "$LOG"; }
 
-cd $LAB
-source .venv/bin/activate
+cd "$LAB" || { _log "ABORT: $LAB missing — fresh instance or wrong path?"; exit 1; }
+source .venv/bin/activate || { _log "ABORT: .venv not activatable in $LAB"; exit 1; }
 
 # ============================================================================
 # Phase 1: Free disk
@@ -60,7 +60,8 @@ python scripts/qlora_train.py \
   --lora-rank 16 \
   --save-steps 100 --eval-steps 200 \
   2>&1 | tee /tmp/run-e.log
-RUN_E_EXIT=$?
+# review H3: capture python exit (PIPESTATUS[0]), not the tee exit ($?).
+RUN_E_EXIT=${PIPESTATUS[0]}
 _log "Run-E exit: $RUN_E_EXIT"
 
 # ============================================================================

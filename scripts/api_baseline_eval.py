@@ -104,28 +104,37 @@ class OpenAIClient:
         from openai import OpenAI
         self.client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
         self.model = model
-        self.cost_in = 1.25; self.cost_out = 10.0  # per Mtoken gpt-5 estimate
+        # Pricing per config/models.yaml (Jan 2026 cutoff snapshot).
+        # gpt-5: $5 / $15 per Mtoken in / out.
+        self.cost_in = 5.0
+        self.cost_out = 15.0
 
     def query(self, prompt: str, max_tokens=10) -> tuple[str, dict]:
+        # gpt-5 family deprecated `max_tokens` in favor of `max_completion_tokens`
+        # and requires default temperature (temperature=1). Earlier code used
+        # `max_tokens=10, temperature=0` which 400s silently.
         try:
             r = self.client.chat.completions.create(
-                model=self.model, max_tokens=max_tokens,
+                model=self.model,
+                max_completion_tokens=max_tokens,
                 messages=[{"role": "user", "content": prompt}],
-                temperature=0,
             )
-            usage = r.usage
-            cost = (usage.prompt_tokens * self.cost_in + usage.completion_tokens * self.cost_out) / 1e6
-            return r.choices[0].message.content or "", {"cost_usd": cost, "tokens": usage.total_tokens}
         except Exception as e:
-            return "", {"error": str(e)[:200]}
+            # Raise loudly — silent score=0 was a paper-grade hazard (review C2).
+            raise RuntimeError(f"OpenAI API call failed for {self.model}: {e}") from e
+        usage = r.usage
+        cost = (usage.prompt_tokens * self.cost_in + usage.completion_tokens * self.cost_out) / 1e6
+        return r.choices[0].message.content or "", {"cost_usd": cost, "tokens": usage.total_tokens}
 
 
 class AnthropicClient:
     def __init__(self, model="claude-opus-4-6"):
         from anthropic import Anthropic
         self.client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-        self.model = model
-        self.cost_in = 15.0; self.cost_out = 75.0  # per Mtoken claude opus
+        # Default to the dated-snapshot alias to avoid 404 on bare model names.
+        self.model = model if "-2026" in model else f"{model}-20260514"
+        self.cost_in = 15.0
+        self.cost_out = 75.0  # per Mtoken claude opus 4.6 list price
 
     def query(self, prompt: str, max_tokens=10) -> tuple[str, dict]:
         try:
@@ -133,12 +142,13 @@ class AnthropicClient:
                 model=self.model, max_tokens=max_tokens,
                 messages=[{"role": "user", "content": prompt}],
             )
-            usage = r.usage
-            cost = (usage.input_tokens * self.cost_in + usage.output_tokens * self.cost_out) / 1e6
-            text = r.content[0].text if r.content else ""
-            return text, {"cost_usd": cost, "tokens": usage.input_tokens + usage.output_tokens}
         except Exception as e:
-            return "", {"error": str(e)[:200]}
+            # Raise loudly — silent score=0 hazard (review C3).
+            raise RuntimeError(f"Anthropic API call failed for {self.model}: {e}") from e
+        usage = r.usage
+        cost = (usage.input_tokens * self.cost_in + usage.output_tokens * self.cost_out) / 1e6
+        text = r.content[0].text if r.content else ""
+        return text, {"cost_usd": cost, "tokens": usage.input_tokens + usage.output_tokens}
 
 
 class HyperCLOVAClient:

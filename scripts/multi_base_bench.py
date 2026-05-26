@@ -221,8 +221,17 @@ def main():
         if adapter and "*" in adapter:
             cands = glob.glob(os.path.expanduser(adapter))
             adapter = max(cands, key=os.path.getmtime) if cands else None
+        # Hard fail if a glob pattern was given but nothing matched —
+        # otherwise we'd silently score the base model under a Run-X label
+        # (review H5).
+        if m.get("adapter") and "*" in m["adapter"] and adapter is None:
+            results[label] = {"base": base, "adapter": m["adapter"],
+                              "error": f"no adapter matched glob {m['adapter']!r}"}
+            print(f"  SKIP: no adapter for glob {m['adapter']!r}", flush=True)
+            continue
         print(f"\n[{time.time()-t0:.1f}s] [{i+1}/{len(models)}] {label}: base={base} adapter={adapter or 'none'}",
               flush=True)
+        tok = model = None  # initialize so del in finally never UnboundLocalErrors (review C4)
         try:
             tok, model = load_model(base, adapter)
             r_kobbq = score_kobbq(model, tok, kobbq_rows)
@@ -235,11 +244,11 @@ def main():
             print(f"  FAIL: {type(e).__name__}: {str(e)[:200]}", flush=True)
             results[label] = {"base": base, "adapter": adapter, "error": str(e)}
         finally:
-            # Free VRAM between models
-            try:
-                del model, tok
-            except Exception:
-                pass
+            # Free VRAM between models — guard against partial-load failure
+            if model is not None:
+                del model
+            if tok is not None:
+                del tok
             gc.collect()
             torch.cuda.empty_cache()
 
