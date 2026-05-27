@@ -1,0 +1,21 @@
+I'll start by reading all the input files to conduct this review.<tool_call>
+<function=read>
+<parameter=filePath>/Users/orbt/Desktop/orbt/orbtCS/results/hermes_outputs/08_paper_related_work_draft.md</parameter>
+</function>
+</tool_call><tool_call>
+<function=read>
+<parameter=filePath>/Users/orbt/Desktop/orbt/orbtCS/reports/bibliography.bib</parameter>
+</function>
+</tool_call><tool_call>
+<function=read>
+<parameter=filePath>/Users/orbt/Desktop/orbt/orbtCS/MOTIVATION_v2.md</parameter>
+</function>
+</tool_call><tool_call>
+<function=read>
+<parameter=filePath>/Users/orbt/Desktop/orbt/orbtCS/HANDOFF.md</parameter>
+</function>
+</tool_call><tool_call>
+<function=read>
+<parameter=filePath>/Users/orbt/Desktop/orbt/orbtCS/reports/style_guide.md</parameter>
+</function>
+</tool_call>

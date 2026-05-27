@@ -1,0 +1,9 @@
+<tool_call>
+<function=read>
+<parameter=filePath>/Users/orbt/Desktop/orbt/research/reports/bibliography.bib</parameter>
+</function>
+</tool_call><tool_call>
+<function=read>
+<parameter=filePath>/Users/orbt/Desktop/orbt/research/reports/sections/MOTIVATION_v2.md</parameter>
+</function>
+</tool_call>

@@ -294,3 +294,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # Force clean exit — HuggingFace datasets / fsspec leaves non-daemon
+    # threads that prevent normal interpreter shutdown, leaving zombie
+    # python3 processes (observed 33h+ alive after [build] DONE on 2026-05-26).
+    # os._exit bypasses atexit but skips Python-level cleanup; safe here
+    # because we've already flushed our jsonl/manifest writes above.
+    import os as _os
+    _os._exit(0)

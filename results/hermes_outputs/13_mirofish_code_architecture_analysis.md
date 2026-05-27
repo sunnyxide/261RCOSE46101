@@ -1,0 +1,19 @@
+I'll start by systematically gathering information from the MiroFish repository, DeepWiki, and related sources. Let me crawl each one.<tool_call>
+<function=web_fetch>
+<parameter=url>https://github.com/666ghj/MiroFish</parameter>
+<parameter=extractMode>markdown</parameter>
+<parameter=maxChars>30000</parameter>
+</function>
+</tool_call><tool_call>
+<function=web_fetch>
+<parameter=url>https://deepwiki.com/666ghj/MiroFish</parameter>
+<parameter=extractMode>markdown</parameter>
+<parameter=maxChars>40000</parameter>
+</function>
+</tool_call><tool_call>
+<function=web_fetch>
+<parameter=url>https://github.com/666ghj/MiroFish/blob/main/README-ZH.md</parameter>
+<parameter=extractMode>markdown</parameter>
+<parameter=maxChars>30000</parameter>
+</function>
+</tool_call>
