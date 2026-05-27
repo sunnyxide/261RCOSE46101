@@ -71,10 +71,10 @@ def judge_gpt5(prompt):
     from openai import OpenAI
     client = OpenAI()
     r = client.chat.completions.create(
-        model="gpt-5",
+        model="gpt-5.5",
         max_completion_tokens=200,
         messages=[{"role": "user", "content": prompt}],
-        reasoning_effort="minimal",
+        reasoning_effort="none",
     )
     return r.choices[0].message.content
 

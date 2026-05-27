@@ -135,7 +135,7 @@ def parse_choice(reply, n_choices, letter=False):
 
 
 class OpenAIClient:
-    def __init__(self, model="gpt-5"):
+    def __init__(self, model="gpt-5.5"):
         from openai import OpenAI
         self.client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
         self.model = model
@@ -152,14 +152,16 @@ class OpenAIClient:
         #      so a 10-token budget burns entirely on reasoning and yields
         #      empty content. Validated 2026-05-26 with the 'Reply: 안녕'
         #      ping → 20 completion tokens consumed, 0 visible content.
-        #      Set reasoning_effort='minimal' + boost budget for MCQ answers.
+        #      Set reasoning_effort='none' + boost budget for MCQ answers.
+        # gpt-5.5 supports reasoning_effort in {none, low, medium, high, xhigh};
+        # 'none' = no internal reasoning (closest to deprecated gpt-5 'minimal').
         budget = max(max_tokens, 80)  # leave headroom for minimal reasoning + answer
         try:
             r = self.client.chat.completions.create(
                 model=self.model,
                 max_completion_tokens=budget,
                 messages=[{"role": "user", "content": prompt}],
-                reasoning_effort="minimal",
+                reasoning_effort="none",
             )
         except Exception as e:
             raise RuntimeError(f"OpenAI API call failed for {self.model}: {e}") from e
@@ -285,7 +287,7 @@ def main():
     results = {}
     clients = []
     if "openai" not in args.skip and os.environ.get("OPENAI_API_KEY", "").startswith("sk-"):
-        clients.append(("GPT-5", OpenAIClient("gpt-5")))
+        clients.append(("GPT-5.5", OpenAIClient("gpt-5.5")))
     if "anthropic" not in args.skip and os.environ.get("ANTHROPIC_API_KEY", "").startswith("sk-ant-"):
         clients.append(("Claude-Opus-4.7", AnthropicClient("claude-opus-4-7")))
     if "hyperclova" not in args.skip:
