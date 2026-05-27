@@ -88,6 +88,52 @@ def judge_claude(prompt):
     )
     return r.content[0].text if r.content else ""
 
+def judge_mimo(prompt, model_id="mimo-v2.5-pro"):
+    """Xiaomi MiMo v2.5 Pro via Plan endpoint — Tier C judge.
+
+    OpenAI-compatible API at token-plan-sgp.xiaomimimo.com/v1. Distinct cultural
+    priors (Chinese-developed model) provide useful diversity vs GPT-5.5 (US)
+    and Claude (US) — good for judging Asian cultural authenticity claims.
+
+    Auth: $XIAOMI_PLAN_API_KEY (tp-prefixed) from ~/.hermes/.env or shell.
+    Token budget: 700M/month free under Plan; per-call usage trivial.
+    """
+    import urllib.request
+    key = os.environ.get("XIAOMI_PLAN_API_KEY", "")
+    if not key.startswith("tp-"):
+        # Fallback: try loading from ~/.hermes/.env
+        try:
+            for line in open(os.path.expanduser("~/.hermes/.env")):
+                if line.startswith("XIAOMI_PLAN_API_KEY="):
+                    key = line.strip().split("=", 1)[1].strip().strip('"')
+                    break
+        except FileNotFoundError:
+            pass
+    if not key.startswith("tp-"):
+        raise RuntimeError("XIAOMI_PLAN_API_KEY missing or not tp-prefixed")
+    base = os.environ.get("XIAOMI_PLAN_BASE_URL",
+                          "https://token-plan-sgp.xiaomimimo.com/v1")
+    # mimo-v2.5-pro does heavy internal reasoning; verified 2026-05-28 with 200
+    # token budget → 199 reasoning_tokens, 0 visible content. Need >=1000 budget
+    # AND a directive prompt to surface the JSON.
+    body = json.dumps({
+        "model": model_id,
+        "messages": [{"role": "user", "content": prompt +
+                      "\n\nThink briefly, then output ONLY the final JSON object on the last line."}],
+        "max_tokens": 1200,
+        "temperature": 0,
+    }).encode()
+    req = urllib.request.Request(
+        f"{base}/chat/completions",
+        data=body,
+        headers={"Content-Type": "application/json",
+                 "Authorization": f"Bearer {key}"},
+    )
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        d = json.loads(resp.read())
+    return d["choices"][0]["message"]["content"]
+
+
 def judge_local(prompt, model_id="Qwen3.6-35B-A3B-4bit-DWQ"):
     """Local oMLX-served Qwen3.6-35B-A3B-4bit-DWQ at :11434.
 
@@ -119,6 +165,7 @@ def judge_local(prompt, model_id="Qwen3.6-35B-A3B-4bit-DWQ"):
 JUDGES = [
     ("gpt5", judge_gpt5),
     ("claude", judge_claude),
+    ("mimo", judge_mimo),
     ("local_qwen27b", judge_local),
 ]
 
@@ -180,7 +227,8 @@ def main():
     ap.add_argument("--corpus", required=True, help="path to cas_corpus/*.json")
     ap.add_argument("--culture", required=True, choices=list(CULTURE_LABELS.keys()))
     ap.add_argument("--out", required=True)
-    ap.add_argument("--skip-judge", choices=["gpt5", "claude", "local_qwen27b"],
+    ap.add_argument("--skip-judge",
+                    choices=["gpt5", "claude", "mimo", "local_qwen27b"],
                     action="append", default=[], help="skip a judge (can repeat)")
     ap.add_argument("--limit", type=int, default=None, help="limit number of prompts (test)")
     args = ap.parse_args()
