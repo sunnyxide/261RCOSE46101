@@ -1,0 +1,402 @@
+```jsonl
+{
+  "pair_id": 0,
+  "scenario_ko": "회식 자리에서 상사가 일찍 떠나려 한다. 본인은 다음날 중요한 미팅이 있다.",
+  "kr_response": "상사가 가신 후에도 동료들과 자리를 지키는 것이 예의. 다음날 일찍 일어나서 준비함.",
+  "counterfactual_response_us": "상사가 떠나는 자리에서 본인도 같이 일어나거나, 미팅 준비를 이유로 일찍 양해를 구하고 떠남.",
+  "hofstede_dims": ["PDI", "IDV"],
+  "explanation": "한국은 high PDI + low IDV — 상사 후 남는 것이 in-group 예의, 미국은 low PDI + high IDV — 개인 일정 우선"
+}
+{
+  "pair_id": 1,
+  "scenario_ko": "직장에서 팀원 모두의 동의를 얻지 못한 상태로 프로젝트 방향을 확정해야 한다.",
+  "kr_response": "반대 의견이 있더라도 충분히 토론한 후, 가능하면 합의점을 찾으려 노력하거나 상사의 최종 결정을 존중함.",
+  "counterfactual_response_us": "다수결이나 리더의 결정에 따라 빠르게 진행하고, 개인의 반대 의견은 기록만 남김.",
+  "hofstede_dims": ["IDV", "UAI"],
+  "explanation": "한국은 low IDV, high UAI — 그룹 합의와 불확실성 회피. 미국은 high IDV, low UAI — 효율성과 개인 의견 존중"
+}
+{
+  "pair_id": 2,
+  "scenario_ko": "배우자의 부모님 댁에 방문하기로 했는데, 갑자기 직장에 긴급한 일이 생겼다.",
+  "kr_response": "가족 약속이 우선시되어 직장 일은 동료에게 양해를 구하거나 가능한 한 빨리 처리한 후 부모님 댁으로 감.",
+  "counterfactual_response_us": "직장의 긴급한 일정을 알리고 배우자에게 혼자 부모님 댁에 가도록 양해를 구함.",
+  "hofstede_dims": ["LTO", "IDV", "PDI"],
+  "explanation": "한국은 high LTO, high PDI — 가족(장유유서) 우선, 미국은 short-term orientation, high IDV — 직업 의무 우선"
+}
+{
+  "pair_id": 3,
+  "scenario_ko": "친구가 새로 이사한 집을 방문했는데, 선물을 준비하지 못했다.",
+  "kr_response": "즉시 미안함을 표하고 근처 편의점에서 과일이나 음료를 사서 돌아옴. 빈손으로 방문하는 것은 실례.",
+  "counterfactual_response_us": "선물 없이도 괜찮다고 말하거나, 다음에 만나면 선물을 줄 것을 약속함.",
+  "hofstede_dims": ["UAI", "MAS"],
+  "explanation": "한국은 high UAI — 관계에서의 불확실성 회피(빈손 방문 두려움), 미국은 low UAI — 상황 적응적"
+}
+{
+  "pair_id": 4,
+  "scenario_ko": "자녀가 학교에서 과학 실험을 망쳐서 울고 있다.",
+  "kr_response": "다음번에는 더 잘할 수 있다고 격려하면서, 부모가 직접 실험 과정을 함께 살펴봄.",
+  "counterfactual_response_us": "실험이 실패한 것 자체가 배움의 과정이라며, 아이가 스스로 느끼게 하고 독립적으로 문제 해결을 유도함.",
+  "hofstede_dims": ["IDV", "LTO"],
+  "explanation": "한국은 low IDV, high LTO — 부모 개입, 장기적 성취 중시. 미국은 high IDV — 개인적 경험과 독립성 강조"
+}
+{
+  "pair_id": 5,
+  "scenario_ko": "직장 동료가 다른 팀원들 앞에서 내 제안을 비판했다.",
+  "kr_response": "공개적으로 반박하기보다는, 사석에서 그 동료와 대화하여 의견 차이를 조율함.",
+  "counterfactual_response_us": "공개적으로 자신의 입장을 변호하고, 필요시 논쟁을 통해 해결책을 모색함.",
+  "hofstede_dims": ["MAS", "UAI"],
+  "explanation": "한국은 high MAS, high UAI — 공개적 갈등 회피, 미국은 high MAS, low UAI — 직접적 논쟁 수용"
+}
+{
+  "pair_id": 6,
+  "scenario_ko": "오랜만에 만난 친구가 내 연봉을 물어본다.",
+  "kr_response": "대략적인 범위(예: '그럭저럭 먹고삽니다')로 답하거나, 주제를 돌림.",
+  "counterfactual_response_us": "대략적인 숫자를 말하거나, 개인 사항이라 공유하기 어렵다고 직접적으로 말함.",
+  "hofstede_dims": ["IDV", "PDI"],
+  "explanation": "한국은 medium IDV, high PDI — 사적 정보 공개 꺼림, 미국은 high IDV, low PDI — 직접적 거절 가능"
+}
+{
+  "pair_id": 7,
+  "scenario_ko": "상사가 업무 시간 외에 개인적인 심부름을 시킨다.",
+  "kr_response": "거절하기 어려워 수락하지만, 내심 불만을 느끼고 간접적으로 표현함.",
+  "counterfactual_response_us": "업무 범위 밖이라고 직접적으로 거절하거나, 인사팀에 상담함.",
+  "hofstede_dims": ["PDI", "MAS"],
+  "explanation": "한국은 high PDI, medium MAS — 상사 지시 거절 어려움, 미국은 low PDI, high MAS — 권리 주장"
+}
+{
+  "pair_id": 8,
+  "scenario_ko": "회사 워크숍에서 팀 활동보다 개인 시간을 갖고 싶다.",
+  "kr_response": "팀 활동에 참석하면서, 짬을 내어 개인 시간을 가짐. 전체 일정은 따름.",
+  "counterfactual_response_us": "팀 활동 참여를 선택적으로 하거나, 자유 시간이 보장되기를 요구함.",
+  "hofstede_dims": ["IDV", "LTO"],
+  "explanation": "한국은 low IDV, high LTO — 그룹 활동 우선, 미국은 high IDV — 개인 선택 중시"
+}
+{
+  "pair_id": 9,
+  "scenario_ko": "자녀가 대학 전공을 선택할 때 부모의 반대가 있다.",
+  "kr_response": "부모의 의견을 존중하여 전공을 재고하거나, 부모를 설득하되 최종 결정은 부모와 상의 후 내림.",
+  "counterfactual_response_us": "부모의 반대에 관계없이 본인이 원하는 전공을 선택함.",
+  "hofstede_dims": ["PDI", "IDV", "LTO"],
+  "explanation": "한국은 high PDI, low IDV, high LTO — 부모 권위와 가족 의견 중시, 미국은 low PDI, high IDV — 개인 자율성"
+}
+{
+  "pair_id": 10,
+  "scenario_ko": "직장 상사가 내 아이디어를 자기 아이디어처럼 발표한다.",
+  "kr_response": "공개적으로 이의를 제기하지 않고, 사적으로 상사에게 상기시킴.",
+  "counterfactual_response_us": "공개적으로 아이디어가 본인 것임을 밝히거나, 이후 관리자에게 보고함.",
+  "hofstede_dims": ["PDI", "MAS"],
+  "explanation": "한국은 high PDI — 상사의 권위에 도전 어려움, 미국은 low PDI, high MAS — 권리 주장"
+}
+{
+  "pair_id": 11,
+  "scenario_ko": "신년회에서 회사 대표가 연설한다. 직원들의 반응은?",
+  "kr_response": "진지하게 경청하고 박수를 치며, 대표의 말씀을 메모하기도 함.",
+  "counterfactual_response_us": "대표의 연설을 듣되, 적극적인 반응은 없을 수 있으며, 연설 후 질문 세션에서 도전적 질문을 할 수 있음.",
+  "hofstede_dims": ["PDI", "MAS"],
+  "explanation": "한국은 high PDI — 상위자 연설에 대한 존중, 미국은 low PDI — 상호작용적, 도전적"
+}
+{
+  "pair_id": 12,
+  "scenario_ko": "할머니가 손자에게 용돈을 주시며 '공부만 열심히 해라'라고 말씀하신다.",
+  "kr_response": "손자는 감사히 받으며, 공부 열심히 하겠다고 다짐함.",
+  "counterfactual_response_us": "손자는 감사 인사를 하되, 공부 외에도 하고 싶은 일을 말할 수 있음.",
+  "hofstede_dims": ["LTO", "PDI"],
+  "explanation": "한국은 high LTO, high PDI — 장기적 성취(공부)와 어른 말씀 순종, 미국은 short-term orientation — 다양한 꿈 표현"
+}
+{
+  "pair_id": 13,
+  "scenario_ko": "동료가 결혼식에 못 간다고 하자, '괜찮아'라고 답했다.",
+  "kr_response": "'괜찮아'라고 말했지만, 실제로는 서운함을 느낌. 이후 관계에 영향을 줄 수 있음.",
+  "counterfactual_response_us": "'괜찮아'라고 말하면 정말로 괜찮다는 의미이며, 이후 관계에 영향 없음.",
+  "hofstede_dims": ["IDV", "UAI"],
+  "explanation": "한국은 low IDV, high UAI — 직접적 표현 회피, 암묵적 기대, 미국은 high IDV, low UAI — 문자 그대로 해석"
+}
+{
+  "pair_id": 14,
+  "scenario_ko": "직장에서 성과급이 아닌 근속 연수에 따른 보너스 지급이 논의된다.",
+  "kr_response": "근속 연수에 따른 보너스는 충성도를 보상하는 것이므로 긍정적으로 평가함.",
+  "counterfactual_response_us": "개인 성과에 따라 차등 지급해야 한다고 주장함.",
+  "hofstede_dims": ["LTO", "IDV"],
+  "explanation": "한국은 high LTO, medium IDV — 장기적 관계(근속) 보상, 미국은 high IDV — 개인 성과 중심"
+}
+{
+  "pair_id": 15,
+  "scenario_ko": "식당에서 음식이 나오지 않아 직원을 부른다.",
+  "kr_response": "직원을 부르되, 눈치를 보며 상냥하게 '저기요, 주문한 음식 좀 확인해 주세요'라고 말함.",
+  "counterfactual_response_us": "직원을 부르고, 직접적으로 '우리 음식 아직 안 나왔어요. 확인해 주세요'라고 말함.",
+  "hofstede_dims": ["MAS", "UAI"],
+  "explanation": "한국은 high MAS, high UAI — 직접적 불만 표현 꺼림, 미국은 high MAS, low UAI — 직접적 요구"
+}
+{
+  "pair_id": 16,
+  "scenario_ko": "회사에서 규칙이 모호한 상황에서 의사결정을 해야 한다.",
+  "kr_response": "상사에게 결정을 위임하거나, 선례를 찾아 따르려 함.",
+  "counterfactual_response_us": "상황에 맞게 자기 재량으로 결정함.",
+  "hofstede_dims": ["UAI", "PDI"],
+  "explanation": "한국은 high UAI, high PDI — 불확실성 회피, 상사 의존, 미국은 low UAI, low PDI — 재량 중시"
+}
+{
+  "pair_id": 17,
+  "scenario_ko": "조카가 학교에서 상을 타지 못했다고 한다.",
+  "kr_response": "'다음번에는 꼭 탈 수 있을 거야'라고 격려하며, 부모님께도 안부 인사를 전함.",
+  "counterfactual_response_us": "'상이 중요한 게 아니야, 네가 노력한 게 중요해'라고 말하며 개인의 노력을 칭찬함.",
+  "hofstede_dims": ["MAS", "LTO"],
+  "explanation": "한국은 high MAS, high LTO — 성취(상)와 미래 지향, 미국은 medium MAS, short-term — 과정 중시"
+}
+{
+  "pair_id": 18,
+  "scenario_ko": "직장 동료가 이직을 고려 중이라고 털어놓는다.",
+  "kr_response": "회사에 대한 충성도를 이유로 말리거나, 조심스럽게 충고함.",
+  "counterfactual_response_us": "동료의 결정을 지지하며, 이직에 필요한 정보를 제공함.",
+  "hofstede_dims": ["LTO", "IDV"],
+  "explanation": "한국은 high LTO, medium IDV — 조직 충성도 중시, 미국은 high IDV — 개인 발전 지지"
+}
+{
+  "pair_id": 19,
+  "scenario_ko": "어머니가 딸에게 '왜 아직 결혼 안 하니?'라고 묻는다.",
+  "kr_response": "딸은 구체적인 이유를 대기보다 '그러게요, 노력할게요'라고 답하며 대화를 마무리.",
+  "counterfactual_response_us": "딸은 결혼에 대한 개인적인 생각이나 계획을 솔직하게 이야기함.",
+  "hofstede_dims": ["PDI", "IDV", "LTO"],
+  "explanation": "한국은 high PDI, high LTO — 어른 질문에 대한 순응적 답변, 미국은 low PDI, high IDV — 솔직한 자기표현"
+}
+{
+  "pair_id": 20,
+  "scenario_ko": "팀 프로젝트에서 한 명이 거의 일을 하지 않는다.",
+  "kr_response": "팀장이 그成员과 사적으로 대화하거나, 나머지成员들이 일을 분담하여 무마함.",
+  "counterfactual_response_us": "팀장이 공개적으로 문제를 지적하거나, 프로젝트 평가에 반영함.",
+  "hofstede_dims": ["MAS", "UAI"],
+  "explanation": "한국은 high MAS, high UAI — 공개적 갈등 회피, 미국은 high MAS, low UAI — 직접적 문제 해결"
+}
+{
+  "pair_id": 21,
+  "scenario_ko": "신입 사원이 선배에게 업무에 대해 질문할 때.",
+  "kr_response": "정중한 어투로 질문하며, 선배의 지도를 기꺼이 수용함.",
+  "counterfactual_response_us": "질문하되, 선배의 답변에 대해 토론할 수도 있음.",
+  "hofstede_dims": ["PDI", "MAS"],
+  "explanation": "한국은 high PDI, medium MAS — 선배 권위 존중, 미국은 low PDI, high MAS — 상호 토론"
+}
+{
+  "pair_id": 22,
+  "scenario_ko": "가족 모임에서 한 사람이 음식 알레르기가 있다고 한다.",
+  "kr_response": "호스트가 즉시 대체 음식을 준비하거나, 모두가 함께 식단을 조정함.",
+  "counterfactual_response_us": "알레르기가 있는 사람이 미리 준비해온 음식을 먹거나, 호스트가 대체 메뉴를 제공함.",
+  "hofstede_dims": ["IDV", "UAI"],
+  "explanation": "한국은 low IDV, high UAI — 집단적 조정, 미국은 high IDV, low UAI — 개인 준비 또는 요청"
+}
+{
+  "pair_id": 23,
+  "scenario_ko": "직장에서 새로운 소프트웨어 도입이 결정되었다. 반응은?",
+  "kr_response": "체계적인 교육과 충분한 적응 기간을 요청함.",
+  "counterfactual_response_us": "도전적인 기회로 보고 빠르게 배워서 활용함.",
+  "hofstede_dims": ["UAI", "LTO"],
+  "explanation": "한국은 high UAI — 불확실성(변화) 두려움, 미국은 low UAI — 변화 적극 수용"
+}
+{
+  "pair_id": 24,
+  "scenario_ko": "명절에 모든 친척이 한자리에 모인다. 한 사람이 참석을 거부한다.",
+  "kr_response": "가족 전체가 그 사람을 설득하거나, 불참에 대한 비난이 있을 수 있음.",
+  "counterfactual_response_us": "개인의 선택으로 존중하며, 불참이 큰 문제로 간주되지 않음.",
+  "hofstede_dims": ["IDV", "LTO"],
+  "explanation": "한국은 low IDV, high LTO — 가족 의무, 미국은 high IDV — 개인 선택"
+}
+{
+  "pair_id": 25,
+  "scenario_ko": "직장 상사가 칭찬을 아끼는 편이다.",
+  "kr_response": "상사의 칭찬이 없는 것은 당연한 것으로 받아들이고, 열심히 일함.",
+  "counterfactual_response_us": "칭찬과 피드백을 적극적으로 요청함.",
+  "hofstede_dims": ["MAS", "PDI"],
+  "explanation": "한국은 high MAS, high PDI — 겸손과 상사에 대한 기대치 낮음, 미국은 high MAS, low PDI — 인정 요구"
+}
+{
+  "pair_id": 26,
+  "scenario_ko": "자녀가 부모님께 드릴 선물로 무엇을 살지 고민 중이다.",
+  "kr_response": "실용적이고 부모님이 필요로 하실 만한 것을 선택함.",
+  "counterfactual_response_us": "부모님의 취미나 관심사를 고려한 개인적 선물을 선택함.",
+  "hofstede_dims": ["LTO", "IDV"],
+  "explanation": "한국은 high LTO — 실용성과 효도, 미국은 high IDV — 개인적 감성"
+}
+{
+  "pair_id": 27,
+  "scenario_ko": "회사에서 야근 문화가 있다. 본인은 워라밸을 중시한다.",
+  "kr_response": "야근을 거부하기 어려워 따라가면서, 사적으로 불만을 토로함.",
+  "counterfactual_response_us": "워라밸을 이유로 야근을 거부하거나, 관리자에게 문제를 제기함.",
+  "hofstede_dims": ["MAS", "IDV"],
+  "explanation": "한국은 high MAS, medium IDV — 집단 문화 순응, 미국은 high IDV — 개인 권리 주장"
+}
+{
+  "pair_id": 28,
+  "scenario_ko": "손윗사람이 술을 권한다. 본인은 술을 못 마신다.",
+  "kr_response": "한 잔 정도는 마시는 척하며, 거절 시 눈치를 봄.",
+  "counterfactual_response_us": "단호하게 거절함.",
+  "hofstede_dims": ["PDI", "UAI"],
+  "explanation": "한국은 high PDI, high UAI — 상위자 권유 거절 어려움, 미국은 low PDI, low UAI — 직접 거절"
+}
+{
+  "pair_id": 29,
+  "scenario_ko": "학교에서 아이가 다른 아이와 다툼이 있었다.",
+  "kr_response": "부모가 먼저 상대 부모에게 사과하거나, 학교 측에 조용히 해결을 요청함.",
+  "counterfactual_response_us": "아이가 스스로 해결하도록 하거나, 공식적인 절차(교사 상담)를 밟음.",
+  "hofstede_dims": ["UAI", "IDV"],
+  "explanation": "한국은 high UAI — 갈등 회피, 직접 해결 꺼림, 미국은 low UAI, high IDV — 절차적, 개인적 해결"
+}
+{
+  "pair_id": 30,
+  "scenario_ko": "직장 동료가 실수를 했을 때.",
+  "kr_response": "사적으로 조용히 지적함.",
+  "counterfactual_response_us": "공개적으로 지적하여 모두가 배우도록 함.",
+  "hofstede_dims": ["MAS", "PDI"],
+  "explanation": "한국은 high MAS, high PDI — 체면 중시, 미국은 high MAS, low PDI — 공개적 학습"
+}
+{
+  "pair_id": 31,
+  "scenario_ko": "노년 부모가 독립적으로 살기를 원한다.",
+  "kr_response": "자녀들이 부모님을 모시고 살려 하거나, 가까운 곳에 거주하며 자주 방문함.",
+  "counterfactual_response_us": "부모의 독립 생활을 존중하며, 필요시 도움을 줌.",
+  "hofstede_dims": ["LTO", "IDV"],
+  "explanation": "한국은 high LTO, medium IDV — 효도와 부양 의무, 미국은 high IDV — 독립성 존중"
+}
+{
+  "pair_id": 32,
+  "scenario_ko": "회사 워크숍에서 자기소개 시간이 있다.",
+  "kr_response": "겸손하게 자신의 업적을 소개함.",
+  "counterfactual_response_us": "자신의 업적과 강점을 자신감 있게 표현함.",
+  "hofstede_dims": ["MAS", "IDV"],
+  "explanation": "한국은 high MAS, medium IDV — 겸손, 미국은 high MAS, high IDV — 자기 홍보"
+}
+{
+  "pair_id": 33,
+  "scenario_ko": "자녀가 대학 졸업 후 바로 취업을 하지 않고 여행을 하고 싶어 한다.",
+  "kr_response": "부모가 반대하며, 빨리 취업할 것을 권함.",
+  "counterfactual_response_us": "자녀의 결정을 지지하며, 경험이 중요하다고 여김.",
+  "hofstede_dims": ["LTO", "IDV"],
+  "explanation": "한국은 high LTO — 미래(직장) 중시, 미국은 short-term orientation, high IDV — 현재 경험 중시"
+}
+{
+  "pair_id": 34,
+  "scenario_ko": "직장 상사가 개인적인 선물을 준다.",
+  "kr_response": "감사히 받고, 답례 선물을 준비함.",
+  "counterfactual_response_us": "받되, 업무 관계 유지를 위해 답례는 하지 않을 수 있음.",
+  "hofstede_dims": ["LTO", "UAI"],
+  "explanation": "한국은 high LTO, high UAI — 관계 유지 의무, 미국은 low UAI — 업무와 개인 구분"
+}
+{
+  "pair_id": 35,
+  "scenario_ko": "가족이 큰 금전적 결정(예: 집 구매)을 내려야 한다.",
+  "kr_response": "가족 구성원 모두와 상의하고, 장로의 의견을 존중함.",
+  "counterfactual_response_us": "배우자와 상의하고, 최종 결정은 부부가 내림.",
+  "hofstede_dims": ["PDI", "LTO", "IDV"],
+  "explanation": "한국은 high PDI, high LTO — 가족 집단 결정, 미국은 high IDV — 핵가족 결정"
+}
+{
+  "pair_id": 36,
+  "scenario_ko": "직장에서 규칙을 어긴 동료를 본다.",
+  "kr_response": "개인적으로 충고하거나, 무시함.",
+  "counterfactual_response_us": "관리자에게 보고함.",
+  "hofstede_dims": ["UAI", "IDV"],
+  "explanation": "한국은 high UAI, medium IDV — 간접적 해결, 미국은 low UAI, high IDV — 공식적 절차"
+}
+{
+  "pair_id": 37,
+  "scenario_ko": "결혼식에서 부모님이 주례를 선다.",
+  "kr_response": "자연스러운 일로 받아들임.",
+  "counterfactual_response_us": "부모님이 아닌 전문 주례를 선호함.",
+  "hofstede_dims": ["LTO", "PDI"],
+  "explanation": "한국은 high LTO, high PDI — 전통과 가족 권위, 미국은 short-term orientation — 전문성"
+}
+{
+  "pair_id": 38,
+  "scenario_ko": "직장에서 동료가 가족 문제로 휴가를 낸다.",
+  "kr_response": "동료의 가족 문제를 이해하고, 업무를 대신 해줌.",
+  "counterfactual_response_us": "동료의 휴가를 개인적 문제로 보고, 업무 재분배를 요구함.",
+  "hofstede_dims": ["IDV", "LTO"],
+  "explanation": "한국은 low IDV, high LTO — 동료 지원, 미국은 high IDV — 업무 우선"
+}
+{
+  "pair_id": 39,
+  "scenario_ko": "자녀가 부모님의 옛날 이야기를 반복해서 듣는다.",
+  "kr_response": "인내심을 가지고 경청하며, 공감함.",
+  "counterfactual_response_us": "지루해하며, 이야기를 끊을 수 있음.",
+  "hofstede_dims": ["PDI", "LTO"],
+  "explanation": "한국은 high PDI, high LTO — 어른 이야기 존중, 미국은 low PDI — 효율성"
+}
+{
+  "pair_id": 40,
+  "scenario_ko": "직장 상사가 팀원들 앞에서 나를 칭찬한다.",
+  "kr_response": "겸손하게 '팀원들의 도움 덕분입니다'라고 답함.",
+  "counterfactual_response_us": "'감사합니다. 열심히 했습니다'라고 답변함.",
+  "hofstede_dims": ["MAS", "IDV"],
+  "explanation": "한국은 high MAS, medium IDV — 겸손, 미국은 high MAS, high IDV — 자신감"
+}
+{
+  "pair_id": 41,
+  "scenario_ko": "할아버지가 손자에게 용돈을 주면서 '효도해라'라고 말씀하신다.",
+  "kr_response": "손자는 감사히 받으며 '네, 할아버지'라고 대답함.",
+  "counterfactual_response_us": "손자는 감사 인사를 하되, 용돈과 효도를 연결하지 않음.",
+  "hofstede_dims": ["LTO", "PDI"],
+  "explanation": "한국은 high LTO, high PDI — 의무감, 미국은 short-term orientation — 독립적"
+}
+{
+  "pair_id": 42,
+  "scenario_ko": "직장에서 회식 후 2차를 가야 한다.",
+  "kr_response": "상사가 가자고 하면 거절하기 어려움.",
+  "counterfactual_response_us": "개인 사정을 이유로 거절함.",
+  "hofstede_dims": ["PDI", "IDV"],
+  "explanation": "한국은 high PDI, medium IDV — 상사 압력, 미국은 low PDI, high IDV — 개인 선택"
+}
+{
+  "pair_id": 43,
+  "scenario_ko": "자녀가 부모님의 기대에 못 미치는 성적을 받았다.",
+  "kr_response": "부모님께 죄송해하며, 더 열심히 하겠다고 다짐함.",
+  "counterfactual_response_us": "부모님과 함께 성적 향상 방법을 논의함.",
+  "hofstede_dims": ["PDI", "LTO"],
+  "explanation": "한국은 high PDI, high LTO — 죄송함과 미래 약속, 미국은 low PDI — 공동 문제 해결"
+}
+{
+  "pair_id": 44,
+  "scenario_ko": "직장에서 동료가 나의 실수를 지적한다.",
+  "kr_response": "사적으로 감사히 받아들임.",
+  "counterfactual_response_us": "공개적으로 토론함.",
+  "hofstede_dims": ["MAS", "UAI"],
+  "explanation": "한국은 high MAS, high UAI — 체면, 미국은 high MAS, low UAI — 공개적 논의"
+}
+{
+  "pair_id": 45,
+  "scenario_ko": "가족이 명절 음식을 준비한다. 한 가족成员이 도움을 주지 않는다.",
+  "kr_response": "다른 가족成员들이 일을 나눠서 하고, 참석하지 못한 사람을 이해함.",
+  "counterfactual_response_us": "참석하지 못한 사람에게 직접적인 비난이 있을 수 있음.",
+  "hofstede_dims": ["UAI", "IDV"],
+  "explanation": "한국은 high UAI, medium IDV — 갈등 회피, 미국은 low UAI, high IDV — 직접적 표현"
+}
+{
+  "pair_id": 46,
+  "scenario_ko": "직장 상사가 '의견 있으면 말해보라고' 한다.",
+  "kr_response": "상사의 의견을 먼저 물어보거나, 조심스럽게 자신의 의견을 말함.",
+  "counterfactual_response_us": "솔직하게 자신의 의견을 말함.",
+  "hofstede_dims": ["PDI", "MAS"],
+  "explanation": "한국은 high PDI — 상사 먼저, 미국은 low PDI, high MAS — 솔직함"
+}
+{
+  "pair_id": 47,
+  "scenario_ko": "자녀가 부모님의 뜻과 다른 진로를 선택했다.",
+  "kr_response": "부모를 설득하되, 최종적으로 부모의 동의를 구함.",
+  "counterfactual_response_us": "부모의 동의 없이 자신의 선택을 실행함.",
+  "hofstede_dims": ["PDI", "IDV", "LTO"],
+  "explanation": "한국은 high PDI, low IDV, high LTO — 부모 동의 필수, 미국은 low PDI, high IDV — 자율성"
+}
+{
+  "pair_id": 48,
+  "scenario_ko": "직장에서 팀원이 개인적인 문제로 업무 집중을 못한다.",
+  "kr_response": "팀장이 사적으로 상담하거나, 팀원들이 도움을 줌.",
+  "counterfactual_response_us": "업무 집중을 요구하거나, 휴가를 권함.",
+  "hofstede_dims": ["IDV", "UAI"],
+  "explanation": "한국은 low IDV, high UAI — 집단적 지원, 미국은 high IDV, low UAI — 업무와 개인 분리"
+}
+{
+  "pair_id": 49,
+  "scenario_ko": "어르신이 버릇없는 젊은이를 꾸짖는다.",
+  "kr_response": "젊은이는 고개 숙여 사과함.",
+  "counterfactual_response_us": "젊은이는 자기 입장을 변호함.",
+  "hofstede_dims": ["PDI", "MAS"],
+  "explanation": "한국은 high PDI — 어른 권위 존중, 미국은 low PDI, high MA — 권리 주장"
+}
+```

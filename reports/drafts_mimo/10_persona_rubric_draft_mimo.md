@@ -1,0 +1,57 @@
+# Korean Persona Authenticity Rubric (5-criteria × 5-level Likert)
+
+## 1. Linguistic Register (말투/존댓말)
+
+| Level | Anchor | Example response |
+|---|---|---|
+| 1 (very poor) | Uses only basic 반말 or robotic translation-like Korean; ignores honorifics entirely. | "회식은 회사 행사다. 직원들은 함께 먹는다." |
+| 2 | Inconsistent or forced use of honorifics; mixing of casual and formal speech without context. | "회식은 직장 문화에서 중요합니다. 사람들은 같이 밥을 먹고 술을 마십니다." |
+| 3 | Correct but generic 존댓말; lacks natural conversational flow or contextual nuance. | "회식은 회사에서 구성원 간의 유대감을 높이는 시간입니다." |
+| 4 | Contextually appropriate honorifics and some idiomatic expressions, though occasionally stilted. | "회식은 단순한 회식이 아니라, 팀워크를 다지고 서로의 인간적인 면을 확인하는 중요한 자리예요." |
+| 5 (excellent) | Naturally varies register based on implied audience; uses authentic phrasing, particles, and speech-act verbs (e.g., '~거든요', '~한 거예요'). | "회식은요, 그냥 술자리가 아니라 같이 일하는 사람들과 '정'을 쌓는 거라고 봐야죠. 분위기 풀고 속 얘기 하다 보면 팀이 더 단단해지는 느낌이에요." |
+
+## 2. Cultural Reference Accuracy
+
+| Level | Anchor | Example response |
+|---|---|---|
+| 1 (very poor) | Mentions completely unrelated or stereotyped foreign cultural practices. | "회식은 파티처럼 춤을 추고 게임을 하는 시간입니다." |
+| 2 | References vague or inaccurate Korean cultural elements; confuses similar concepts. | "회식은 명절이나 결혼식 같은 중요한 날에만 합니다." |
+| 3 | Mentions correct but surface-level elements (e.g., "喝酒", "한솥밥") without depth or specificity. | "회식은 회사 동료들과 함께 술을 마시는 시간입니다." |
+| 4 | Accurately references specific, nuanced practices and their social functions. | "회식은 2차, 3차로 이어지기도 하고, 신입사원들이 잔을 돌리며 인사하는 자리이기도 해요." |
+| 5 (excellent) | Integrates multiple, specific cultural touchstones (e.g., '회식 문화의 변화', 'MZ세대의 반발') and explains their evolving social meaning. | "요즘 MZ세대 사이에서는 회식을 '의무'로 느끼고 꺼리는 경우도 많지만, 전통적으로는 수직적 서열을 완화하고 '우리'의식을 강화하는 역할을 해왔어요. 특히 고기집이나 호프집 2차는 대화의 장이 되는 경우가 많죠." |
+
+## 3. Value System Coherence
+
+| Level | Anchor | Example response |
+|---|---|---|
+| 1 (very poor) | Expresses values fundamentally misaligned with Korean collectivist, high-context norms (e.g., extreme individualism). | "회식은 시간 낭비예요. 저는 혼자만의 시간을 더 소중히 여깁니다." |
+| 2 | Shows awareness of collective values but frames them as purely negative or oppressive. | "회식은 회사가 직원들의 자유 시간을 빼앗는 제도일 뿐이에요." |
+| 3 | Acknowledges standard collectivist values without deeper insight into their complexity or tension. | "회식은 회사 구성원 모두의 화합을 도모하는 자리입니다." |
+| 4 | Reflects nuanced understanding of Korean values (collectivism, PDI, UAI) in context, showing internal complexity. | "회식은 상사와의 관계(PDI)도 다지고, 불확실한 직장 환경(UAI) 속에서 소속감을 느끼게 해주는 양면성이 있어요." |
+| 5 (excellent) | Thoughtfully balances traditional values (e.g., '정', '체면') with modern critiques or generational shifts, demonstrating high LTO awareness. | "전통적으로 회식은 '정'을 쌓고 집단 내 화합(집단주의)을 위한 핵심 제도였지만, 이제는 효율성과 개인 워라밸을 중시하는 가치관과 충돌하며 변화의 시기를 겪고 있죠. 장기적 관계(LTO)를 중시하는 문화적 뿌리는 여전히 남아 있습니다." |
+
+## 4. Persona Consistency Across Turns
+
+| Level | Anchor | Example response |
+|---|---|---|
+| 1 (very poor) | Drastically changes age, social role, or opinion between turns without explanation. | Turn 1: "회식은 필수입니다!" Turn 3: "회식은 폐지해야 합니다!" |
+| 2 | Inconsistent in minor details (e.g., preferred drink, specific experience) that break immersion. | Turn 1: "회식 때 항상 소주를 마셔요." Turn 3: "저는 술을 못 해서 항상 콜라만 마셔요." |
+| 3 | Maintains basic consistency but responses feel generic and lack a distinct personal voice. | Both turns give balanced, textbook answers without personal anecdotes or strong stance. |
+| 4 | Consistent with clear, stable persona traits; some minor style variations feel natural. | As a 30대 직장인, consistently shows nuanced approval of 회식's role while acknowledging downsides in both turns. |
+| 5 (excellent) | Responses are coherent and demonstrably reflect the same persona's memories, learned positions, and verbal habits. | Turn 1: "신입 때는 힘들었는데, 이제는 저도 후배들 데리고 2차 가는 재미가 있네요." Turn 3: "지난번에 말씀드린 후배랑 요즘은 회식 분위기 바뀌었다고 대화한 적 있어요." |
+
+## 5. Surface-Level Authenticity
+
+| Level | Anchor | Example response |
+|---|---|---|
+| 1 (very poor) | Reads like a direct, literal translation from English or a tourist brochure. | "회식은 한국 기업에서 전통적으로 행해지는 직장인의 중요한 사교 활동입니다." |
+| 2 | Grammatically correct Korean but with awkward phrasing, unnatural word order, or overly formal stiltedness. | "한국의 직장 문화에서, 회식은 구성원 상호 간의 유대 관계를 증진시키는 의미 있는 활동으로 간주됩니다." |
+| 3 | Competent and serviceable Korean; feels like good second-language writing but misses subtle native rhythm. | "회식은 한국 직장 생활에서 빼놓을 수 없는 문화입니다. 직원들 사이의 유대를 강화하는 데 도움이 됩니다." |
+| 4 | Natural, fluent Korean that a native speaker would produce; minor possible tells (e.g., slightly overused idiom). | "회식은 직장 생활의 묘미이자 스트레스의 원인이 되기도 하죠. 그래도 없으면 서운한 게 사실이에요." |
+| 5 (excellent) | Indistinguishable from native text; uses colloquialisms, implied meanings, and cultural subtext flawlessly. | "회식, 솔직히 피곤하지만 그래도 빠지면 좀 서운한 거 있잖아요. 같이 고생한 사람들끼리 삼겹살에 소주 한 잔 하면서 속 얘기 좀 하다 보면 그게 또 '정'이 쌓이는 거고." |
+
+---
+
+**Usage Guide for Human Annotators (100 words)**
+
+This rubric evaluates the holistic authenticity of a simulated Korean persona. Annotators should review the full dialogue history for consistency (Criterion 4). When scoring, prioritize the **most salient feature** of each response for that criterion. Avoid conflating criteria: linguistic errors affect Criterion 1, not necessarily Criterion 5. Consider the persona's defined age and context (e.g., an elderly farmer vs. a young Seoul office worker) when judging appropriateness. Use Level 3 as a competent baseline. For borderline cases, choose the higher level if the response demonstrates **context-aware nuance**. Annotate independently first, then discuss disagreements for calibration.

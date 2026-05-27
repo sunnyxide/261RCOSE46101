@@ -1,0 +1,319 @@
+```markdown
+# COSE461 Team 8 토큰해적단 — Cultural-QLoRA 발표 슬라이드 outline
+
+## Slide 1 — Title + Team
+**Title (KR/EN)**: Cultural-QLoRA: Hofstede-Conditioned Persona Generation for Korean LLMs
+
+**Bullets**:
+- 팀명: 토큰해적단 (Team 8) — COSE461 자연어처리 (Korea University, 2025 Spring)
+- 주선우 (2023320312, ELONFLAME) — 모델 학습 및 평가 파이프라인 설계
+- 김민수 (2022320337) — 데이터 구축 및 Hofstede 차원 분석
+- 프로젝트 핵심 질문: "LLM이 문화적으로 편향되어 있다면, Hofstede 6D로 조건화하면 해결할 수 있을까?"
+
+**Visual**: 타이틀 슬라이드 중앙에 프로젝트 로고/아이콘, 하단에 팀원 이름과 GitHub 태그
+
+**Speaker notes**: 안녕하세요, 토큰해적단입니다. 오늘 발표할 주제는 문화적으로 조건화된 LoRA 어댑터를 통해 LLM의 문화적 편향을 완화하는 방법론입니다.
+
+---
+
+## Slide 2 — Problem Motivation: LLM의 문화적 편향
+**Title (KR/EN)**: 문제 정의 — "Why is my LLM so American?"
+
+**Bullets**:
+- 오픈소스 LLM(Qwen, LLaMA 등)의 학습 데이터는 영어권/Anglo 중심 — Hofstede 차원에서 WEIRD 문화로 편향
+- 예시 1: Vanilla Qwen2.5-3B에게 "추석에 뭐 해?" 물으면 추수감사절(Thanksgiving) 스타일 답변 생성
+- 예시 2: 한국인이 "직장 상사가 반말하면?" 질문에 대해 LLM은 영어권 직장 문화 기반으로 답변
+- 한국어 발화 데이터의 부재가 단순 언어 문제가 아닌 **문화적 프래그마틱스(Pragmatics) 왜곡**을 초래
+- 연구 동기: 한국 LLM 생태계에서 문화 정렬(Cultural Alignment)은 아직 미개척 영역
+
+**Visual**: 좌우 비교 스크린샷 — Vanilla Qwen 응답 vs 한국 native 응답을 같은 질문에 대해 병렬 배치, 빨간색 하이라이트로 문화적 불일치 표시
+
+**Speaker notes**: 기존 LLM이 한국어로 답변할 때 언어는 맞지만 문화적으로 부자연스러운 경우가 많습니다. 이것이 이번 연구의 출발점입니다.
+
+---
+
+## Slide 3 — Research Questions
+**Title (KR/EN)**: 연구 질문 (Research Questions)
+
+**Bullets**:
+- RQ1: Hofstede 6D를 LoRA 조건화(conditioning) 변수로 사용하면, LLM의 응답 분포를 표적 문화로 이동(shift)시킬 수 있는가?
+- RQ2: 어떤 Hofstede 차원(dimensions)이 문화적 응답 생성에 가장 큰 영향을 미치는가? (Dimension Ablation)
+- RQ3: 단일 어댑터로 다중 문화(multi-culture)를 표현하는 통합 모델의 가능성은? (Unified Adapter)
+
+**Visual**: 3개의 RQ를 아이콘+텍스트 박스로 세로 배열, 각 RQ 옵션에 해당하는 실험 섹션 번호 매핑 (→ Section 4.2, 4.5, 4.6)
+
+**Speaker notes**: 본 연구는 세 가지 하위 질문을 중심으로 실험을 설계했고, 각각 Section 4의 다른 소节에서 검증합니다.
+
+---
+
+## Slide 4 — Related Work
+**Title (KR/EN)**: 관련 연구 (Related Work)
+
+**Bullets**:
+- **Hofstede 6D Model** (Hofstede, 2001): PDI, IDV, MAS, UAI, LTO, IVR — 국가별 문화 수치화의 표준 프레임워크
+- **CultureBank** (Shi et al., 2024): Reddit/YouTube 등 소셜 미디어에서 추출한 문화적 지식 데이터셋
+- **BLEnD** (Choi et al., 2024): 13개국 문화 일상 지식 벤치마크 — 크로스컬처럴 평가에 활용
+- **MiroFish (62K⭐)**: 대규모 한국어 RLHF 모델 — 문화적 정렬을 대량 데이터로 해결하려는 접근
+- 차별점: 우리는 **Hofstede 차원을 명시적 조건 변수로 주입**하여 소규모 모델(3B/7B)에서도 문화 이동을 유도
+
+**Visual**: 2×3 그리드 카드 레이아웃 — 각 관련 연구의 핵심 키워드+논문 아이콘, 마지막 카드는 "Our Approach"로 강조
+
+**Speaker notes**: 기존 연구들은 데이터 양으로 문화를 암묵적으로 학습시키지만, 우리는 Hofstede 차원을 명시적 조건으로 설계한 점이 다릅니다.
+
+---
+
+## Slide 5 — Approach Overview
+**Title (KR/EN)**: 방법론 개요 (System Architecture)
+
+**Bullets**:
+- Base Model: Qwen2.5-3B / 7B — 다국어 성능과 효율의 균형
+- 핵심 아이디어: Hofstede 6D 수치를 **soft prompt 또는 conditioner vector**로 LoRA 학습에 주입
+- 문화별 어댑터 4종 생성: KR 🇰🇷, JP 🇯🇵, US 🇺🇸, CN 🇨🇳
+- 추론 시스위칭: 호스트 문화에 따라 adapter를 hot-swap하여 응답 분포 전환
+- 추가: Multi-culture Unified Adapter (Run-M) — 하나의 LoRA로 4문화 동시 표현
+
+**Visual**: 파이프라인 다이어그램 — [Hofstede 6D Vector] → [Conditioner] → [QLoRA on Qwen Base] → [Culture-Specific Adapter] → [Inference with Culture Switch], 각 단계 화살표로 연결
+
+**Speaker notes**: 전체 파이프라인을 한 장의 그림으로 보시면, Hofstede 수치가 입력 조건으로 들어가서 문화별 LoRA 어댑터가 출력되는 구조입니다.
+
+---
+
+## Slide 6 — Cultural Training Data Construction
+**Title (KR/EN)**: 문화 학습 데이터 구축 (Data Pipeline)
+
+**Bullets**:
+- Source 1: **CultureBank** — Reddit/YouTube 기반 국가별 문화 지식 (영어 위주)
+- Source 2: **Nemotron-Personas** — NVIDIA 합성 데이터를 한국/일본/중국 맥락으로 확장
+- Source 3: **Hofstede-conditioned synthetic QA** — GPT-4o를 활용해 각 Hofstede 차원 값에 따른 합성 대화 생성
+- 데이터 전처리: 문화 태깅(culture tag), Hofstede 차원 값 라벨링, 중복 제거, 품질 필터링
+- 최종 학습 데이터 규모: 문화당 약 ~5K instruction pairs
+
+**Visual**: 데이터 구축 플로우차트 — Raw Sources → Filtering → Hofstede Labeling → Instruction Formatting → Final Dataset, 우측에 샘플 데이터 예시 테이블
+
+**Speaker notes**: 데이터 구축 과정에서 Hofstede 값을 명시적으로 라벨링하여, 모델이 차원 값과 문화적 응답 간 상관관계를 학습하도록 했습니다.
+
+---
+
+## Slide 7 — QLoRA Training Setup
+**Title (KR/EN)**: QLoRA 학습 설정 및 하이퍼파라미터 탐색
+
+**Bullets**:
+- QLoRA 설정: 4-bit NF4 양자화 + LoRA rank r=8~32 탐색
+- 학습 에포크: 1~5 epochs — 과적합 방지를 위한 조기 탐색
+- Target modules: q_proj, v_proj, k_proj, o_proj, gate_proj, up_proj, down_proj
+- 조건화 방식: Hofstede 6D vector를 prefix embedding으로 concat
+- 핵심 발견: r=16, epoch=3이 성능-효율 trade-off 최적점
+
+**Visual**: 하이퍼파라미터 탐색 결과 테이블 — (rank × epoch) 조합별 KoBBQ/BLEnD 점수 heatmap, 최적점 강조
+
+**Speaker notes**: LoRA rank와 에포크를 바꿔가며 ablation한 결과, rank 16과 3 에포크가 최적이라는 결론에 도달했습니다.
+
+---
+
+## Slide 8 — Evaluation Framework
+**Title (KR/EN)**: 평가 프레임워크 (Benchmarks & Metrics)
+
+**Bullets**:
+- **KoBBQ**: 한국어 편향 벤치마크 — 문화적 고정관념(stereotype) 측정
+- **KMMLU**: 한국어 멀티태스크 지식 — 한국 지식 보존 여부 확인
+- **HAE-RAE**: 한국어 추론 능력 벤치마크
+- **CLIcK**: 한국어 문화 지식 벤치마크
+- **GlobalOpinionQA (GO)**: 국가별 의견 분포 — **KS 통계량**으로 크로스컬처럴 정렬 측정 (핵심 메트릭)
+- **BLEnD**: 다국가 일상 지식 벤치마크 — 크로스컬처럴 일반화 평가
+
+**Visual**: 벤치마크 소개 테이블 — 각 벤치마크의 목적, 평가 문항 수, 측정 대상, 사용 언어를 컬럼으로 정리
+
+**Speaker notes**: 총 6개 벤치마크를 사용했고, 특히 GlobalOpinionQA의 KS 통계량이 문화 이동의 핵심 지표입니다.
+
+---
+
+## Slide 9 — Section 4.1: Baselines Results
+**Title (KR/EN)**: 베이스라인 결과 (Baseline Comparisons)
+
+**Bullets**:
+- 비교 모델 5종: Qwen2.5-3B (base), Qwen2.5-7B, KoAlpaca, SOLAR-10.7B, LLaMA-3-8B-Instruct
+- 평가 벤치마크 7종 전수 비교 — 한국어 능력과 문화 이해의 이중 축
+- 핵심 발견: Base 모델들 간 한국어 지식(KMMLU)은 유사하지만, 문화 정렬(한국 응답 분포)은 크게 차이
+- Qwen2.5-3B가 다국어 기반으로 상대적으로 우수한 출발점 — 우리 베이스 모델 선정 근거
+- 모든 baseline은 Anglo 문화로 편향된 응답 분포 보여줌
+
+**Visual**: 5 models × 7 benchmarks 결과 테이블 (heatmap coloring), 우측에 radar chart로 모델별 성능 비교
+
+**Speaker notes**: 베이스라인 비교를 통해 기존 모델들이 문화적으로 얼마나 Anglo-centric 한지 확인했고, Qwen2.5를 베이스로 선정한 근거를 제시합니다.
+
+---
+
+## Slide 10 — Section 4.2: Cultural-QLoRA per Culture
+**Title (KR/EN)**: 문화별 어댑터 결과 (Per-Culture Adaptation)
+
+**Bullets**:
+- KR 🇰🇷, JP 🇯🇷, US 🇺🇸, CN 🇨🇳 어댑터를 각각 학습 후 벤치마크 평가
+- 한국(KR) 어댑터: **KoBBQ에서 편향 점수 유의미하게 감소** — 한국 문화 프레임으로 응답 분포 이동 확인
+- 일본/중국 어댑터: 해당 문화의 GO 응답 분포에 가까워지는 방향으로 KS 거리 감소
+- US 어댑터: 기존 base의 Anglo 편향을 재확인하는 positive control 역할
+- 모든 어댑터가 기존 한국어 능력(KMMLU, HAE-RAE)을 크게 저하시키지 않음 (catastrophic forgetting 최소화)
+
+**Visual**: 4 어댑터 × 7 벤치마크 결과 비교 테이블 + KoBBQ 편향 점수 변화 막대그래프 (base vs adapter, 하이라이트)
+
+**Speaker notes**: 문화별 어댑터가 실제 응답 분포를 해당 문화 쪽으로 성공적으로 이동시키면서도, 기존 한국어 능력을 유지하는 것을 확인했습니다.
+
+---
+
+## Slide 11 — Section 4.3: Cross-Cultural Alignment (Main Result)
+**Title (KR/EN)**: 크로스컬처럴 정렬 분석 (Cross-Cultural Alignment — Main Contribution)
+
+**Bullets**:
+- **핵심 메트릭**: GlobalOpinionQA의 국가별 응답 분포에 대한 Kolmogorov-Smirnov(KS) 통계량
+- KS 거리가 작을수록 → 해당 국가의 실제 여론 분포에 가까움 (更好的 cultural alignment)
+- KR 어댑터: 한국인 GO 응답 분포 대비 KS 거리가 base 대비 **유의미하게 감소**
+- 4개국 × 4어댑터 KS heatmap에서 **대각선(diagonal) 값이 최소** — 자기 문화에 가장 잘 정렬
+- Hofstede 조건화가 응답 분포를 이론적으로 예측 가능한 방향으로 이동시킨다는 증거
+
+**Visual**: 4×4 KS heatmap — x축: 어댑터 (KR/JP/US/CN), y축: 평가 대상 국가 응답 분포, 대각선 하이라이트 + 수치 표기 (MAIN FIGURE)
+
+**Speaker notes**: 이 heatmap이 본 연구의 핵심 기여입니다. 자기 문화 어댑터가 해당 국가 응답 분포에 가장 가깝다는 대각선 우위 패턴이 명확히 보입니다.
+
+---
+
+## Slide 12 — Section 4.4: Transfer Matrix
+**Title (KR/EN)**: 전이 행렬 분석 (Adapter Transfer Analysis)
+
+**Bullets**:
+- 질문: "KR 어댑터를 일본 데이터로 평가하면? 반대로는?"
+- 전이(transfer) 관계 분석: 문화 간 유사성이 어댑터 전이 성능에 영향
+- 한국↔일본 전이가 한국↔미국 전보다 KS 거리가 작음 — Hofstede 차원 유사도와 일치
+- Hofstede 차원 거리와 전이 KS 거리 간 상관계수 분석 — 문화 유사도가 전이 가능성을 예측
+- 함의: 새 문화를 추가할 때, Hofstede 유사 문화의 어댑터를 초기화점으로 활용 가능
+
+**Visual**: 전이 행렬 테이블 (4×4, 비대각선 원소: cross-cultural KS) + Hofstede 6D 차원 거리 vs 전이 KS 거리 산점도 (correlation plot)
+
+**Speaker notes**: 어댑터가 문화 간 전이될 때 Hofstede 유사도가 전이 성능을 예측한다는 발견은, 새 문화 추가 시 효율적 전략을 제공합니다.
+
+---
+
+## Slide 13 — Section 4.5: Hofstede Dimension Ablation
+**Title (KR/EN)**: Hofstede 차원 절단 분석 (Dimension Ablation)
+
+**Bullets**:
+- Hofstede 6개 차원 중 하나씩 제거(ablate)하여 학습 후 성능 변화 측정
+- 6D: PDI(권력거리), IDV(개인주의), MAS(남성주의), UAI(불확실성회피), LTO(장기지향), IVR(쾌락추구)
+- 핵심 발견: **IDV(개인주의-집단주의) 제거 시 문화 이동 효과가 가장 크게 감소** — 가장 지배적인 차원
+- PDI(권력거리)와 LTO(장기지향)가 한국↔일본 변별에 기여
+- 함의: 차원별 기여도를 알면, 적은 조건 변수로도 효과적인 문화 조건화 가능
+
+**Visual**: 6개 차원 절단 시 KS 거리 변화 막대그래프 (full 6D baseline 대비), IDV가 가장 큰 막대로 강조. + 순위 표
+
+**Speaker notes**: Hofstede 6차원 중 IDV, 즉 개인주의-집단주의 축이 문화적 응답 생성에 가장 지배적인 차원임을 발견했습니다.
+
+---
+
+## Slide 14 — Section 4.6: Multi-Culture Unified Adapter
+**Title (KR/EN)**: 다문화 통합 어댑터 (Unified Multi-Culture Adapter — Run-M)
+
+**Bullets**:
+- Motivation: 4개 어댑터를 유지하는 비용이 크다면, 하나의 어댑터로 4문화 표현 가능?
+- 방법: KR+JP+US+CN 학습 데이터를 혼합(mix)하고, 추론 시 Hofstede vector로 문화를 지정
+- Run-M 모델: 하나의 LoRA로 학습, 추론 시 조건 벡터만 교체하여 문화 전환
+- 결과: 개별 전용 어댑터 대비 KS 거리 약간 상승 but 단일 모델로 4문화 모두 표현 가능
+- Trade-off: 전용 모델 대비 ~5-10% 성능 하락 vs 운영 비용 1/4로 감소
+
+**Visual**: 전용 어댑터 4개 vs Run-M 성능 비교 레이더 차트 + 비용 효율 비교 표 (adapter 수, 메모리, 전환 비용)
+
+**Speaker notes**: 소규모 배포 환경에서는 4개 어댑터 대신 하나의 통합 모델만으로도 문화 전환이 가능하다는 실용적 대안을 제시합니다.
+
+---
+
+## Slide 15 — Consumer Deployment Demo
+**Title (KR/EN)**: 소비자 배포 데모 (Mac MLX Real-Time Demo)
+
+**Bullets**:
+- **MLX Framework**: Apple Silicon(M1/M2/M3) 네이티브 추론 — 별도 GPU 서버 불필요
+- Qwen2.5-3B + Cultural-QLoRA를 MLX로 변환 → MacBook Air에서도 실시간 추론 가능
+- 데모 시나리오: 같은 질문에 대해 🇰🇷/🇯🇵/🇺🇸/🇨🇳 어댑터를 실시간 스위칭하며 응답 변화 확인
+- 추론 속도: M2 MacBook Air 기준 ~15 tokens/sec (3B 모델)
+- 시사점: 문화 조건화 LLM이 클라우드 없이 개인 디바이스에서 동작하는 consumer-ready 기술
+
+**Visual**: Mac MLX 데모 스크린 캡처/녹화 화면 — 좌측에 어댑터 선택 드롭다운, 우측에 스트리밍 응답, 하단에 latency 표시
+
+**Speaker notes**: 실제로 MacBook Air에서 문화별 어댑터를 실시간으로 전환하며 응답이 바뀌는 것을 시연하겠습니다.
+
+---
+
+## Slide 16 — Limitations (정직한 한계)
+**Title (KR/EN)**: 한계점 (Limitations)
+
+**Bullets**:
+- 모델 크기 제한: 3B/7B만 실험 — 70B+에서는 효과가 달라질 수 있음
+- 단일 시드 학습: 현재 1회 학습 결과 — 통계적 유의성 검증을 위한 multi-seed 실험 필요
+- 합성 데이터 의존: CultureBank + GPT-4o 합성 데이터 — 실제 한국인 발화 데이터 부재
+- Hofstede 모델 자체의 한계: 국가 수준의 평균값 → 개인 내 다양성 무시 (Ecological Fallacy)
+- 한국어 평가 벤치마크 편향: KoBBQ, KMMLU 등이 한국어 최적화라 다른 문화 평가에 불리할 수 있음
+
+**Visual**: 한계점 리스트를 경고 아이콘과 함께 카드 형태로 배열, 각 한계 옆에 severity level (🟡 주의 / 🔴 주요)
+
+**Speaker notes**: 저희 연구의 한계를 솔직하게 말씀드리겠습니다. 가장 큰 한계는 모델 크기와 단일 시드입니다.
+
+---
+
+## Slide 17 — Comparison to MiroFish & Prior Work
+**Title (KR/EN)**: 선행 연구와의 비교 (Comparison to Prior Work)
+
+**Bullets**:
+- **MiroFish (62K⭐)**: 대규모 한국어 RLHF + 문화 데이터 — 방법론: Data Scaling vs 우리의 Conditioning
+- MiroFish: 수만 명의 한국인 피드백 → 암묵적 문화 학습 / Cultural-QLoRA: Hofstede 명시적 조건화
+- 비교 장점: 우리는 **소규모 모델(3B) + 명시적 제어** — 해석 가능하고 비용 효율적
+- 비교 한계: MiroFish는 downstream task(요약, 번역 등)에서 검증 — 우리는 아직 limited downstream 평가
+- 상호 보완적 가능성: MiroFish 데이터 + Hofstede 조건화 = 더 강력한 문화 정렬
+
+**Visual**: 비교 테이블 — (MiroFish vs Cultural-QLoRA) × (데이터 규모, 모델 크기, 문화 제어 방식, 해석 가능성, 비용) 속성 비교
+
+**Speaker notes**: 62K 스타를 받은 MiroFish와 비교하면, 우리는 명시적 Hofstede 조건화라는 근본적으로 다른 접근법을 사용합니다. 두 방법은 상호 보완적입니다.
+
+---
+
+## Slide 18 — Conclusions
+**Title (KR/EN)**: 결론 (Conclusions)
+
+**Bullets**:
+- ✅ **RQ1 검증**: Hofstede 6D 조건화가 LLM 응답 분포를 표적 문화로 유의미하게 이동시킴 (KS 거리 감소 확인)
+- ✅ **RQ2 검증**: IDV(개인주의-집단주의)가 문화적 응답 생성에 가장 지배적인 Hofstede 차원
+- ✅ **RQ3 검증**: 단일 통합 어댑터(Run-M)로 4문화 표현 가능 — 약간의 성능 trade-off와 함께
+- 💡 소비자 배포 가능: Mac MLX 기반 실시간 추론으로 클라우드 없는 문화 전환 LLM 구현
+- 📌 핵심 기여: **"Hofstede as a Control Knob for Culture"** — 문화를 수치적 조건 변수로 명시적으로 제어하는 새로운 패러다임 제시
+
+**Visual**: 5개 결론을 체크마크 아이콘 + 강조 박스로 배치, 마지막 핵심 기여는 별도 하이라이트 박스
+
+**Speaker notes**: 결론적으로, Hofstede 차원을 LLM의 조건 변수로 사용하는 것이 문화적 편향 완화에 효과적임을 확인했습니다.
+
+---
+
+## Slide 19 — Future Work
+**Title (KR/EN)**: 향후 연구 (Future Work)
+
+**Bullets**:
+- Multi-seed 학습으로 통계적 유의성 확보 (현재 단일 seed)
+- Human evaluation: 한국인/일본인/미국인 평가자가 응답의 문화적 자연스러움을 직접 평가
+- Downstream task 적용: 문화 조건화가 요약, 번역, 대화 등 실질 task에 미치는 영향 분석
+- 모델 스케일링: 14B, 70B에서의 문화 조건화 효과 탐색
+- Hofstede 외 문화 모델 탭: GLOBE, Schwartz Values 등 다른 문화 프레임워크와의 비교
+- 개인 수준(persona-level) 문화 모델링 — Ecological Fallacy 극복
+
+**Visual**: 로드맵 타임라인 — 단기(학기 내), 중기(졸업 전), 장기(리서치 방향)으로 구분하여 미래 작업 배치
+
+**Speaker notes**: 향후에는 multi-seed 실험과 human evaluation을 가장 먼저 진행할 계획이고, 장기적으로는 모델 스케일링과 개인 수준 문화 모델링을 목표로 합니다.
+
+---
+
+## Slide 20 — Q&A & Acknowledgments
+**Title (KR/EN)**: Q&A — 감사합니다! 🏴‍☠️
+
+**Bullets**:
+- 🔗 GitHub Repository: github.com/ELONFLAME/Cultural-QLoRA (코드 + 모델 가중치 공개)
+- 📧 Contact: 주선우 (2023320312) / 김민수 (2022320337)
+- 🙏 COSE461 교수님, TA분들, 그리고 함께 수강한 동료 학생분들께 감사드립니다
+- "Thank you — Questions, comments, or cultural disagreements welcome!"
+
+**Visual**: GitHub QR 코드 + 팀 로고(토큰해적단 해적 깃발 🏴‍☠️) + "Q&A" 큰 텍스트 중앙 배치
+
+**Speaker notes**: 이상으로 토큰해적단의 발표를 마칩니다. 궁금한 점 있으시면 편하게 질문해 주세요. 감사합니다!
+```
