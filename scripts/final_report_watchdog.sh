@@ -24,19 +24,22 @@ while true; do
     _log "14h elapsed — generating report anyway"; break
   fi
 
-  B_BUSY="false"
+  # Both instances must finish (instance-a-12h on AWS_B, instance-b-12h on AWS_A)
+  A_BUSY="false"; B_BUSY="false"
+  if ssh -i "$KEY" -o ConnectTimeout=15 -o BatchMode=yes ubuntu@"$AWS_A" \
+       'tmux has-session -t instance-b-12h 2>/dev/null' 2>/dev/null; then
+    A_BUSY="true"
+  fi
   if ssh -i "$KEY" -o ConnectTimeout=15 -o BatchMode=yes ubuntu@"$AWS_B" \
-       'tmux has-session -t cultural-kr 2>/dev/null \
-        || tmux has-session -t cultural-us 2>/dev/null \
-        || tmux has-session -t extended-runs 2>/dev/null' 2>/dev/null; then
+       'tmux has-session -t instance-a-12h 2>/dev/null' 2>/dev/null; then
     B_BUSY="true"
   fi
 
-  if [[ "$B_BUSY" == "false" ]]; then
-    _log "AWS-B all sessions ended at t+$((ELAPSED/60))min — finalizing"; break
+  if [[ "$A_BUSY" == "false" && "$B_BUSY" == "false" ]]; then
+    _log "BOTH instances done at t+$((ELAPSED/60))min — finalizing"; break
   fi
 
-  _log "AWS-B still working (t+$((ELAPSED/60))min) — sleeping ${INTERVAL}s"
+  _log "still working (t+$((ELAPSED/60))min) A_BUSY=$A_BUSY B_BUSY=$B_BUSY — sleeping ${INTERVAL}s"
   sleep $INTERVAL
 done
 
