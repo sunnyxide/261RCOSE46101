@@ -54,8 +54,12 @@ while true; do
     culture=$(extract_culture "$corpus")
     _log "scoring $name (culture=$culture)"
     cd "$LAB"
+    # NOTE: local oMLX judge SKIPPED by default per 2026-05-27 user guidance.
+    # User's oMLX has Qwen3.6-35B-A3B-4bit-DWQ loaded as default; switching to
+    # another model triggers OOM-prone swap. Re-enable only after confirming.
     python3 scripts/cas_judge_panel.py \
       --corpus "$corpus" --culture "$culture" --out "$out" \
+      --skip-judge local_qwen27b \
       2>&1 | tee -a "$LOG"
   done
 

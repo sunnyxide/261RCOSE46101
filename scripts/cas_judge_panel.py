@@ -88,12 +88,16 @@ def judge_claude(prompt):
     )
     return r.content[0].text if r.content else ""
 
-def judge_local(prompt, model_id="Qwen3.5-27B-Claude-4.6-Opus-Distilled-MLX-4bit"):
-    """Local oMLX-served Claude-distilled Qwen-27B at :11434.
+def judge_local(prompt, model_id="Qwen3.6-35B-A3B-4bit-DWQ"):
+    """Local oMLX-served Qwen3.6-35B-A3B-4bit-DWQ at :11434.
 
-    Note: Claude-distilled model does internal CoT reasoning before final answer,
-    so generous max_tokens (800) is required to reach the JSON; lower budgets
-    return finish_reason=length mid-reasoning. Latency ~5-15s per call.
+    Use the user's CURRENTLY-LOADED default model (Qwen3.6-35B-A3B-4bit-DWQ)
+    so we don't trigger a model swap on oMLX, which has caused OOM in the past
+    (see 2026-05-27 incident analysis). DO NOT change to Qwen3.5-Claude-distilled
+    or other models without first confirming with user that swap is safe.
+
+    Note: latency ~5-15s per call. Generous max_tokens (800) to allow reasoning
+    before final JSON.
     """
     import urllib.request
     body = json.dumps({
