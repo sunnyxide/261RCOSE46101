@@ -81,7 +81,16 @@ def load_globalopinion(target_country_name, n=200):
         if not isinstance(dist, list) or len(dist) < 2:
             continue
         options = r.get("options") or []
-        if len(options) != len(dist):
+        # 3rd bug: `options` is ALSO serialized as JSON string in GlobalOpinionQA,
+        # not list — len("[...]") gave char count not list length, so every Korea
+        # match silently dropped via "options != dist length" check. Probe on AWS
+        # found 790 Korea hits, 0 passed this gate; after parsing, 564 valid rows.
+        if isinstance(options, str):
+            try:
+                options = json.loads(options.replace("'", '"'))
+            except Exception:
+                continue
+        if not isinstance(options, list) or len(options) != len(dist):
             continue
         rows.append({
             "question": r["question"],
