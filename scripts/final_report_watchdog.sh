@@ -7,8 +7,8 @@
 set -uo pipefail
 LAB="$(cd "$(dirname "$0")/.." && pwd)"
 KEY=~/.ssh/ku-lbj-key.pem
-AWS_A=54.227.133.80
-AWS_B=54.224.67.51
+AWS_A=3.94.192.167
+AWS_B=98.94.65.174
 LOG="$LAB/logs/final_report_watchdog.log"
 DURATION=$((14 * 3600))  # 14h max so we don't run forever
 INTERVAL=600             # 10 min
@@ -24,14 +24,14 @@ while true; do
     _log "14h elapsed — generating report anyway"; break
   fi
 
-  # Both instances must finish (instance-a-12h on AWS_B, instance-b-12h on AWS_A)
+  # Both instances must finish (instance-a-6h on AWS_B, instance-b-6h on AWS_A)
   A_BUSY="false"; B_BUSY="false"
   if ssh -i "$KEY" -o ConnectTimeout=15 -o BatchMode=yes ubuntu@"$AWS_A" \
-       'tmux has-session -t instance-b-12h 2>/dev/null' 2>/dev/null; then
+       'tmux has-session -t instance-b-6h 2>/dev/null' 2>/dev/null; then
     A_BUSY="true"
   fi
   if ssh -i "$KEY" -o ConnectTimeout=15 -o BatchMode=yes ubuntu@"$AWS_B" \
-       'tmux has-session -t instance-a-12h 2>/dev/null' 2>/dev/null; then
+       'tmux has-session -t instance-a-6h 2>/dev/null' 2>/dev/null; then
     B_BUSY="true"
   fi
 

@@ -12,8 +12,8 @@
 set -uo pipefail
 LAB="$(cd "$(dirname "$0")/.." && pwd)"
 KEY=~/.ssh/ku-lbj-key.pem
-AWS_A=54.227.133.80
-AWS_B=54.224.67.51
+AWS_A=3.94.192.167
+AWS_B=98.94.65.174
 LOG="$LAB/logs/overnight_monitor.log"
 STATUS_JSONL="$LAB/logs/overnight_status.jsonl"
 DURATION=$((12 * 3600))   # 12 hours

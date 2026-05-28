@@ -7,8 +7,8 @@
 set -uo pipefail
 LAB="$(cd "$(dirname "$0")/.." && pwd)"
 KEY=~/.ssh/ku-lbj-key.pem
-AWS_A=54.227.133.80   # instance_b runs there
-AWS_B=54.224.67.51    # instance_a runs there
+AWS_A=3.94.192.167   # instance_b runs there
+AWS_B=98.94.65.174    # instance_a runs there
 LOG="$LAB/logs/cas_judge_watchdog.log"
 DURATION=$((18 * 3600))  # 18h max
 INTERVAL=600             # 10 min
