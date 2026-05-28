@@ -99,6 +99,8 @@ def main():
     ap.add_argument("--max-length", type=int, default=1024)
     ap.add_argument("--save-steps", type=int, default=200)
     ap.add_argument("--eval-steps", type=int, default=400)
+    ap.add_argument("--seed", type=int, default=42,
+                    help="random seed for HF Trainer (shuffle/dropout); multi-seed runs use 123, 7777")
     args = ap.parse_args()
 
     t0 = time.time()
@@ -132,6 +134,8 @@ def main():
         warmup_ratio=0.03,
         lr_scheduler_type="cosine",
         bf16=True,
+        seed=args.seed,
+        data_seed=args.seed,
         logging_steps=20,
         save_steps=args.save_steps,
         save_total_limit=2,

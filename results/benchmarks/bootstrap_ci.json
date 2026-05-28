@@ -1,0 +1,162 @@
+{
+  "cross_cultural_run-f-kr_jp": {
+    "adapter": "run-f-kr",
+    "culture": "jp",
+    "n": 20,
+    "mean": 0.5933113931972105,
+    "median": 0.6363636363636364,
+    "ci_lo": 0.48513524685545467,
+    "ci_hi": 0.705356503305978,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-f-kr_kr": {
+    "adapter": "run-f-kr",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.5800407749794859,
+    "median": 0.56,
+    "ci_lo": 0.4634197564935169,
+    "ci_hi": 0.6994635660921099,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-g-jp_jp": {
+    "adapter": "run-g-jp",
+    "culture": "jp",
+    "n": 20,
+    "mean": 0.502922965473731,
+    "median": 0.5050505050505051,
+    "ci_lo": 0.4018300862344299,
+    "ci_hi": 0.6112418657536758,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-g-jp_kr": {
+    "adapter": "run-g-jp",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.5352565080684781,
+    "median": 0.5051546391752577,
+    "ci_lo": 0.42811582958263517,
+    "ci_hi": 0.6472028881771151,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-g-jp_us": {
+    "adapter": "run-g-jp",
+    "culture": "us",
+    "n": 20,
+    "mean": 0.545413092342871,
+    "median": 0.53,
+    "ci_lo": 0.44274937198270353,
+    "ci_hi": 0.646936183671072,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-h-us_kr": {
+    "adapter": "run-h-us",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.6154142478937876,
+    "median": 0.648936170212766,
+    "ci_lo": 0.4928825482384574,
+    "ci_hi": 0.7384607275494444,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-i-cn_jp": {
+    "adapter": "run-i-cn",
+    "culture": "jp",
+    "n": 20,
+    "mean": 0.575972491808157,
+    "median": 0.6020408163265306,
+    "ci_lo": 0.47426801394787954,
+    "ci_hi": 0.6825397841310138,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-i-cn_kr": {
+    "adapter": "run-i-cn",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.5609430452392451,
+    "median": 0.56,
+    "ci_lo": 0.45203925796155964,
+    "ci_hi": 0.673302658224001,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-i-cn_us": {
+    "adapter": "run-i-cn",
+    "culture": "us",
+    "n": 20,
+    "mean": 0.5874346338486223,
+    "median": 0.6041666666666667,
+    "ci_lo": 0.47983230949860695,
+    "ci_hi": 0.6901232340309633,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-j-kr-7b_kr": {
+    "adapter": "run-j-kr-7b",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.5350359895371338,
+    "median": 0.56,
+    "ci_lo": 0.42339118883894145,
+    "ci_hi": 0.6538883328230148,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-m-multi_jp": {
+    "adapter": "run-m-multi",
+    "culture": "jp",
+    "n": 20,
+    "mean": 0.5958556771807041,
+    "median": 0.6020408163265306,
+    "ci_lo": 0.4825927212244826,
+    "ci_hi": 0.712937940449034,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-m-multi_kr": {
+    "adapter": "run-m-multi",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.6091567054548794,
+    "median": 0.5670103092783505,
+    "ci_lo": 0.4910712323782865,
+    "ci_hi": 0.7290213641277313,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_vanilla-3b_jp": {
+    "adapter": "vanilla-3b",
+    "culture": "jp",
+    "n": 20,
+    "mean": 0.5797220419543938,
+    "median": 0.6363636363636364,
+    "ci_lo": 0.46928416028416037,
+    "ci_hi": 0.6940126017756414,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_vanilla-3b_kr": {
+    "adapter": "vanilla-3b",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.5602966186050856,
+    "median": 0.56,
+    "ci_lo": 0.44946394749842106,
+    "ci_hi": 0.6767317001219189,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_vanilla-7b_jp": {
+    "adapter": "vanilla-7b",
+    "culture": "jp",
+    "n": 20,
+    "mean": 0.5368238957601529,
+    "median": 0.4949494949494949,
+    "ci_lo": 0.42247630938197495,
+    "ci_hi": 0.6596736477518904,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_vanilla-7b_kr": {
+    "adapter": "vanilla-7b",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.5599869784985504,
+    "median": 0.56,
+    "ci_lo": 0.4453674932036787,
+    "ci_hi": 0.6778808795064147,
+    "n_bootstrap": 10000
+  }
+}

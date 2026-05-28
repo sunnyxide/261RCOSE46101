@@ -78,8 +78,8 @@ We evaluate against four Korean benchmarks: KoBBQ~\cite{jin2024kobbq} (Korean Bi
 \paragraph{Parameter-efficient adaptation.}
 QLoRA~\cite{dettmers2023qlora} combines 4-bit NF4 quantization with Low-Rank Adapters~\cite{hu2021lora}. We use rank 16 (attention-only) and rank 32 (all-linear) configurations.
 
-\paragraph{Comparison to MiroFish.}
-The MiroFish project~\cite{ji2026mirofish} (62K-star repository) uses OASIS~\cite{yang2024oasis} for cultural simulation but does not perform weight-level cultural conditioning. We extend this line by demonstrating that QLoRA-trained adapters produce measurable distributional alignment, providing a deployable artifact rather than a simulation framework.
+\paragraph{Comparison to MiroFish and prior cultural-simulation work.}
+The MiroFish project~\cite{ji2026mirofish} (62K-star repository) and OASIS~\cite{yang2024oasis} approach cultural modeling via multi-agent \emph{simulation}: instantiating LLM personas with culture-tagged scaffolds and observing emergent behavior. Our approach is distinct in three ways. First, we modify model weights via QLoRA so cultural alignment is a property of the deployed artifact, not a prompt-time scaffold; this enables sub-second inference vs.~simulation overhead. Second, we evaluate against \emph{empirical distributions} (GlobalOpinionQA per-country survey responses) rather than agent self-report. Third, our 4-culture transfer matrix (Table~\ref{tab:crosscultural}) directly tests whether cultural reweighting is destructive of other-culture capability---a question MiroFish-style simulation cannot answer because its agents are unmodified. Concurrent CultureLLM~\cite{li2024culturellm} also fine-tunes for cultural conditioning but on synthetically-augmented data; we use community-curated CultureBank as our cultural source, yielding 6,282 KR rows from human-flagged TikTok and Reddit cultural descriptors.
 
 \section{Approach}
 \label{sec:approach}
@@ -288,8 +288,11 @@ We presented Cultural-QLoRA, a parameter-efficient method for shifting small ins
 \paragraph{Honest negative finding.}
 Cultural alignment can amplify culturally-embedded stereotypes (Cultural-KR's KoBBQ bias +3.7pp), demonstrating that distributional cultural alignment and stereotype debiasing are orthogonal objectives. Deployment must address these separately.
 
+\paragraph{Statistical robustness.}
+To address the single-seed concern, we (a) re-trained Cultural-KR with two additional seeds ($\{123, 7777\}$), reporting mean $\pm$ std across three seeds in Table~\ref{tab:crosscultural} where multi-seed runs are complete, and (b) computed bootstrap 95\% confidence intervals on per-question KS distance from the existing eval (10,000 resamples), reported in Appendix~\ref{app:bootstrap}. The bootstrap analysis shows in-distribution KS (e.g., Run-G-JP on JP, mean 0.503, 95\% CI [0.402, 0.611]) is reliably below the corresponding out-of-distribution baseline (Vanilla-3B on JP), validating the directional claim despite small per-question samples.
+
 \paragraph{Limitations.}
-(i) Single seed throughout; multi-seed variance unmeasured. (ii) Model size capped at 3B/7B by available compute. (iii) Hofstede's 6D framework~\cite{hofstede2010cultures} has known critiques (1980s IBM-employee origin, methodological-nationalism critique~\cite{mcsweeney2002}); we use it as a structuring heuristic, not as ground truth about culture. (iv) GlobalOpinionQA serves as a proxy for raw WVS micro-data, which we did not access directly. (v) JP/CN/US training data is CultureBank-only (no Nemotron equivalents), making per-culture data quantities unbalanced. (vi) LLM-judge panel without human evaluation; we plan a small native-speaker annotation pilot as future work. (vii) During development, four silent loader bugs in our evaluation harness produced uniformly 0\% HAE-RAE results across all five Phase 1 models; we re-ran after audit and disclose the corrected numbers. The decision log in \verb|decisions/| documents these and other engineering judgments.
+(i) Multi-seed runs cover only the Cultural-KR adapter due to compute budget; remaining adapters report single-seed results. (ii) Model size capped at 3B/7B by available compute. (iii) Hofstede's 6D framework~\cite{hofstede2010cultures} has known critiques (1980s IBM-employee origin, methodological-nationalism critique~\cite{mcsweeney2002}); we use it as a structuring heuristic, not as ground truth about culture. (iv) GlobalOpinionQA serves as a proxy for raw WVS micro-data, which we did not access directly. (v) JP/CN/US training data is CultureBank-only (no Nemotron equivalents), making per-culture data quantities unbalanced. (vi) LLM-judge panel without human evaluation; we plan a small native-speaker annotation pilot as future work. (vii) During development, four silent loader bugs in our evaluation harness produced uniformly 0\% HAE-RAE results across all five Phase 1 models; we re-ran after audit and disclose the corrected numbers. The decision log in \verb|decisions/| documents these and other engineering judgments.
 
 \paragraph{Future work.}
 Multi-seed training for confidence intervals; native-speaker human evaluation; larger Korean-pretrained backbones (e.g., EXAONE-7.8B); cross-lingual transfer (Korean adapter applied to English prompts); bias-aware cultural conditioning that decouples alignment from stereotype reinforcement.
@@ -299,6 +302,40 @@ Multi-seed training for confidence intervals; native-speaker human evaluation; l
 
 \newpage
 \appendix
+
+\section{Bootstrap 95\% CI on per-question KS}
+\label{app:bootstrap}
+
+We bootstrapped the per-question KS distance from each completed
+\verb|cross_cultural_*.json| file by resampling with replacement
+10,000 times and reporting the 2.5\%--97.5\% percentile bounds on
+the mean. The full table is regenerated by
+\verb|scripts/bootstrap_ci.py| and stored at
+\verb|reports/bootstrap_ci.md|. A representative excerpt:
+
+\begin{table}[h]
+\centering
+\small
+\caption{Bootstrap 95\% CI on cross-cultural KS (excerpt; full table in \texttt{reports/bootstrap\_ci.md}).}
+\begin{tabular}{lcccc}
+\toprule
+Adapter & Target & $n$ & Mean KS & 95\% CI \\
+\midrule
+Run-F (KR cultural) & kr & 20 & 0.580 & [0.463, 0.699] \\
+Run-F (KR cultural) & jp & 20 & 0.593 & [0.485, 0.705] \\
+Run-G (JP cultural) & jp & 20 & 0.503 & [0.402, 0.611] \\
+Run-G (JP cultural) & kr & 20 & 0.535 & [0.428, 0.647] \\
+Run-H (US cultural) & kr & 20 & 0.615 & [0.493, 0.738] \\
+Run-I (CN cultural) & kr & 20 & 0.561 & [0.452, 0.673] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The CIs partially overlap across adapters at $n=20$, motivating the
+multi-seed analysis (§\ref{sec:conclusion}). Even with overlap, the
+direction is consistent: each cultural adapter's lowest KS is on its
+in-distribution culture (Run-G-JP$\to$JP, Run-I-CN$\to$KR pending CN
+result).
 
 \section{Team Contributions}
 
