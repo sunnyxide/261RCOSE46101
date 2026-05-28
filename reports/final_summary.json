@@ -1265,5 +1265,17 @@
       "cultural_us_20260526T113703Z.json"
     ]
   },
-  "cross_cultural_evals": []
+  "cross_cultural_evals": [
+    "cross_cultural_run-f-kr_kr",
+    "cross_cultural_run-g-jp_jp",
+    "cross_cultural_run-g-jp_kr",
+    "cross_cultural_run-h-us_kr",
+    "cross_cultural_run-i-cn_jp",
+    "cross_cultural_run-i-cn_kr",
+    "cross_cultural_run-j-kr-7b_kr",
+    "cross_cultural_run-m-multi_kr",
+    "cross_cultural_vanilla-3b_jp",
+    "cross_cultural_vanilla-3b_kr",
+    "cross_cultural_vanilla-7b_kr"
+  ]
 }

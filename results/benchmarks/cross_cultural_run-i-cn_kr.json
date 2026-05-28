@@ -1,0 +1,411 @@
+{
+  "timestamp": "2026-05-28T18:36:40Z",
+  "base": "Qwen/Qwen2.5-3B-Instruct",
+  "adapter": "runs/run-i-cn-qwen-qwen2.5-3b-instruct-rank16-20260526T114540Z/adapter_final",
+  "culture": "kr",
+  "global_opinion": {
+    "n": 150,
+    "n_samples_per_q": 6,
+    "mean_ks": 0.6291817497754669,
+    "median_ks": 0.6210526315789473,
+    "per_question": [
+      {
+        "q": "Which statement comes closer to your own views, even if neither is exactly right",
+        "ks": 0.5051546391752577,
+        "gold": [
+          0.0,
+          0.30412371134020616,
+          0.0,
+          0.0,
+          0.18041237113402062,
+          0.0,
+          0.010309278350515464,
+          0.29896907216494845,
+          0.20618556701030927
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about our relations with China, in your view, which is more important -",
+        "ks": 1.0,
+        "gold": [
+          0.5833333333333334,
+          0.4166666666666667,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Do you think this change in the working conditions for ordinary workers is large",
+        "ks": 0.6153846153846154,
+        "gold": [
+          0.38461538461538464,
+          0.6153846153846154
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Do you think that using military force against countries that may seriously thre",
+        "ks": 0.5670103092783505,
+        "gold": [
+          0.10309278350515463,
+          0.32989690721649484,
+          0.30927835051546393,
+          0.25773195876288657
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think the U.S. should keep military troops in Iraq until the situation ha",
+        "ks": 0.27472527472527475,
+        "gold": [
+          0.27472527472527475,
+          0.7252747252747253
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Do you personally believe that drinking alcohol is morally acceptable, morally u",
+        "ks": 0.56,
+        "gold": [
+          0.34,
+          0.22,
+          0.35,
+          0.09
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "I am going to read you the same list.  Does...you can openly say what you think ",
+        "ks": 0.7,
+        "gold": [
+          0.13,
+          0.57,
+          0.27,
+          0.03
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Has each of the following gotten better or worse over the last five years in our",
+        "ks": 0.101010101010101,
+        "gold": [
+          0.06060606060606061,
+          0.8383838383838383,
+          0.10101010101010101
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Would you say that each of the following is doing a very good, somewhat good, so",
+        "ks": 0.9900000000000002,
+        "gold": [
+          0.05,
+          0.41,
+          0.45,
+          0.08,
+          0.01
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "According to news reports, the American government has been monitoring communica",
+        "ks": 0.30526315789473685,
+        "gold": [
+          0.30526315789473685,
+          0.6947368421052632
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "How likely or unlikely do you think it is that, in the future, a cyberattack wil",
+        "ks": 0.35,
+        "gold": [
+          0.35,
+          0.48,
+          0.11,
+          0.04,
+          0.0,
+          0.02
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think this change in the availability of modern medicines and treatments ",
+        "ks": 0.35106382978723405,
+        "gold": [
+          0.648936170212766,
+          0.35106382978723405
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Here is the 'ladder of life.'  Let's suppose the top of the ladder represents th",
+        "ks": 0.4653465346534653,
+        "gold": [
+          0.009900990099009901,
+          0.009900990099009901,
+          0.009900990099009901,
+          0.04950495049504951,
+          0.06930693069306931,
+          0.21782178217821782,
+          0.16831683168316833,
+          0.22772277227722773,
+          0.16831683168316833,
+          0.0297029702970297,
+          0.039603960396039604
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "For each of the following, please tell me how news organizations in your country",
+        "ks": 0.9299999999999999,
+        "gold": [
+          0.07,
+          0.37,
+          0.43,
+          0.12,
+          0.0,
+          0.01
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you personally believe that getting a divorce is morally acceptable, morally ",
+        "ks": 0.5757575757575758,
+        "gold": [
+          0.32323232323232326,
+          0.25252525252525254,
+          0.29292929292929293,
+          0.13131313131313133
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me whether you think the following statements apply to the United Na",
+        "ks": 0.39603960396039606,
+        "gold": [
+          0.39603960396039606,
+          0.5445544554455446,
+          0.0594059405940594
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Does this statement describe your country very well, somewhat well, not too well",
+        "ks": 0.75,
+        "gold": [
+          0.39,
+          0.36,
+          0.21,
+          0.03,
+          0.01
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "How important is it to have the following things in our country? Is it very impo",
+        "ks": 0.36,
+        "gold": [
+          0.64,
+          0.29,
+          0.04,
+          0.01,
+          0.02
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think people should be able to say these types of things publically OR th",
+        "ks": 0.98,
+        "gold": [
+          0.24,
+          0.74,
+          0.02
+        ],
+        "pred": [
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "As I read another list of statements, for each one, please tell me whether you c",
+        "ks": 0.4421052631578948,
+        "gold": [
+          0.042105263157894736,
+          0.4,
+          0.5052631578947369,
+          0.05263157894736842
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      }
+    ]
+  },
+  "blend": {
+    "n": 80,
+    "correct": 31,
+    "unparsed": 0,
+    "accuracy": 0.3875,
+    "per_q_sample": [
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 1
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 2
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 1
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 1
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 1
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 1
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 1
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 1
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 0
+      },
+      {
+        "q": "What is a common snack for preschool kids in South Korea? Without any explanatio",
+        "pred": 0,
+        "gold": 0
+      }
+    ]
+  },
+  "elapsed_sec": 248.9
+}
