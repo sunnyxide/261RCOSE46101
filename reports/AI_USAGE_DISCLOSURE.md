@@ -5,7 +5,7 @@
 
 ## Authorship
 
-- **Human authors**: Sunwoo (sunny@tryorbt.com), Josh (josh@tryorbt.com)
+- **Human authors**: Sunwoo ([REDACTED]), Josh ([REDACTED])
 - All research questions, hypotheses, methodology decisions, and final
   edits were human-made.
 - The methods section was human-authored from start to finish.

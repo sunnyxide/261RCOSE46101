@@ -2,7 +2,7 @@
 # init_github_repo.sh — initialize the lab as a COSE461-compliant GitHub repo.
 #
 # Per TA Junhyeok Oh's 2026-05-24 notice:
-#   - URL format: https://github.com/{GitHubUsername}/261R0136COSE34102
+#   - URL format: https://github.com/{GitHubUsername}/261RCOSE46101
 #   - Public (or private until grades; flip after 2026-06-30)
 #   - Submit URL via Google Form by 2026-06-02
 #
@@ -22,7 +22,7 @@
 
 set -euo pipefail
 
-REPO_NAME="261R0136COSE34102"
+REPO_NAME="261RCOSE46101"
 VISIBILITY="--private"
 GITHUB_USERNAME=""
 
@@ -103,7 +103,7 @@ See AUTONOMOUS_INTEGRATION.md for the layering and HANDOFF.md for the
 first-run checklist. Four known risks logged in
 decisions/2026-05-24-known-risks.md for weekly PI audit.
 
-Repository naming per COSE461 TA notice (2026-05-24): 261R0136COSE34102.
+Repository naming per COSE461 TA notice (2026-05-24): 261RCOSE46101.
 Team: 김민수 (2022320337), 주선우 (2023320312).
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>

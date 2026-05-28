@@ -5,7 +5,7 @@ task_kind: architecture_decision
 tier: 3
 auto_executed: false
 human_approved: true
-approver: sunny@tryorbt.com, josh@tryorbt.com
+approver: [REDACTED], [REDACTED]
 cost_usd: 0
 ---
 

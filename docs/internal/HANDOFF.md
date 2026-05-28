@@ -3,7 +3,7 @@
 > Audience: the Claude Code session running on the Mac Mini (Hermes / OpenCloud / Claude Code).
 > Goal: pick up this research project with full context, no further briefing.
 > Time horizon: 8 weeks (W1 starts on first run of this lab).
-> Operator on call: Sunwoo (sunny@tryorbt.com). Teammate (Josh) handles presentation only.
+> Operator on call: Sunwoo ([REDACTED]). Teammate (Josh) handles presentation only.
 
 ---
 

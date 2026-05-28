@@ -22,7 +22,7 @@ Korean: 한국어 LLM 페르소나 문화적 진정성 평가
 English: Evaluation of cultural authenticity in Korean LLM-generated personas
 
 ### 2. Investigator info
-- Principal: 주선우 (2023320312), Korea University, sunwo1224@korea.ac.kr
+- Principal: 주선우 (2023320312), Korea University, [REDACTED — provide via TA channel]
 - Co-investigator: 김민수 (2022320337)
 - Faculty advisor: <TODO: course advisor for COSE461>
 

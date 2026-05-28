@@ -160,7 +160,7 @@ Per TA notices captured in `AUTONOMOUS_INTEGRATION.md §6`:
 
 | Requirement | Status |
 |---|---|
-| GitHub repo `261R0136COSE34102` (sunnyxide) | ✅ created + pushed |
+| GitHub repo `261RCOSE46101` (sunnyxide) | ✅ created + pushed |
 | GitHub URL submission by 2026-06-02 (Google Form) | ⏳ Sunwoo action |
 | Overleaf template + final report | template not yet pulled into lab; Hermes briefs 07-08 produce Intro + Related Work in Markdown, pandoc → tex pipeline at W7 |
 | AWS account responsible use | ✅ documented in decisions/2026-05-24-nxtgen-aws-probe.md |

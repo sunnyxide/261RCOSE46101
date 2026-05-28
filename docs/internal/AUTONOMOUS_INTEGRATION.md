@@ -200,7 +200,7 @@ W4 budget allows, or a second condition's QLoRA if H4 result is strong.
 ## 6. GitHub repository setup (TA notice 2026-05-24)
 
 Per TA Junhyeok Oh:
-- Repo URL format: `https://github.com/{GitHubUsername}/261R0136COSE34102`
+- Repo URL format: `https://github.com/{GitHubUsername}/261RCOSE46101`
 - Public visibility (private allowed only until grades release)
 - Submit URL via Google Form by **2026-06-02**
 
@@ -208,7 +208,7 @@ Decisions:
 
 - Host on Sunwoo's GitHub account (Sunwoo authors all code per the
   division-of-labor: Sunwoo dev, Josh presentation).
-- Name: `261R0136COSE34102` exactly. No prefix, no project name in path.
+- Name: `261RCOSE46101` exactly. No prefix, no project name in path.
 - Visibility: **private** until 2026-06-30 (after expected grade release),
   then flip to public per TA instructions. This protects `.env.example`
   with real-API-key shapes and the AWS instance config until course is done.

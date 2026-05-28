@@ -7,7 +7,7 @@
 | **Team** | 8 — 토큰해적단 (Token Pirates) |
 | **Members** | 주선우 (2023320312) · 김민수 (2022320337) |
 | **Course** | COSE461 Natural Language Processing |
-| **Repo** | `https://github.com/sunnyxide/261R0136COSE34102` |
+| **Repo** | `https://github.com/sunnyxide/261RCOSE46101` |
 
 ---
 

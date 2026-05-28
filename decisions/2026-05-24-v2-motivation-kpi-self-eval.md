@@ -5,7 +5,7 @@ task_kind: framing_v2
 tier: 3
 auto_executed: false
 human_approved: true
-approver: sunny@tryorbt.com
+approver: [REDACTED]
 cost_usd: 0
 ---
 

@@ -9,9 +9,9 @@
 
 | Item | Requirement | Status |
 |---|---|---|
-| URL format | `https://github.com/{GitHubID}/261R0136COSE34102` | ✅ sunnyxide/261R0136COSE34102 |
+| URL format | `https://github.com/{GitHubID}/261RCOSE46101` | ✅ sunnyxide/261RCOSE46101 |
 | Visibility | Public (private allowed until grade release) | currently private, flip after 2026-06-30 |
-| Naming | Exact: `261R0136COSE34102` | ✅ matches |
+| Naming | Exact: `261RCOSE46101` | ✅ matches |
 | Code + documentation upload | Required | ✅ all 80+ files pushed |
 | Submission deadline | 2026-06-02 via Google Form | ⏳ Sunwoo action |
 | Survey URL | https://docs.google.com/forms/d/e/1FAIpQLSd3sPqlhaFTEHI4KwONjPq9ziVRow5YSheqiDpcRbavkoJx6A/viewform | ⏳ |
@@ -111,7 +111,7 @@ These are blockers I cannot resolve without you:
 
 - **Survey deadline**: 2026-06-02 (hard) — both Sunwoo AND Min-su submit
   Google Form individually but enter the SAME team repo URL
-- **Collaborator add**: Add 김민수 as collaborator to sunnyxide/261R0136COSE34102
+- **Collaborator add**: Add 김민수 as collaborator to sunnyxide/261RCOSE46101
   once we have their GitHub handle (Sunwoo to ask)
 - **Slack workspace**: `cose461012026-hfu6687.slack.com` — both members
   should be in the workspace, name format `{name}_{student_id}`
