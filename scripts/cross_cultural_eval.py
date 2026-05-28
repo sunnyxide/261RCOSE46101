@@ -26,10 +26,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 CULTURE_NAMES = {
-    "kr": {"globalopinion": "Korea, South", "blend": "South_Korea",   "label_en": "Korea"},
-    "jp": {"globalopinion": "Japan",        "blend": "Japan",         "label_en": "Japan"},
-    "us": {"globalopinion": "United States","blend": "US",            "label_en": "United States"},
-    "cn": {"globalopinion": "China",        "blend": "China",         "label_en": "China"},
+    # GlobalOpinionQA uses abbreviations like "S. Korea" — match substring "Korea"
+    "kr": {"globalopinion": "Korea", "blend": "South_Korea",   "label_en": "Korea"},
+    "jp": {"globalopinion": "Japan", "blend": "Japan",         "label_en": "Japan"},
+    "us": {"globalopinion": "United States","blend": "US",     "label_en": "United States"},
+    "cn": {"globalopinion": "China", "blend": "China",         "label_en": "China"},
 }
 
 LETTERS = "ABCDE"
@@ -53,6 +54,22 @@ def load_globalopinion(target_country_name, n=200):
     rows = []
     for r in ds:
         sel = r.get("selections") or {}
+        # HF may return selections as a JSON string instead of dict — handle both.
+        # Root cause of repeated 0-result cross-cultural eval runs on 5/26-5/28.
+        if isinstance(sel, str):
+            try:
+                # The string format uses Python repr (defaultdict(...)) — try eval-safe parse first
+                # Strip "defaultdict(<class 'list'>, {...})" wrapper if present
+                if sel.startswith("defaultdict"):
+                    import re as _re
+                    m = _re.search(r"\{.*\}", sel, _re.DOTALL)
+                    if m: sel = m.group(0)
+                # Now try JSON-like — replace single quotes with double quotes
+                sel = json.loads(sel.replace("'", '"'))
+            except Exception:
+                continue
+        if not isinstance(sel, dict):
+            continue
         match_key = None
         for k in sel.keys():
             if target_country_name.lower() in str(k).lower():
