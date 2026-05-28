@@ -166,7 +166,7 @@ if [[ $RC -eq 0 && -s "$OUT_FILE" ]]; then
           "results/hermes_outputs/$NEXT_NAME.md.raw.json" \
           "results/hermes_outputs/$NEXT_NAME.tick.log" 2>>"$TICK_LOG"
   if ! git diff --staged --quiet; then
-    git -c user.name="Sunwoo Ju" -c user.email="sunwo1224@korea.ac.kr" \
+    git -c user.name="Sunwoo Ju" -c user.email="[REDACTED]" \
       commit -m "hermes-cycle: $NEXT_NAME completed at $TS_KST" >>"$TICK_LOG" 2>&1 || true
     git push origin main >>"$TICK_LOG" 2>&1 || true
   fi
