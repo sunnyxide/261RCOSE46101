@@ -41,51 +41,82 @@ Off-the-shelf instruction-tuned LLMs over-represent **Anglo cultural priors** ev
 
 ## 🏗 Pipeline architecture
 
+### Stage 1: Training data → Adapter
+
 ```mermaid
-flowchart LR
-    subgraph DATA["📚 Training Data"]
-        CB[CultureBank<br/>country-filtered<br/>2 variants/row]
-        NP[Nemotron-Personas-KR<br/>3 variants/persona]
-        HF[Hofstede 6D<br/>system prompt]
-    end
+flowchart TB
+    CB["📚 CultureBank<br/>country-filtered tiktok+reddit<br/>(KR 1026 · JP 916 · US 3600 · CN 740)"]
+    NP["🇰🇷 Nemotron-Personas-Korea<br/>4800 KR persona variants"]
+    HF["🧭 Hofstede 6D system prompt<br/>(PDI, IDV, MAS, UAI, LTO, IVR)"]
 
-    subgraph TRAIN["🎓 QLoRA Training (AWS L4)"]
-        BASE[Qwen2.5-3B / 7B<br/>4-bit NF4]
-        LORA[LoRA rank 16-32<br/>attn / all-linear]
-        BASE --> LORA
-    end
+    CB --> MIX["🧪 Cultural training jsonl<br/>+ Hofstede system message<br/>+ instruction format"]
+    NP --> MIX
+    HF --> MIX
 
-    subgraph ADAPTERS["💾 6 Cultural Adapters"]
-        F[Run-F<br/>🇰🇷 Cultural-KR-3B]
-        G[Run-G<br/>🇯🇵 Cultural-JP-3B]
-        H[Run-H<br/>🇺🇸 Cultural-US-3B]
-        I[Run-I<br/>🇨🇳 Cultural-CN-3B]
-        J[Run-J<br/>🇰🇷 Cultural-KR-7B]
-        M[Run-M<br/>🌏 Multi-cultural<br/>+ culture token]
-    end
+    MIX --> QLORA["🎓 QLoRA Training (AWS L4 GPU)<br/>4-bit NF4 quantization<br/>LoRA rank 16-32, attn / all-linear<br/>cosine 2e-4 · paged AdamW 8-bit"]
 
-    subgraph EVAL["🔬 Evaluation"]
-        KO["Korean benchmarks<br/>KoBBQ · KMMLU · HAE-RAE · CLIcK"]
-        CC["Cross-cultural alignment<br/>KS dist vs GlobalOpinionQA<br/>BLEnD MCQ"]
-        CAS["3-judge LLM panel<br/>GPT-5.5 + Claude + MiMo"]
-        HOF["Hofstede dimension ablation<br/>IDV-only · UAI-only · full-6D"]
-    end
+    QLORA --> ADAPT["💾 Trained adapter<br/>~200-400 MB safetensors"]
 
-    DATA --> TRAIN
-    LORA --> ADAPTERS
-    ADAPTERS --> EVAL
-    EVAL --> PAPER["📄 NeurIPS 2020 paper<br/>+ decision log"]
+    style CB fill:#e1f5ff,stroke:#0288d1
+    style NP fill:#e1f5ff,stroke:#0288d1
+    style HF fill:#fff4e1,stroke:#f57c00
+    style MIX fill:#f3e5f5,stroke:#7b1fa2
+    style QLORA fill:#fce4ec,stroke:#c2185b
+    style ADAPT fill:#e8f5e9,stroke:#388e3c
+```
 
-    style CB fill:#e1f5ff
-    style NP fill:#e1f5ff
-    style HF fill:#fff4e1
-    style F fill:#ffe1e1
-    style G fill:#ffe1e1
-    style H fill:#ffe1e1
-    style I fill:#ffe1e1
-    style J fill:#fff0c0
-    style M fill:#e8d0ff
-    style PAPER fill:#d0f0c0
+### Stage 2: Six trained adapters
+
+```mermaid
+flowchart TB
+    BASE3["🧠 Qwen2.5-3B-Instruct<br/>(base)"]
+    BASE7["🧠 Qwen2.5-7B-Instruct<br/>(base, unsloth bnb-4bit)"]
+
+    BASE3 --> F["Run-F · 🇰🇷 Cultural-KR-3B<br/>rank 32, all-linear, 2 epochs"]
+    BASE3 --> G["Run-G · 🇯🇵 Cultural-JP-3B<br/>rank 16, attn-only, 5 epochs"]
+    BASE3 --> H["Run-H · 🇺🇸 Cultural-US-3B<br/>rank 32, all-linear, 3 epochs"]
+    BASE3 --> I["Run-I · 🇨🇳 Cultural-CN-3B<br/>rank 16, attn-only, 5 epochs"]
+    BASE3 --> M["Run-M · 🌏 Multi-cultural-3B<br/>+ culture token, all 4 mixed"]
+    BASE7 --> J["Run-J · 🇰🇷 Cultural-KR-7B<br/>rank 16, attn-only, 1 epoch"]
+
+    BASE3 --> ABL["Hofstede dim ablation<br/>(KR · IDV-only / UAI-only / full-6D)"]
+
+    style BASE3 fill:#e3f2fd,stroke:#1565c0
+    style BASE7 fill:#bbdefb,stroke:#0d47a1
+    style F fill:#ffcdd2,stroke:#c62828
+    style G fill:#ffe0b2,stroke:#ef6c00
+    style H fill:#f0f4c3,stroke:#827717
+    style I fill:#c8e6c9,stroke:#2e7d32
+    style J fill:#ffcdd2,stroke:#c62828,stroke-dasharray: 5 5
+    style M fill:#e1bee7,stroke:#6a1b9a
+    style ABL fill:#cfd8dc,stroke:#37474f
+```
+
+### Stage 3: Four-axis evaluation
+
+```mermaid
+flowchart TB
+    ADAPTERS["💾 Six cultural adapters<br/>+ vanilla baselines<br/>+ KoAlpaca baselines"]
+
+    ADAPTERS --> KO["🇰🇷 Korean benchmarks<br/>KoBBQ · KMMLU<br/>HAE-RAE · CLIcK<br/>(in-distribution, few-shot K=3)"]
+    ADAPTERS --> CC["🌏 Cross-cultural alignment<br/>KS dist vs GlobalOpinionQA<br/>BLEnD MCQ<br/>(8 models × 4 cultures = 32 cells)"]
+    ADAPTERS --> CAS["⚖️ CAS 3-judge LLM panel<br/>GPT-5.5 + Claude Opus 4.7 + MiMo<br/>(authenticity · consistency · factual,<br/>60 personas, median + inter-rater diff)"]
+    ADAPTERS --> HOF["🔬 Hofstede dim ablation<br/>IDV-only vs UAI-only vs full-6D<br/>(which dimension drives KS shift?)"]
+
+    KO --> AGG["📊 aggregate_results.py<br/>→ reports/final_results_table.md"]
+    CC --> AGG
+    CAS --> AGG
+    HOF --> AGG
+
+    AGG --> PAPER["📄 paper.tex (NeurIPS 2020, 8p)<br/>+ decision log + README"]
+
+    style ADAPTERS fill:#e8f5e9,stroke:#388e3c
+    style KO fill:#fff9c4,stroke:#f57f17
+    style CC fill:#bbdefb,stroke:#1976d2
+    style CAS fill:#d1c4e9,stroke:#512da8
+    style HOF fill:#ffccbc,stroke:#d84315
+    style AGG fill:#f8bbd0,stroke:#ad1457
+    style PAPER fill:#c5e1a5,stroke:#558b2f
 ```
 
 ### Hofstede 6D system prompt (verbatim)
