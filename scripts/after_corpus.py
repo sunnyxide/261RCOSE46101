@@ -70,9 +70,36 @@ model = PeftModel.from_pretrained(base, adapter_path)
 print(f"[{time.time()-t0:.1f}s] base+adapter loaded, VRAM={torch.cuda.memory_allocated()/1024**3:.2f} GiB",
       flush=True)
 
+# Audit fix 2026-05-29: previously dropped system prompt at inference → adapter
+# was trained with Hofstede 6D system message but evaluated without → before/after
+# diff under-reported the cultural effect. Reconstruct system prompt from adapter
+# culture (parsed from run_id or fallback to KR).
+def _detect_culture(adapter_path):
+    name = adapter_path.lower()
+    for c in ("kr", "jp", "us", "cn"):
+        if f"-{c}-" in name or f"_{c}_" in name or f"-{c}/" in name:
+            return c
+    return "kr"  # default
+_CULT = _detect_culture(adapter_path)
+_HOFSTEDE = {
+    "kr": "PDI=60, IDV=18, MAS=39, UAI=85, LTO=100, IVR=29",
+    "jp": "PDI=54, IDV=46, MAS=95, UAI=92, LTO=88, IVR=42",
+    "us": "PDI=40, IDV=91, MAS=62, UAI=46, LTO=26, IVR=68",
+    "cn": "PDI=80, IDV=20, MAS=66, UAI=30, LTO=87, IVR=24",
+}
+_COUNTRY_EN = {"kr": "Korea", "jp": "Japan", "us": "United States", "cn": "China"}
+_LANG = {"kr": "ko", "jp": "ja", "us": "en", "cn": "zh"}
+SYS_PROMPT = (f"You are an AI persona reflecting {_COUNTRY_EN[_CULT]} cultural context. "
+              f"Hofstede 6D: {_HOFSTEDE[_CULT]}. "
+              f"Respond authentically from this cultural perspective in {_LANG[_CULT]}.")
+print(f"[init] inference system prompt for culture={_CULT}: {SYS_PROMPT[:80]}...", flush=True)
+
 after_gens = []
 for i, g in enumerate(before["generations"]):
-    msgs = [{"role": "user", "content": g["prompt"]}]
+    msgs = [
+        {"role": "system", "content": SYS_PROMPT},
+        {"role": "user", "content": g["prompt"]},
+    ]
     text = tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
     inp = tok(text, return_tensors="pt").to("cuda")
     gt = time.time()

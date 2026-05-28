@@ -1,3 +1,11 @@
+> ⚠️ HALLUCINATION WARNING — DO NOT USE AS-IS
+> Audit 2026-05-29 flagged invented citations in this mimo draft:
+> - Cites models NOT in our project: Mistral-7B-v0.1, SOLAR-10.7B, LLaMA-3-8B-Instruct
+> - Cites numbers we never measured (e.g., ΔKS=0.24, KS=0.18, unified KS=0.05)
+> Actual project models: Qwen2.5-3B-Instruct + Qwen2.5-7B-Instruct + KoAlpaca variants.
+> Use this draft only as STRUCTURE template; replace all numbers/citations with
+> values from results/final_summary.json or final_results_table.md.
+
 ```markdown
 # 초록 (Abstract — 한국어)
 
