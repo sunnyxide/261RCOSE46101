@@ -46,24 +46,40 @@ Respond with ONLY a JSON object, no explanation:
 """
 
 def parse_scores(text):
-    """Extract scores JSON from judge response (handles markdown fences, extra text)."""
+    """Extract scores JSON from judge response. Robust to:
+      - markdown fences (```json ... ```)
+      - reasoning text before the final JSON
+      - nested {...} in the reasoning (uses LAST top-level JSON, not first inner)
+      - partial scores (returns whatever 3 keys parse correctly, falls back to None
+        only if zero dims captured — earlier behavior dropped entire judge for
+        partial dims, silently losing 80% of CAS data)
+    """
     if not text: return None
-    # Strip markdown code fences
     text = re.sub(r"```(?:json)?", "", text).strip()
-    # Find JSON object
-    m = re.search(r"\{[^{}]*\}", text, re.DOTALL)
-    if not m: return None
-    try:
-        d = json.loads(m.group(0))
-    except json.JSONDecodeError:
+    # Find ALL JSON-like objects, prefer the LAST one (reasoning models put
+    # final answer at the end). Use balanced-brace approach.
+    matches = re.findall(r"\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}", text, re.DOTALL)
+    candidate = None
+    for cand in reversed(matches):  # last-first
+        try:
+            d = json.loads(cand)
+            if isinstance(d, dict) and any(
+                k in d for k in ("cultural_authenticity", "persona_consistency", "factual_accuracy")
+            ):
+                candidate = d
+                break
+        except (json.JSONDecodeError, ValueError):
+            continue
+    if candidate is None:
         return None
     out = {}
     for k in ("cultural_authenticity", "persona_consistency", "factual_accuracy"):
-        v = d.get(k)
-        if isinstance(v, (int, float)) and 1 <= v <= 5:
-            out[k] = float(v)
-    if len(out) != 3: return None
-    return out
+        v = candidate.get(k)
+        if isinstance(v, (int, float)):
+            # Clamp to [1, 5] instead of dropping
+            out[k] = float(max(1.0, min(5.0, v)))
+    # Allow partial scores — aggregate() handles None per-dim
+    return out if out else None
 
 # ---------------- Judges ----------------
 

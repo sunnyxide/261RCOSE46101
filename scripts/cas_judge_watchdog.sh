@@ -63,8 +63,10 @@ while true; do
       2>&1 | tee -a "$LOG"
   done
 
-  # Stop if both AWS reinforcement done AND we've scored everything we have
-  if [[ -f "$LAB/results/REINFORCEMENT_A_COMPLETE" || -f "$LAB/results/REINFORCEMENT_B_COMPLETE" ]]; then
+  # Stop if BOTH AWS reinforcements done AND we've scored everything we have.
+  # Audit fix 2026-05-29: was OR which caused early termination when only one
+  # instance had finished, leaving the other's corpus permanently unscored.
+  if [[ -f "$LAB/results/REINFORCEMENT_A_COMPLETE" && -f "$LAB/results/REINFORCEMENT_B_COMPLETE" ]]; then
     pending=$(comm -23 \
       <(ls "$LAB/results/cas_corpus"/*.json 2>/dev/null | xargs -I{} basename {} .json | sort) \
       <(ls "$LAB/results/cas_scores"/*_scored.json 2>/dev/null | xargs -I{} basename {} _scored.json | sort) \

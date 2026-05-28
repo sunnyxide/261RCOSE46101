@@ -124,9 +124,24 @@ def load_haerae(n: int = 100):
             continue
         per_sub = max(5, n // 4)
         for r in ds.shuffle(seed=42).select(range(min(per_sub, len(ds)))):
-            choices = list(r.get("options") or [])
+            options_raw = r.get("options")
+            # CRITICAL FIX (audit 2026-05-29): `options` field is sometimes a
+            # JSON string ("['추석', '제사', ...]") not a list. list(str) gave
+            # a char-list, len()<2 check passed, scoring silently wrong → all
+            # HAE-RAE accuracy = 0.0 across all 5 models in phase1_extended.json.
+            if isinstance(options_raw, str):
+                choices = _normalize_choices(options_raw)
+            elif isinstance(options_raw, list):
+                choices = options_raw
+            else:
+                continue
             if len(choices) < 2:
                 continue
+            # Also strip embedded "(A) ..." from query if present to avoid
+            # duplicate choice rendering downstream.
+            query = r["query"]
+            query = re.sub(r"###\s*선택지\s*:.*?(?=\n###|\Z)", "", query, flags=re.DOTALL).strip()
+
             ans_raw = str(r.get("answer", "")).strip()
             m = re.search(r"[A-Ea-e]", ans_raw)
             if not m:
@@ -134,7 +149,7 @@ def load_haerae(n: int = 100):
             ans_idx = ord(m.group(0).upper()) - ord("A")
             if ans_idx < 0 or ans_idx >= len(choices):
                 continue
-            rows.append({"subject": sub, "question": r["query"],
+            rows.append({"subject": sub, "question": query,
                          "choices": [str(c) for c in choices], "answer_idx": ans_idx})
         if len(rows) >= n:
             break
@@ -256,9 +271,11 @@ def kmmlu_prompt(q, n_shot=0):
 
 def parse_choice(reply, n_choices, letter=False):
     if letter:
-        m = re.search(r"\b[A-D]\b", reply)
+        # Accept A-E for 5-choice HAE-RAE questions (~17% of HAE-RAE has 5 options).
+        # Audit 2026-05-29: capping at D dropped all E answers, biasing accuracy down.
+        m = re.search(r"\b[A-E]\b", reply)
         if not m:
-            m = re.search(r"[A-D]", reply)
+            m = re.search(r"[A-E]", reply)
         return ord(m.group(0)) - ord("A") if m else -1
     m = re.search(r"\b[1-9]\b", reply) or re.search(r"[1-9]", reply)
     if m:

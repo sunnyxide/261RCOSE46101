@@ -33,7 +33,7 @@ CULTURE_NAMES = {
     "cn": {"globalopinion": "China", "blend": "China",         "label_en": "China"},
 }
 
-LETTERS = "ABCDE"
+LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # bug audit 2026-05-29: GO has up to 9 options
 
 def build_mcq_prompt(question, choices, culture_label):
     lines = [f"Q (you are answering from a {culture_label} cultural perspective): {question}"]
@@ -43,7 +43,10 @@ def build_mcq_prompt(question, choices, culture_label):
     return "\n".join(lines)
 
 def parse_letter(reply, n_choices):
-    m = re.search(r"[A-E]", reply.strip().upper())
+    # Accept up to LETTERS[n_choices-1] dynamically
+    if n_choices <= 0: return None
+    max_letter = LETTERS[min(n_choices - 1, len(LETTERS) - 1)]
+    m = re.search(f"[A-{max_letter}]", reply.strip().upper())
     if not m: return None
     idx = ord(m.group(0)) - ord("A")
     return idx if 0 <= idx < n_choices else None

@@ -81,11 +81,10 @@ def main():
         ])+" |")
 
     lines.append("\n## 2. Cultural-QLoRA on target benchmark (per culture)\n")
-    lines.append("| Culture | KoBBQ corr | KoBBQ bias | KMMLU | HAE-RAE | CLIcK |")
-    lines.append("|---|---|---|---|---|---|")
+    lines.append("| Culture | Model | KoBBQ corr | KoBBQ bias | KMMLU | HAE-RAE | CLIcK |")
+    lines.append("|---|---|---|---|---|---|---|")
     for culture, runs in cultural.items():
         if not runs: continue
-        # latest run
         path, data = runs[-1]
         results = (data or {}).get("results", {})
         for label, r in results.items():
@@ -93,8 +92,11 @@ def main():
             m = r.get("kmmlu") or {}
             h = r.get("haerae") or {}
             c = r.get("click") or {}
+            # Audit fix 2026-05-29: was joining culture+label as single cell,
+            # producing 7 cells under 6-col header → shifted KMMLU/HAE-RAE/CLIcK.
             lines.append("| "+" | ".join([
-                f"{culture.upper()} | {label}",
+                culture.upper(),
+                label,
                 fmt(k.get("correct_rate")),
                 fmt(k.get("bias_rate")),
                 fmt(m.get("accuracy")),
@@ -117,6 +119,32 @@ def main():
             fmt(bl.get("accuracy")),
             str(bl.get("unparsed", "-")),
         ])+" |")
+
+    # ---- Section 4: CAS LLM-judge scores ----
+    cas_scores = sorted(glob.glob(str(ROOT / "results/cas_scores" / "*_scored.json")))
+    if cas_scores:
+        lines.append("\n## 4. CAS LLM-judge panel (gpt-5.5 + Claude + mimo)\n")
+        lines.append("| Adapter | Culture | Authenticity | Consistency | Factual | n_prompts | Multi-judge coverage |")
+        lines.append("|---|---|---|---|---|---|---|")
+        for p in cas_scores:
+            d = load(p) or {}
+            label = d.get("label", Path(p).stem)
+            culture = d.get("culture", "?")
+            overall = (d.get("overall") or {}).get("per_dim") or {}
+            irr = (d.get("overall") or {}).get("inter_rater") or {}
+            n_prompts = d.get("n_prompts", 0)
+            # Average multi-judge coverage across 3 dims
+            mj_n = [irr.get(dim, {}).get("n_with_multi_judge", 0)
+                    for dim in ("cultural_authenticity", "persona_consistency", "factual_accuracy")]
+            avg_mj = sum(mj_n) / 3 if mj_n else 0
+            coverage = f"{avg_mj:.0f}/{n_prompts}" if n_prompts else "-"
+            lines.append("| " + " | ".join([
+                label, culture,
+                fmt(overall.get("cultural_authenticity", {}).get("mean")),
+                fmt(overall.get("persona_consistency", {}).get("mean")),
+                fmt(overall.get("factual_accuracy", {}).get("mean")),
+                str(n_prompts), coverage,
+            ]) + " |")
 
     # ---- Write outputs ----
     table_path = OUT_REPORTS / "final_results_table.md"
