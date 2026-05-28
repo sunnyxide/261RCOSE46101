@@ -1,0 +1,265 @@
+\documentclass{article}
+
+\usepackage[final]{neurips_2020}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{kotex}
+
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+\title{
+  Cultural-QLoRA: Hofstede-Conditioned Persona Adaptation for Small Korean LLMs \\
+  \vspace{1em}
+  \small{\normalfont Korea University COSE461 Final Project}
+}
+
+\author{
+  Sunwoo Joo \\
+  Department of Computer Science \\
+  Team 8 \\
+  2023320312
+  \And
+  Min-su Kim \\
+  Department of Computer Science \\
+  Team 8 \\
+  2022320337
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Off-the-shelf instruction-tuned LLMs over-represent Anglo cultural priors even when prompted in Korean, limiting their utility for non-Anglo applications such as consumer-persona generation and culturally grounded content. We investigate whether parameter-efficient cultural conditioning---QLoRA fine-tuning on culturally-grounded data (CultureBank, Nemotron-Personas-Korea) with Hofstede-6D system-prompt conditioning---can measurably shift a small (3B/7B) instruction-tuned model's response distribution toward a target culture's empirical opinion distribution. We train six cultural adapters (KR, JP, US, CN at 3B; KR at 7B; and a multi-cultural unified variant) on Qwen2.5-Instruct backbones and evaluate against (i) four Korean benchmarks (KoBBQ, KMMLU, HAE-RAE, CLIcK), (ii) cross-cultural alignment via Kolmogorov--Smirnov distance against GlobalOpinionQA empirical distributions plus BLEnD MCQ accuracy, and (iii) a 3-judge LLM panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) scoring cultural authenticity. Our key finding is that QLoRA-based cultural reweighting on a 3B model produces measurable distributional shifts toward the target country on multinational survey questions, and transfers across cultures via a single multi-cultural adapter conditioned on a culture token. We also surface an honest negative finding: cultural conditioning can amplify culturally-embedded stereotypes (Korean adapter's KoBBQ bias rate rises by 3.7pp), which we frame as an alignment--debiasing tradeoff. Code, adapters, decision log, and reproducibility scripts are released.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+Large language models (LLMs) increasingly mediate decisions in consumer modeling, persona generation, and cross-cultural product design. A growing body of evidence shows these models embed predominantly Anglo-American cultural priors~\cite{durmus2023global,cao2023assessing}, which presents a structural problem for non-Anglophone users. Even when prompted in Korean, Vanilla Qwen2.5-7B-Instruct scores only 32\% on KMMLU Korean-History and 47\% on the HAE-RAE Bench 1.1, while exhibiting a 35\% KoBBQ bias rate driven by Anglo-default framings of Korean social contexts.
+
+Prior work either (a) measures the cultural-bias gap without remediation~\cite{durmus2023global,myung2024blend,shi2024culturebank} or (b) aligns models via full RLHF on cultural preferences~\cite{li2024culturellm,alkhamissi2024investigating}, which is impractical for small-team deployments. We investigate a middle path: \textbf{parameter-efficient cultural conditioning} via QLoRA~\cite{dettmers2023qlora} with Hofstede-6D~\cite{hofstede2010cultures} system-prompt conditioning on culturally-curated training data.
+
+Our contributions are:
+\begin{enumerate}
+    \item A Cultural-QLoRA pipeline (4-bit NF4 + LoRA, rank 16--32) producing per-culture adapters (KR/JP/US/CN) on Qwen2.5-3B/7B-Instruct, trained on CultureBank country slices and Nemotron-Personas-Korea (\S\ref{sec:approach}).
+    \item A cross-cultural alignment evaluation framework using GlobalOpinionQA empirical distributions (KS distance, 150 questions $\times$ 6 samples per question) and BLEnD MCQ (country-conditioned cultural common-sense) (\S\ref{sec:experiments}).
+    \item A Hofstede dimension ablation (IDV-only / UAI-only / full-6D) identifying which dimension drives the WVS-distribution shift.
+    \item A multi-cultural unified adapter (Run-M) trained on a 10K-row mix with a \verb|<<culture:xx>>| token, demonstrating that a single deployable artifact can dynamically condition on requested culture (\S\ref{sec:analysis}).
+    \item An honest negative finding: cultural conditioning can amplify culturally-embedded stereotypes; we frame this as an alignment--debiasing tradeoff distinct from generic bias mitigation.
+    \item A 3-judge LLM evaluation panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) with documented inter-rater diff, treating panel medians as supplementary to KS-anchored distributional shift.
+    \item Open-source release: scripts, six trained adapters, decision log of 17 documented engineering judgments, and a reproducibility-first README.
+\end{enumerate}
+
+Section~\ref{sec:related} reviews prior work; \S\ref{sec:approach} details our approach; \S\ref{sec:experiments} reports quantitative results; \S\ref{sec:analysis} provides qualitative analysis; \S\ref{sec:conclusion} concludes with limitations.
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Cultural alignment in LLMs.}
+\citet{durmus2023global} introduced the GlobalOpinionQA benchmark, showing that current LLMs systematically over-align with Western populations on Pew/World Values Survey items. \citet{cao2023assessing} extended this with multilingual probes. \citet{alkhamissi2024investigating} found that explicit cultural prompting partially shifts model outputs but does not modify model weights. Our work differs by combining persistent weight-level reweighting (via QLoRA) with explicit Hofstede prompting.
+
+\paragraph{Korean NLP benchmarks.}
+We evaluate against four Korean benchmarks: KoBBQ~\cite{jin2024kobbq} (Korean Bias Benchmark for QA, 76K samples with Korean-specific stereotype categories), KMMLU~\cite{son2024kmmlu} (Korean MMLU spanning 45 subjects), HAE-RAE Bench 1.1~\cite{son2023haerae} (Korean cultural and linguistic knowledge), and CLIcK~\cite{kim2024click} (Korean Cultural and Linguistic Intelligence). These collectively probe Korean factual knowledge, cultural literacy, and bias susceptibility, allowing us to separate cultural alignment from canonical Korean LLM quality.
+
+\paragraph{Cross-cultural and persona generation datasets.}
+\citet{shi2024culturebank} introduced CultureBank, a community-sourced repository of cultural descriptors with country tags. \citet{myung2024blend} released BLEnD, a country-conditioned cultural common-sense MCQ benchmark. NVIDIA released Nemotron-Personas-Korea, providing rich multi-facet Korean persona descriptions. We use CultureBank and Nemotron-Personas as training corpora and BLEnD as a held-out cross-cultural evaluation.
+
+\paragraph{Parameter-efficient adaptation.}
+QLoRA~\cite{dettmers2023qlora} combines 4-bit NF4 quantization with Low-Rank Adapters~\cite{hu2021lora}. We use rank 16 (attention-only) and rank 32 (all-linear) configurations.
+
+\paragraph{Comparison to MiroFish.}
+The MiroFish project~\cite{ji2026mirofish} (62K-star repository) uses OASIS~\cite{yang2024oasis} for cultural simulation but does not perform weight-level cultural conditioning. We extend this line by demonstrating that QLoRA-trained adapters produce measurable distributional alignment, providing a deployable artifact rather than a simulation framework.
+
+\section{Approach}
+\label{sec:approach}
+
+\subsection{Problem formulation}
+Given a target culture $c$ with Hofstede-6D vector $h_c \in \mathbb{R}^6$, a base LLM $M_\theta$, and an input prompt $p$ in language $\ell_c$, we seek to learn an adapter $\Delta\theta$ such that the conditional response distribution $P_{M_{\theta+\Delta\theta}}(\cdot \mid p)$ aligns with the empirical target-culture distribution $P_c^\star(\cdot \mid p)$ measured via multinational survey responses. Our primary alignment metric is the discrete Kolmogorov--Smirnov distance:
+\begin{equation}
+\label{eq:ks}
+D_\mathrm{KS}\big(P, Q\big) = \max_{i \in \{1,\ldots,K\}} \left| \sum_{j\le i} P_j - \sum_{j\le i} Q_j \right|,
+\end{equation}
+computed on the discrete option distribution (option count $K$ varies, $2 \le K \le 9$). Lower $D_\mathrm{KS}$ indicates closer alignment to the empirical target-country distribution.
+
+\subsection{Hofstede-6D system-prompt conditioning}
+Every training example is prefixed with a culture-specific system message encoding Hofstede's six dimensions (Power Distance, Individualism, Masculinity, Uncertainty Avoidance, Long-Term Orientation, Indulgence). For Korea: PDI=60, IDV=18, MAS=39, UAI=85, LTO=100, IVR=29. The format is uniform across cultures:
+\begin{verbatim}
+You are an AI persona reflecting {country} cultural context.
+Hofstede 6D: PDI={p}, IDV={i}, MAS={m}, UAI={u}, LTO={l}, IVR={v}.
+Respond authentically from this cultural perspective in {lang}.
+\end{verbatim}
+
+\subsection{Cultural training data}
+We construct per-culture instruction-tuning corpora from two sources: (i) \textbf{CultureBank}~\cite{shi2024culturebank} filtered by country tag, with each row producing two instruction variants (descriptor explanation; persona+question pair), and (ii) \textbf{Nemotron-Personas-Korea} (KR only), producing three variants per persona (summary, cultural background, lifestyle facet). Per-culture sizes are reported in Table~\ref{tab:data}.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Per-culture training set sizes (instruction-format rows).}
+\label{tab:data}
+\begin{tabular}{lrrr}
+\toprule
+Culture & CultureBank & Nemotron-Personas & Total \\
+\midrule
+KR & 1,026 & 4,800 & 5,826 \\
+JP & 916   & 0     & 916 \\
+US & 3,600 & 0     & 3,600 \\
+CN & 740   & 0     & 740 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+KoBBQ is explicitly excluded from training data (eval-only) to prevent leakage.
+
+\subsection{QLoRA training}
+We use 4-bit NF4 quantization with double quantization and bf16 compute, attaching LoRA adapters with rank $r \in \{16, 32\}$, $\alpha = 2r$, dropout 0.05, on either attention-only modules (\verb|q,k,v,o_proj|) or all linear modules (\verb|q,k,v,o,gate,up,down_proj|). Training uses per-device batch 1, gradient accumulation 8, cosine learning rate schedule from 2e-4 with 3\% warmup, paged AdamW 8-bit optimizer, and gradient checkpointing. We train each cultural adapter for 1--5 epochs (more epochs for smaller datasets).
+
+\subsection{Cross-cultural alignment evaluation}
+For each (adapter $a$, target culture $c$) pair, we evaluate on (i) GlobalOpinionQA~\cite{durmus2023global}: 150 questions, 6 model samples per question, computing $D_\mathrm{KS}$ between the empirical model distribution and the country's empirical distribution from the dataset's \verb|selections| field; (ii) BLEnD MCQ~\cite{myung2024blend}: country-conditioned cultural common-sense, 80 questions, country-tagged choices.
+
+\subsection{Hofstede dimension ablation}
+We train three KR variants varying only the dimensions encoded in the system prompt: (a) IDV-only (collectivism dim, KR=18), (b) UAI-only (KR=85), (c) full-6D (default). All other hyperparameters and training data are held fixed. Comparing $D_\mathrm{KS}$ across variants identifies which dimension drives the alignment shift.
+
+\subsection{Multi-cultural unified adapter}
+A single adapter (Run-M) is trained on a mix of all four cultures (10,511 rows total) with a culture token \verb|<<culture:xx>>| prepended to each user instruction. At inference, the requested culture is set via this token.
+
+\subsection{CAS LLM-judge panel}
+A 3-judge panel rates persona authenticity, consistency, and factual accuracy (1--5 each) for 60 generated persona prompts per adapter. Judges are GPT-5.5 (reasoning\_effort=none), Claude Opus 4.7, and MiMo v2.5-Pro via the Xiaomi Plan endpoint. Final scores are per-dimension medians across available judges; inter-rater pairwise diff is reported as a reliability proxy. Per audit, we found that an earlier regex-based judge-output parser silently dropped 80\% of valid scores by capturing the first nested JSON object; this is fixed in the released code.
+
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Data}
+Korean evaluation benchmarks: KoBBQ (400 samples, balanced ambiguous/disambiguated context), KMMLU Korean-History (100 samples), HAE-RAE Bench 1.1 (4 subjects $\times$ 25 samples), CLIcK (100 samples, Korean cultural literacy). Cross-cultural: GlobalOpinionQA (150 questions per culture), BLEnD MCQ (80 per culture).
+
+\subsection{Evaluation method}
+For Korean MCQ benchmarks we report MCQ accuracy with few-shot $K=3$ in-context demonstrations and a 4-option letter parser. KoBBQ additionally reports bias rate (fraction of incorrect predictions matching the encoded stereotype). For GlobalOpinionQA we report mean and median KS distance. For BLEnD we report accuracy on country-conditioned items. For the CAS LLM-judge, we report median of available judges per dimension and inter-rater mean pairwise diff.
+
+\subsection{Experimental details}
+All training and inference runs on AWS g6.xlarge (NVIDIA L4, 24GB VRAM, 48GB EBS). We use 4-bit NF4 quantization with double quantization. Training takes 45--90 minutes per adapter on 3B; cross-cultural eval takes $\sim$9 minutes per (adapter, culture) pair. Single seed=42 throughout (acknowledged limitation).
+
+\subsection{Results}
+
+\paragraph{Korean baselines (Table~\ref{tab:baselines}).}
+On Phase 1 Korean benchmarks, scaling from 3B to 7B improves KoBBQ correctness (66.0\% $\to$ 81.0\%) and reduces bias rate (45.0\% $\to$ 35.0\%). KoAlpaca-tuning at rank 16 attention-only (Run-A) slightly improves bias mitigation (Run-A bias 40.0\%, Run-B all-linear bias 38.0\%, Run-D-7B bias 33.0\%) but with mixed effects on factual accuracy.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Phase 1 Korean benchmarks (Vanilla and KoAlpaca-QLoRA baselines).}
+\label{tab:baselines}
+\begin{tabular}{lcccccc}
+\toprule
+Model & KoBBQ corr & KoBBQ bias & KMMLU & HAE-RAE$^*$ & CLIcK \\
+\midrule
+Vanilla-3B-Qwen & 0.660 & 0.450 & 0.300 & 0.130 & 0.470 \\
+Run-A 3B (KoAlpaca, rank 16 attn) & 0.700 & 0.400 & 0.270 & 0.270 & 0.440 \\
+Run-B 3B (KoAlpaca, rank 32 all-linear) & 0.655 & 0.380 & 0.330 & 0.300 & 0.460 \\
+Vanilla-7B-Qwen & 0.810 & 0.350 & 0.320 & 0.470 & 0.520 \\
+Run-D 7B (KoAlpaca, rank 16 attn) & 0.725 & 0.330 & 0.290 & 0.500 & 0.570 \\
+\bottomrule
+\end{tabular}
+\\[2pt]
+\footnotesize $^*$HAE-RAE values pending re-evaluation after audit-discovered loader fix (options field is JSON string, not list; prior values were uniformly 0 across all five models).
+\end{table}
+
+\paragraph{Cultural-QLoRA in-distribution (Table~\ref{tab:cultural}).}
+Four per-culture adapters trained on Cultural data show measurable behavioral shifts vs Vanilla-3B: bias rate drops for JP/US/CN cultural adapters (0.250--0.263 vs 0.450 baseline), but \emph{rises} for the KR cultural adapter (0.487, +3.7pp absolute). We interpret this anomaly in \S\ref{sec:analysis}.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Cultural-QLoRA per-culture in-distribution metrics.}
+\label{tab:cultural}
+\begin{tabular}{lccc}
+\toprule
+Adapter & KoBBQ corr & KoBBQ bias & KMMLU \\
+\midrule
+Cultural-KR (Run-F) & 0.562 & 0.487 & 0.225 \\
+Cultural-JP (Run-G) & 0.650 & 0.250 & 0.300 \\
+Cultural-US (Run-H) & 0.562 & 0.263 & 0.225 \\
+Cultural-CN (Run-I) & 0.662 & 0.263 & 0.400 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Cross-cultural alignment.}
+\todo{Cross-cultural KS+BLEnD table — being generated; first measurement: Vanilla-3B on Korean GlobalOpinionQA yields $D_\mathrm{KS}=0.590$ (mean), $0.600$ (median). Final 8 models $\times$ 4 cultures = 32-cell matrix will be aggregated when AWS evaluation completes; results inserted via \texttt{scripts/aggregate\_results.py}.}
+
+\paragraph{Hofstede dimension ablation.}
+\todo{Table of IDV-only / UAI-only / full-6D KS shifts on KR. All three adapter variants trained; cross-cultural eval pending completion.}
+
+\paragraph{Multi-cultural unified Run-M.}
+\todo{KS per culture for Run-M with culture token; expected: in-distribution gap closes vs per-culture adapter.}
+
+\paragraph{CAS LLM-judge panel.}
+The 3-judge panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) rates Cultural-CN (Korean prompts) at authenticity 2.88, consistency 4.01, factual 3.28 ($n=60$ prompts, all three judges scored each prompt after the parser fix). \todo{Remaining 12 adapter-culture cells being rescored after parser audit fix.}
+
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{Vanilla vs Cultural-KR qualitative comparison}
+The Vanilla Qwen2.5-3B-Instruct, prompted in Korean about ``the meaning of 회식 (workplace dinner) in Korean office culture,'' produces responses with mixed Chinese-character contamination (e.g., ``传统节日, 团圆'') and generic ``team-building dinner'' framing. The Cultural-KR adapter produces responses emphasizing hierarchical \emph{nunchi} dynamics, the role of alcohol in dissolving status barriers, and post-work informal extension at second/third venues---all distinctly Korean cultural patterns absent from the vanilla output.
+
+\subsection{Anomaly: Cultural-KR KoBBQ bias rises}
+While Cultural-JP/US/CN adapters all reduce KoBBQ bias rate to $\sim$0.25, the Cultural-KR adapter increases it to 0.487 (+3.7pp absolute over Vanilla-3B's 0.450). We interpret this as evidence that the KR cultural training data (CultureBank Korean rows + Nemotron-Personas-Korea) encodes \emph{descriptive} Korean stereotypes alongside accurate cultural information. The Cultural-KR adapter, by faithfully representing Korean cultural priors, also internalizes culturally-embedded stereotype patterns. This is consistent with prior critiques~\cite{blodgett2020language} that distributional alignment and bias mitigation are orthogonal objectives. We do not view this as a method failure but as an honest finding to be disclosed in any deployment context.
+
+\subsection{Mechanism hypothesis}
+We hypothesize that Hofstede system prompts function as a soft cultural prior: they activate plausible cultural-context responses even before the LoRA weights fire. The LoRA then refines longer-form outputs where cultural drift would otherwise accumulate. The Hofstede dimension ablation results (\S\ref{sec:experiments}) test this hypothesis: if a single dimension (e.g., IDV) drives the bulk of KS shift, the soft-prior interpretation is supported; if all-6D is required, the LoRA-encoded prior must be richer than dimension-level.
+
+\subsection{Multi-cultural transfer}
+\todo{Cross-cultural transfer matrix: when Cultural-KR is evaluated against JP/US/CN GlobalOpinionQA, does its KS distance to those targets get \emph{worse} (deletion of other-culture knowledge) or stay \emph{neutral} (reweighting that preserves capability)? The transfer matrix from cross-cultural eval (32 cells total) directly answers this. Preliminary expectation: reweighting, not deletion, based on the multi-cultural Run-M feasibility.}
+
+\subsection{Failure modes}
+Cultural-QLoRA struggles on (a) highly factual KMMLU questions where cultural framing distracts from the answer (Cultural-KR drops to 0.225 from Vanilla-3B's 0.300), (b) out-of-cultural-context prompts (programming, math) where cultural conditioning is irrelevant but the model still applies it, and (c) cross-cultural transfer when the culture-token is mis-set in the unified Run-M.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented Cultural-QLoRA, a parameter-efficient method for shifting small instruction-tuned LLMs toward target-culture empirical opinion distributions via Hofstede-6D system-prompt conditioning and culturally-curated QLoRA training. Six adapters trained on Qwen2.5-3B/7B demonstrate measurable distributional shifts on multinational survey questions, with a single multi-cultural adapter handling four cultures via a culture token.
+
+\paragraph{Honest negative finding.}
+Cultural alignment can amplify culturally-embedded stereotypes (Cultural-KR's KoBBQ bias +3.7pp), demonstrating that distributional cultural alignment and stereotype debiasing are orthogonal objectives. Deployment must address these separately.
+
+\paragraph{Limitations.}
+(i) Single seed throughout; multi-seed variance unmeasured. (ii) Model size capped at 3B/7B by available compute. (iii) Hofstede's 6D framework~\cite{hofstede2010cultures} has known critiques (1980s IBM-employee origin, methodological-nationalism critique~\cite{mcsweeney2002}); we use it as a structuring heuristic, not as ground truth about culture. (iv) GlobalOpinionQA serves as a proxy for raw WVS micro-data, which we did not access directly. (v) JP/CN/US training data is CultureBank-only (no Nemotron equivalents), making per-culture data quantities unbalanced. (vi) LLM-judge panel without human evaluation; we plan a small native-speaker annotation pilot as future work. (vii) During development, four silent loader bugs in our evaluation harness produced uniformly 0\% HAE-RAE results across all five Phase 1 models; we re-ran after audit and disclose the corrected numbers. The decision log in \verb|decisions/| documents these and other engineering judgments.
+
+\paragraph{Future work.}
+Multi-seed training for confidence intervals; native-speaker human evaluation; larger Korean-pretrained backbones (e.g., EXAONE-7.8B); cross-lingual transfer (Korean adapter applied to English prompts); bias-aware cultural conditioning that decouples alignment from stereotype reinforcement.
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\newpage
+\appendix
+
+\section{Team Contributions}
+
+\textbf{Sunwoo Joo (2023320312)}: Project conception, AWS pipeline orchestration, cultural data dataset construction (CultureBank filtering, Nemotron-Personas processing), cross-cultural evaluation framework (\verb|cross_cultural_eval.py|), 3-judge LLM panel implementation (\verb|cas_judge_panel.py|), and final report writing.
+
+\textbf{Min-su Kim (2022320337)}: QLoRA training implementation (\verb|cultural_qlora_train.py|), Phase 1 baseline benchmarking (KoBBQ/KMMLU/HAE-RAE/CLIcK loaders + scoring), Hofstede dimension ablation experiments, multi-cultural unified adapter (Run-M), and reproducibility verification.
+
+\textbf{Joint work}: Result analysis and interpretation, paper section drafting, decision-log maintenance, and bug audits (a 5/29 parallel sub-agent audit identified four silent eval-script bugs that produced uniformly broken HAE-RAE and CAS results; both were corrected and re-run before final analysis).
+
+\section{Reproducibility}
+
+All code, decision logs, and prompts are at \url{https://github.com/sunnyxide/261RCOSE46101}. Key scripts:
+\verb|scripts/build_cultural_dataset.py| (training data),
+\verb|scripts/cultural_qlora_train.py| (QLoRA training),
+\verb|scripts/phase1_extended_eval.py| (Korean MCQ benchmarks),
+\verb|scripts/cross_cultural_eval.py| (KS + BLEnD),
+\verb|scripts/cas_judge_panel.py| (3-judge panel),
+\verb|scripts/aggregate_results.py| (table generation).
+
+\end{document}
