@@ -1,135 +1,129 @@
-# ORBT Research Lab — Autonomous Korean Persona Research Infrastructure
+# Cultural-QLoRA: Hofstede-Conditioned Persona Generation for Korean LLMs
 
-24/7 autonomous research lab running on Mac Mini M4 Pro (48GB) with AWS burst capacity, conducting the Cultural KG Retrieval × Korean Persona Generation study for COSE461 and ORBT R&D.
+**COSE461 Final Project — Korea University, Spring 2026**
 
-> **NEW HERE? Read `HANDOFF.md` first.** It is the canonical self-contained brief for the Mac Mini Claude Code session and any new collaborator. Everything below is supporting detail.
+| | |
+|---|---|
+| **Team** | 8 — 토큰해적단 (Token Pirates) |
+| **Members** | 주선우 (2023320312) · 김민수 (2022320337) |
+| **Course** | COSE461 Natural Language Processing |
+| **Repo** | `https://github.com/sunnyxide/261R0136COSE34102` |
 
-## Why this exists (90-second version)
+---
 
-LLMs are Western-default. Korean D2C enterprises cannot trust them for consumer modeling because the models think in American patterns dressed in Korean syntax. CulturalBench reports 61.5% best LLM vs 92.4% human; KAIO 2026 shows GPT-5 at 62.8 — 37 points of headroom on the frontier model. Prior work measures the gap or aligns values; nobody has produced a deployable culturally-grounded consumer-persona pipeline. We do, and we transfer it directly into ORBT's Hermes agent and OpenCloud workflow.
+## Project summary
 
-The lab serves two outputs in one campaign: an academic paper (COSE461) and a production module (ORBT). See `MOTIVATION_v2.md` for the long form, `KPI_FRAMEWORK.md` for measurable targets, and `ORBT_INTEGRATION.md` for product transfer.
+Off-the-shelf instruction-tuned LLMs over-represent Anglo-American cultural priors even when prompted in Korean. This project investigates whether **QLoRA fine-tuning with Hofstede-6D system-prompt conditioning** on cultural exemplar data (CultureBank + Nemotron-Personas-Korea) measurably shifts a small model's response distribution toward a target culture's empirical distribution on multinational opinion surveys.
 
-## What this is
+We train four per-culture adapters (KR / JP / US / CN) on Qwen2.5-3B and one on Qwen2.5-7B, plus a unified multi-cultural adapter, and evaluate against six Korean benchmarks plus a cross-cultural KS metric.
 
-A **tiered-autonomy** research orchestration system. Eight specialized agents collaborate to:
-1. Pull and validate cultural/demographic data (Nemotron-Personas-Korea, CultureBank, KOSIS, WVS Wave 7).
-2. Build a Korean cultural knowledge graph (LightRAG + Neo4j).
-3. Generate Korean consumer personas under 6 ablation conditions × 4-5 model backbones.
-4. Simulate persona behavior under 50 D2C scenarios via OASIS.
-5. Compute static (CAS, HAD, PDI, JSD) and dynamic (CCR, AAS, GCS, BAS) metrics.
-6. Draft the final paper sections with adversarial Writer-Critic loops.
-7. Audit own work hourly (QA Meta) and daily (PI), escalating drift to humans.
-8. Report status to humans daily and request approval for non-trivial decisions.
+## Key contributions
 
-**Important constraints:**
-- All "Tier 3" actions (research questions, methodology, final merge to `main`) require explicit human approval.
-- Writer can only commit to `draft/agent-{run_id}` branches, never `main`.
-- Daily cost cap kills the system if exceeded. No silent budget run-away.
-- Every decision is logged in `decisions/` with full justification.
-- Course AI policy compliance is verified before W1 execution.
+1. **Cultural-QLoRA pipeline** — Hofstede-6D-conditioned QLoRA on small (3B/7B) instruction-tuned models with structured cultural training data.
+2. **Cross-cultural alignment metric** — Kolmogorov–Smirnov distance between model response distribution and target country's empirical distribution on GlobalOpinionQA, complemented by BLEnD MCQ accuracy.
+3. **Cross-cultural transfer matrix** — 4 adapters × 4 benchmark cultures: characterizes whether cultural conditioning reweights or deletes other-culture knowledge.
+4. **Hofstede dimension ablation** — IDV-only / UAI-only / full-6D variants to identify which dimension drives the shift.
+5. **Multi-cultural unified adapter (Run-M)** — single model with `<<culture:xx>>` token, tests dynamic cultural conditioning.
+6. **CAS three-judge panel** — GPT-5.5 + Claude Opus 4.7 + MiMo v2.5-Pro median scoring on cultural_authenticity / persona_consistency / factual_accuracy.
 
-## Architecture
+## Reproducibility
 
-```
-┌──────────────────────────────────────────────────────────┐
-│   MAC MINI (always-on)                                    │
-│                                                           │
-│   orchestrator/scheduler.py  ← launchd service           │
-│              │                                            │
-│              ├── spawns ───→ agents/data_steward.py      │
-│              ├── spawns ───→ agents/experiment_runner.py │
-│              ├── spawns ───→ agents/analyst.py            │
-│              ├── spawns ───→ agents/writer.py             │
-│              ├── spawns ───→ agents/critic.py             │
-│              ├── spawns ───→ agents/librarian.py          │
-│              ├── spawns ───→ agents/qa_meta.py        (v2)│
-│              └── spawns ───→ agents/principal_investigator.py (v2)│
-│                                                           │
-│   Persistent state:                                       │
-│     - Git repo (this directory)                           │
-│     - SQLite (orchestrator/state.db)                      │
-│     - Neo4j container (LightRAG KG)                       │
-│     - DVC-tracked data/                                   │
-│                                                           │
-│   Human interface:                                        │
-│     - Slack bot (#orbt-research-lab)                      │
-│     - 07:00 KST PI audit + 08:00 KST daily digest         │
-│     - Streamlit dashboard at lab.tryorbt.com:8501         │
-│                                                           │
-└──────────────┬───────────────────────────────────────────┘
-               │
-               ├── AWS g6e.xlarge (burst: QLoRA, batch GPU inference)
-               └── External APIs (OpenAI, Anthropic, Alibaba)
-```
-
-## Three nested feedback loops (see `SELF_EVAL_LOOP.md`)
-
-- **Loop A — per-task self-check**: every domain agent runs `confidence + traceability` self-eval before commit. Catches ~60% of issues cheaply.
-- **Loop B — Writer-Critic adversarial**: different model families (Writer = Claude Sonnet 4.6, Critic = GPT-5) review drafts adversarially, max 3 rounds.
-- **Loop C — QA Meta + PI audit**: hourly KPI projections + daily research-integrity audit. Catches drift no per-task review can see.
-
-## Tiered autonomy
-
-| Tier | Authority | Actions | Human |
-|------|-----------|---------|-------|
-| **1** | Full auto | Data fetch, schema validation, simulation runs, metric computation, daily digest, queue reordering | Notified |
-| **2** | Auto-propose | New experiment configs, report section drafts (branch only), bug fixes, lit search summaries, QA Meta config proposals | Async approval via Slack 👍/👎 within 24h |
-| **3** | Human-only | RQ/hypothesis changes, methodology changes, main-branch merge, IRB, submission, ORBT production integration | Required, in person |
-
-## Quickstart
-
+### Setup
 ```bash
-# On Mac Mini
-git clone <repo> orbt-research-lab && cd orbt-research-lab
-cp .env.example .env  # fill in API keys
-make setup            # installs deps, pulls models, builds Neo4j
-make verify-policy    # confirms COSE461 AI usage policy has been reviewed
-make first-run        # dispatches Layer 1 data collection as first autonomous task
-make status           # prints current queue and budget state
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+cp .env.example .env       # populate OPENAI_API_KEY, ANTHROPIC_API_KEY, XIAOMI_PLAN_API_KEY, HF_TOKEN
 ```
 
-## Repository structure
-
-```
-orbt-research-lab/
-├── HANDOFF.md                   # ← Mac Mini Claude Code reads this first
-├── MOTIVATION_v2.md             # long-form motivation, used by Writer
-├── KPI_FRAMEWORK.md             # measurable targets, gates, fail actions
-├── SELF_EVAL_LOOP.md            # three nested feedback loops
-├── DEVIATIONS_FROM_PPT.md       # what we changed from original PPT and why
-├── ORBT_INTEGRATION.md          # product transfer plan
-├── SETUP.md                     # first deployment runbook
-├── orchestrator/                # Task queue, scheduler, budget, resource router
-├── agents/                      # Eight specialized agents (Claude Agent SDK)
-├── prompts/                     # System prompts for each agent (versioned)
-├── config/                      # Agent configs, model registry, course rubric
-├── data/                        # Raw + processed datasets (DVC-tracked)
-├── decisions/                   # Decision log (every Tier 1/2 action logged here)
-├── reports/                     # Paper drafts, presentation, ORBT internal memo
-├── scripts/                     # One-off utility scripts
-├── notebooks/                   # Exploratory analysis (not autonomous)
-├── docker/                      # docker-compose, Dockerfiles
-├── tests/                       # Critic agent's offline test fixtures
-├── Makefile
-├── pyproject.toml
-```
-
-## Stop button
-
+### Training a cultural adapter
 ```bash
-make emergency-stop      # halts all agents, releases AWS, sends Slack alert
+# Step 1: build per-culture cultural training set
+python scripts/build_cultural_dataset.py --culture kr --target 12000
+
+# Step 2: train Cultural-QLoRA
+python scripts/cultural_qlora_train.py \
+    --culture kr \
+    --base-model Qwen/Qwen2.5-3B-Instruct \
+    --run-id run-f-kr-rank32 \
+    --num-epochs 2 --lora-rank 32 --lora-target all_linear
 ```
 
-Or send `!stop` in the Slack channel. All agents poll for this signal between tasks.
+### Evaluation
+```bash
+# In-distribution Korean benchmarks (KoBBQ/KMMLU/HAE-RAE/CLIcK)
+python scripts/phase1_extended_eval.py \
+    --config config/eval_5way.json \
+    --out results/benchmarks/phase1_extended.json \
+    --few-shot 3 --n-kobbq 400 --n-kmmlu 200 --n-haerae 100 --n-click 100
 
-## Quality bar
+# Cross-cultural alignment (KS + BLEnD)
+python scripts/cross_cultural_eval.py \
+    --base Qwen/Qwen2.5-3B-Instruct \
+    --adapter runs/run-f-kr-*/adapter_final \
+    --culture kr \
+    --n-globalopinion 200 --n-blend 100 --n-samples-globalopinion 8 \
+    --out results/benchmarks/cross_cultural_run-f-kr_kr.json
+```
 
-This project explicitly aims to exceed last year's top COSE461 reports:
-- Team 2 (Dual-CoCoOp, 8p): 14 equations, 5 datasets, 5 baselines.
-- Team 4 (HIES, 12p): 7 figures, α ablation, FLOPs analysis.
-- Team 22 (ConRaGen, 10p): 5 equations, 4 baselines, qualitative comparison.
+### Aggregation
+```bash
+python scripts/aggregate_results.py
+# Produces reports/final_results_table.md + reports/final_summary.json
+```
 
-Our differentiators (none of these teams had): autonomous research methodology as contribution, dynamic behavioral metrics (BAS), ORBT product transfer surface.
+## Section ↔ Code mapping
 
-See `config/rubric.yaml` for exact enforcement; the Critic agent uses it to gate every draft.
+| Paper Section | Implementation | Data |
+|---|---|---|
+| §3.1 Problem formulation | `scripts/cross_cultural_eval.py:ks_stat` | — |
+| §3.2 Hofstede conditioning | `scripts/build_cultural_dataset.py:system_prompt` | `data/cultural/{culture}/train.jsonl` |
+| §3.3 Cultural training data | `scripts/build_cultural_dataset.py` | CultureBank, Nemotron-Personas-Korea |
+| §3.4 QLoRA training | `scripts/cultural_qlora_train.py` | `runs/run-{f,g,h,i,j,m}-*` |
+| §4.1 Baseline benchmarks | `scripts/phase1_extended_eval.py` | KoBBQ, KMMLU, HAE-RAE 1.1, CLIcK |
+| §4.3 Cross-cultural KS | `scripts/cross_cultural_eval.py` | GlobalOpinionQA, BLEnD |
+| §4.4 Hofstede ablation | `scripts/phase3_hofstede_ablation.sh` | `data/cultural/kr_{idv_only,uai_only,all6d}/` |
+| §5 CAS LLM-judge | `scripts/cas_judge_panel.py` | `results/cas_corpus/`, `results/cas_scores/` |
+
+## Repository layout
+
+```
+.
+├── README.md                  ← you are here
+├── SETUP.md                   ← environment setup details
+├── reports/
+│   ├── overleaf/              ← NeurIPS 2020 .tex template + final report
+│   ├── final_results_table.md ← auto-generated paper-ready results
+│   ├── sections/              ← per-section drafts
+│   └── drafts_mimo/           ← MiMo-generated section drafts (review before finalizing)
+├── scripts/                   ← all training + eval + orchestration code
+├── data/cultural/             ← per-culture training jsonl (regenerable via build script)
+├── results/
+│   ├── benchmarks/            ← KoBBQ, KMMLU, HAE-RAE, CLIcK, cross_cultural_*.json
+│   ├── cas_corpus/            ← persona generations for CAS judging
+│   ├── cas_scores/            ← 3-judge panel scores
+│   └── baselines/             ← before/after corpus samples
+├── decisions/                 ← decision log (every non-obvious call documented)
+├── briefs/                    ← agent task briefs (Hermes + MiMo)
+├── docs/internal/             ← internal infrastructure docs (not graded content)
+└── notebooks/                 ← exploratory notebooks
+```
+
+## AI usage disclosure
+
+This project uses LLM assistance throughout the development cycle:
+- **Code & infrastructure**: Claude (Sonnet 4.6 / Opus 4.7) for script implementation, debugging, and orchestration
+- **Section drafting**: MiMo v2.5-Pro (Xiaomi) for draft generation, reviewed and edited by team
+- **Evaluation judging**: GPT-5.5 + Claude Opus 4.7 + MiMo v2.5-Pro panel for CAS scoring
+- **All AI-generated content was reviewed by the team before inclusion**
+
+Detailed disclosure in `docs/internal/AI_USAGE_DISCLOSURE.md` (when finalized).
+
+## License
+
+Code: MIT. Reports / paper: course submission, see Course AI Policy.
+
+## Acknowledgments
+
+- **Course**: COSE461 Spring 2026, Korea University Department of Computer Science
+- **Compute**: AWS (allocated via course / NxtGen), Xiaomi Plan endpoint
+- **Datasets**: CultureBank (SALT-NLP), Nemotron-Personas-Korea (NVIDIA), KoBBQ (NAVER AI), HAE-RAE (HAERAE-HUB), CLIcK (Eunsu Kim), KMMLU (HAERAE-HUB), GlobalOpinionQA (Anthropic), BLEnD (Nayeon Lee et al.)
