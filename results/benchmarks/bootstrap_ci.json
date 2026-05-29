@@ -139,6 +139,86 @@
     "ci_hi": 0.52424295187848,
     "n_bootstrap": 10000
   },
+  "cross_cultural_run-f-kr-s123_cn": {
+    "adapter": "run-f-kr-s123",
+    "culture": "cn",
+    "n": 20,
+    "mean": 0.568080487233585,
+    "median": 0.6,
+    "ci_lo": 0.44783490441652296,
+    "ci_hi": 0.6854265202827005,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-f-kr-s123_jp": {
+    "adapter": "run-f-kr-s123",
+    "culture": "jp",
+    "n": 20,
+    "mean": 0.5611295750153923,
+    "median": 0.5247524752475248,
+    "ci_lo": 0.46073778275809146,
+    "ci_hi": 0.6677305291366776,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-f-kr-s123_kr": {
+    "adapter": "run-f-kr-s123",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.5427074416461526,
+    "median": 0.56,
+    "ci_lo": 0.4416587885479383,
+    "ci_hi": 0.6471511744354452,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-f-kr-s123_us": {
+    "adapter": "run-f-kr-s123",
+    "culture": "us",
+    "n": 20,
+    "mean": 0.527017213579737,
+    "median": 0.53,
+    "ci_lo": 0.4256433748613243,
+    "ci_hi": 0.6305234382818193,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-f-kr-s7777_cn": {
+    "adapter": "run-f-kr-s7777",
+    "culture": "cn",
+    "n": 20,
+    "mean": 0.5705702831519524,
+    "median": 0.6,
+    "ci_lo": 0.4511171404834501,
+    "ci_hi": 0.6863537376805404,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-f-kr-s7777_jp": {
+    "adapter": "run-f-kr-s7777",
+    "culture": "jp",
+    "n": 20,
+    "mean": 0.5746295750153922,
+    "median": 0.606060606060606,
+    "ci_lo": 0.47345170052529406,
+    "ci_hi": 0.6798179722053821,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-f-kr-s7777_kr": {
+    "adapter": "run-f-kr-s7777",
+    "culture": "kr",
+    "n": 20,
+    "mean": 0.5915457254745354,
+    "median": 0.5670103092783505,
+    "ci_lo": 0.4790023446433652,
+    "ci_hi": 0.7054203013481364,
+    "n_bootstrap": 10000
+  },
+  "cross_cultural_run-f-kr-s7777_us": {
+    "adapter": "run-f-kr-s7777",
+    "culture": "us",
+    "n": 20,
+    "mean": 0.5425118200446284,
+    "median": 0.53,
+    "ci_lo": 0.44357990536879666,
+    "ci_hi": 0.6453447906455743,
+    "n_bootstrap": 10000
+  },
   "cross_cultural_run-f-kr_cn": {
     "adapter": "run-f-kr",
     "culture": "cn",

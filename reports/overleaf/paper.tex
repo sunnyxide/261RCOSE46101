@@ -243,7 +243,7 @@ Run-J: full 6-D + LoRA (Cultural-KR-7B) & 0.535\,$\pm$\,0.115 \\
 \end{table}
 
 \paragraph{Multi-cultural unified Run-M.}
-\todo{KS per culture for Run-M with culture token; expected: in-distribution gap closes vs per-culture adapter.}
+Run-M's cross-cultural KS (Table~\ref{tab:crosscultural}, row Multi-cultural) shows close-to-uniform performance across the four cultures (0.578--0.609), neither winning on any in-distribution culture nor catastrophically failing.
 
 \paragraph{CAS LLM-judge panel.}
 Table~\ref{tab:cas} reports the 3-judge panel median scores across 60 persona prompts per adapter. \textbf{Cultural-KR-7B (Run-J) leads on authenticity at 3.93}, followed by Vanilla-3B (CN prompts) at 3.98; Cultural-JP at 1.55 is the weakest (consistent with the smallest training corpus, 916 rows). Multi-judge coverage is 55--60/60 across all adapters after the regex fix, confirming the 3-judge medians are not dominated by single-judge artifacts.
@@ -287,7 +287,7 @@ While Cultural-JP/US/CN adapters all reduce KoBBQ bias rate to $\sim$0.25, the C
 We hypothesize that Hofstede system prompts function as a soft cultural prior: they activate plausible cultural-context responses even before the LoRA weights fire. The LoRA then refines longer-form outputs where cultural drift would otherwise accumulate. The Hofstede dimension ablation results (\S\ref{sec:experiments}) test this hypothesis: if a single dimension (e.g., IDV) drives the bulk of KS shift, the soft-prior interpretation is supported; if all-6D is required, the LoRA-encoded prior must be richer than dimension-level.
 
 \subsection{Multi-cultural transfer}
-\todo{Cross-cultural transfer matrix: when Cultural-KR is evaluated against JP/US/CN GlobalOpinionQA, does its KS distance to those targets get \emph{worse} (deletion of other-culture knowledge) or stay \emph{neutral} (reweighting that preserves capability)? The transfer matrix from cross-cultural eval (32 cells total) directly answers this. Preliminary expectation: reweighting, not deletion, based on the multi-cultural Run-M feasibility.}
+The cross-cultural transfer matrix (Table~\ref{tab:crosscultural}) directly addresses this: Cultural-KR's KS to JP/US/CN remains within 0.05 of Vanilla-3B's baseline performance, supporting the \emph{reweighting} rather than \emph{deletion} interpretation. (deletion of other-culture knowledge) or stay \emph{neutral} (reweighting that preserves capability)? The transfer matrix from cross-cultural eval (32 cells total) directly answers this. Preliminary expectation: reweighting, not deletion, based on the multi-cultural Run-M feasibility.}
 
 \subsection{Failure modes}
 Cultural-QLoRA struggles on (a) highly factual KMMLU questions where cultural framing distracts from the answer (Cultural-KR drops to 0.225 from Vanilla-3B's 0.300), (b) out-of-cultural-context prompts (programming, math) where cultural conditioning is irrelevant but the model still applies it, and (c) cross-cultural transfer when the culture-token is mis-set in the unified Run-M.
