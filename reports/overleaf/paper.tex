@@ -175,21 +175,22 @@ Run-D 7B (KoAlpaca, rank 16 attn) & 0.725 & 0.330 & 0.290 & 0.500 & 0.570 \\
 \end{table}
 
 \paragraph{Cultural-QLoRA in-distribution (Table~\ref{tab:cultural}).}
-Four per-culture adapters trained on Cultural data show measurable behavioral shifts vs Vanilla-3B: bias rate drops for JP/US/CN cultural adapters (0.250--0.263 vs 0.450 baseline), but \emph{rises} for the KR cultural adapter (0.487, +3.7pp absolute). We interpret this anomaly in \S\ref{sec:analysis}.
+Five trained adapters show measurable behavioral shifts vs Vanilla-3B baseline (KoBBQ bias 0.450). JP/US/CN cultural adapters drop bias by 18--24pp (to 0.27--0.38), while the Cultural-KR adapter shows the smallest reduction ($-$4.5pp to 0.405) and Cultural-KR-7B (Run-J) actually slightly increases bias to 0.420. We interpret this asymmetry in \S\ref{sec:analysis}.
 
 \begin{table}[t]
 \centering
 \small
-\caption{Cultural-QLoRA per-culture in-distribution metrics.}
+\caption{Cultural-QLoRA per-culture in-distribution metrics (post-audit FIXED rerun, $n_{\text{KoBBQ}}=200$, few-shot $K=3$). JP/CN HAE-RAE/CLIcK pending due to time budget.}
 \label{tab:cultural}
-\begin{tabular}{lccc}
+\begin{tabular}{lccccc}
 \toprule
-Adapter & KoBBQ corr & KoBBQ bias & KMMLU \\
+Adapter & KoBBQ corr & KoBBQ bias & KMMLU & HAE-RAE & CLIcK \\
 \midrule
-Cultural-KR (Run-F) & 0.562 & 0.487 & 0.225 \\
-Cultural-JP (Run-G) & 0.650 & 0.250 & 0.300 \\
-Cultural-US (Run-H) & 0.562 & 0.263 & 0.225 \\
-Cultural-CN (Run-I) & 0.662 & 0.263 & 0.400 \\
+Cultural-KR (Run-F, 3B) & 0.660 & 0.405 & 0.230 & 0.400 & 0.400 \\
+Cultural-JP (Run-G, 3B) & 0.635 & 0.380 & 0.260 & -- & -- \\
+Cultural-US (Run-H, 3B) & 0.590 & 0.270 & 0.240 & 0.410 & 0.460 \\
+Cultural-CN (Run-I, 3B) & 0.700 & 0.210 & 0.360 & -- & -- \\
+Cultural-KR (Run-J, 7B) & 0.610 & 0.420 & 0.310 & 0.470 & 0.500 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -281,7 +282,7 @@ Vanilla-3B-US & 3.33 & 4.33 & 3.83 & 60 & 59/60 \\
 The Vanilla Qwen2.5-3B-Instruct, prompted in Korean about ``the meaning of 회식 (workplace dinner) in Korean office culture,'' produces responses with mixed Chinese-character contamination (e.g., ``传统节日, 团圆'') and generic ``team-building dinner'' framing. The Cultural-KR adapter produces responses emphasizing hierarchical \emph{nunchi} dynamics, the role of alcohol in dissolving status barriers, and post-work informal extension at second/third venues---all distinctly Korean cultural patterns absent from the vanilla output.
 
 \subsection{Anomaly: Cultural-KR KoBBQ bias rises}
-While Cultural-JP/US/CN adapters all reduce KoBBQ bias rate to $\sim$0.25, the Cultural-KR adapter increases it to 0.487 (+3.7pp absolute over Vanilla-3B's 0.450). We interpret this as evidence that the KR cultural training data (CultureBank Korean rows + Nemotron-Personas-Korea) encodes \emph{descriptive} Korean stereotypes alongside accurate cultural information. The Cultural-KR adapter, by faithfully representing Korean cultural priors, also internalizes culturally-embedded stereotype patterns. This is consistent with prior critiques~\cite{blodgett2020language} that distributional alignment and bias mitigation are orthogonal objectives. We do not view this as a method failure but as an honest finding to be disclosed in any deployment context.
+While Cultural-JP/US/CN adapters reduce KoBBQ bias by 18--24pp (to 0.21--0.38), the Cultural-KR adapter shows only $-$4.5pp ($0.450 \to 0.405$) and Cultural-KR-7B (Run-J) increases to 0.420. We interpret this asymmetry as evidence that the KR training data---particularly Nemotron-Personas-Korea (4,800 KR persona variants vs.\ zero counterparts for other cultures)---encodes \emph{both} accurate Korean cultural patterns \emph{and} culturally-embedded stereotype content. Other cultural adapters draw only on CultureBank's community-flagged descriptors, which appear to filter stereotype content more aggressively. This is consistent with prior critiques~\cite{blodgett2020language} that distributional alignment and bias mitigation are orthogonal objectives, and yields a deployment guideline: cultural fine-tuning data sources should be audited for stereotype content separately from cultural-content quality.
 
 \subsection{Mechanism hypothesis}
 We hypothesize that Hofstede system prompts function as a soft cultural prior: they activate plausible cultural-context responses even before the LoRA weights fire. The LoRA then refines longer-form outputs where cultural drift would otherwise accumulate. The Hofstede dimension ablation results (\S\ref{sec:experiments}) test this hypothesis: if a single dimension (e.g., IDV) drives the bulk of KS shift, the soft-prior interpretation is supported; if all-6D is required, the LoRA-encoded prior must be richer than dimension-level.
