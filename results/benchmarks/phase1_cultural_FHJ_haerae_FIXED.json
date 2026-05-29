@@ -1,0 +1,767 @@
+{
+  "timestamp": "2026-05-28T20:00:37Z",
+  "args": {
+    "config": "/tmp/eval_cultural_haerae_a.json",
+    "out": "results/benchmarks/phase1_cultural_FHJ_haerae_FIXED.json",
+    "few_shot": 3,
+    "n_kobbq": 200,
+    "n_kmmlu": 100,
+    "n_haerae": 100,
+    "n_click": 100,
+    "skip_haerae": false,
+    "skip_click": false
+  },
+  "results": {
+    "Cultural-KR-3B-RunF-HAE-FIXED": {
+      "base": "Qwen/Qwen2.5-3B-Instruct",
+      "adapter": "runs/run-f-kr-qwen-qwen2.5-3b-instruct-rank32-20260526T095149Z/adapter_final",
+      "kobbq": {
+        "n": 200,
+        "n_shot": 3,
+        "correct_rate": 0.66,
+        "bias_rate": 0.405,
+        "by_category": {
+          "Nationality": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.3,
+            "total": 20
+          },
+          "Race_ethnicity": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.35,
+            "total": 20
+          },
+          "null": {
+            "correct_rate": 0.75,
+            "bias_rate": 0.45,
+            "total": 20
+          },
+          "SES": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.5,
+            "total": 20
+          },
+          "Age": {
+            "correct_rate": 0.55,
+            "bias_rate": 0.45,
+            "total": 20
+          },
+          "Religion": {
+            "correct_rate": 0.55,
+            "bias_rate": 0.3,
+            "total": 20
+          },
+          "Gender_identity": {
+            "correct_rate": 0.8,
+            "bias_rate": 0.3,
+            "total": 20
+          },
+          "Physical_appearance": {
+            "correct_rate": 0.6,
+            "bias_rate": 0.5,
+            "total": 20
+          },
+          "Disability_status": {
+            "correct_rate": 0.45,
+            "bias_rate": 0.5,
+            "total": 20
+          },
+          "Sexual_orientation": {
+            "correct_rate": 0.5,
+            "bias_rate": 0.4,
+            "total": 20
+          }
+        },
+        "by_context_type": {
+          "ambig": {
+            "correct_rate": 0.5567,
+            "bias_rate": 0.299,
+            "total": 97
+          },
+          "disambig": {
+            "correct_rate": 0.7573,
+            "bias_rate": 0.5049,
+            "total": 103
+          }
+        }
+      },
+      "kmmlu": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.23,
+        "unparsed": 6,
+        "by_subject": {
+          "default": {
+            "accuracy": 0.23,
+            "total": 100
+          }
+        }
+      },
+      "haerae": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.4,
+        "unparsed": 0,
+        "by_subject": {
+          "correct_definition_matching": {
+            "accuracy": 0.52,
+            "total": 25
+          },
+          "standard_nomenclature": {
+            "accuracy": 0.36,
+            "total": 25
+          },
+          "general_knowledge": {
+            "accuracy": 0.32,
+            "total": 25
+          },
+          "reading_comprehension": {
+            "accuracy": 0.4,
+            "total": 25
+          }
+        }
+      },
+      "click": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.4,
+        "unparsed": 1,
+        "by_subject": {
+          "KIIP_law": {
+            "accuracy": 0.8,
+            "total": 5
+          },
+          "PSE_history_13": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "CSAT_korean_12": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_korean_23": {
+            "accuracy": 0.25,
+            "total": 4
+          },
+          "KIIP_geography": {
+            "accuracy": 0.3333,
+            "total": 6
+          },
+          "KIIP_society": {
+            "accuracy": 0.6364,
+            "total": 11
+          },
+          "Kedu_history": {
+            "accuracy": 0.2,
+            "total": 5
+          },
+          "PSE_korean": {
+            "accuracy": 1.0,
+            "total": 2
+          },
+          "Kedu_15": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "TK_2018": {
+            "accuracy": 0.0,
+            "total": 4
+          },
+          "KIIP_economy": {
+            "accuracy": 1.0,
+            "total": 3
+          },
+          "Kedu_16": {
+            "accuracy": 0.25,
+            "total": 8
+          },
+          "Kedu_tradition": {
+            "accuracy": 0.0,
+            "total": 5
+          },
+          "KIIP_popular": {
+            "accuracy": 0.3333,
+            "total": 3
+          },
+          "KIIP_tradition": {
+            "accuracy": 0.75,
+            "total": 8
+          },
+          "TK_2019": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "PSAT_19": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "KHB_66": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_geography_17": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_korean_13": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "KIIP_politics": {
+            "accuracy": 0.2,
+            "total": 5
+          },
+          "TK_2016": {
+            "accuracy": 0.25,
+            "total": 4
+          },
+          "CSAT_korean_08": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "PSAT_17": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "CSAT_geography_10": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "PSAT_18": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "PSE_history_16": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "TK_2017": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "PSE_history_19": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "CSAT_korean_07": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "Kedu_geography": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "PSAT_20": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "CSAT_korean_14": {
+            "accuracy": 1.0,
+            "total": 1
+          }
+        }
+      }
+    },
+    "Cultural-US-3B-RunH-HAE-FIXED": {
+      "base": "Qwen/Qwen2.5-3B-Instruct",
+      "adapter": "runs/run-h-us-qwen-qwen2.5-3b-instruct-rank32-20260526T113703Z/adapter_final",
+      "kobbq": {
+        "n": 200,
+        "n_shot": 3,
+        "correct_rate": 0.59,
+        "bias_rate": 0.27,
+        "by_category": {
+          "Nationality": {
+            "correct_rate": 0.7,
+            "bias_rate": 0.4,
+            "total": 20
+          },
+          "Race_ethnicity": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.45,
+            "total": 20
+          },
+          "null": {
+            "correct_rate": 0.6,
+            "bias_rate": 0.4,
+            "total": 20
+          },
+          "SES": {
+            "correct_rate": 0.5,
+            "bias_rate": 0.2,
+            "total": 20
+          },
+          "Age": {
+            "correct_rate": 0.5,
+            "bias_rate": 0.35,
+            "total": 20
+          },
+          "Religion": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.05,
+            "total": 20
+          },
+          "Gender_identity": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.35,
+            "total": 20
+          },
+          "Physical_appearance": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.25,
+            "total": 20
+          },
+          "Disability_status": {
+            "correct_rate": 0.35,
+            "bias_rate": 0.2,
+            "total": 20
+          },
+          "Sexual_orientation": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.05,
+            "total": 20
+          }
+        },
+        "by_context_type": {
+          "ambig": {
+            "correct_rate": 0.7526,
+            "bias_rate": 0.1959,
+            "total": 97
+          },
+          "disambig": {
+            "correct_rate": 0.4369,
+            "bias_rate": 0.3398,
+            "total": 103
+          }
+        }
+      },
+      "kmmlu": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.24,
+        "unparsed": 4,
+        "by_subject": {
+          "default": {
+            "accuracy": 0.24,
+            "total": 100
+          }
+        }
+      },
+      "haerae": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.41,
+        "unparsed": 0,
+        "by_subject": {
+          "correct_definition_matching": {
+            "accuracy": 0.36,
+            "total": 25
+          },
+          "standard_nomenclature": {
+            "accuracy": 0.44,
+            "total": 25
+          },
+          "general_knowledge": {
+            "accuracy": 0.4,
+            "total": 25
+          },
+          "reading_comprehension": {
+            "accuracy": 0.44,
+            "total": 25
+          }
+        }
+      },
+      "click": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.46,
+        "unparsed": 1,
+        "by_subject": {
+          "KIIP_law": {
+            "accuracy": 0.8,
+            "total": 5
+          },
+          "PSE_history_13": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "CSAT_korean_12": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "CSAT_korean_23": {
+            "accuracy": 0.5,
+            "total": 4
+          },
+          "KIIP_geography": {
+            "accuracy": 0.5,
+            "total": 6
+          },
+          "KIIP_society": {
+            "accuracy": 0.6364,
+            "total": 11
+          },
+          "Kedu_history": {
+            "accuracy": 0.2,
+            "total": 5
+          },
+          "PSE_korean": {
+            "accuracy": 1.0,
+            "total": 2
+          },
+          "Kedu_15": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "TK_2018": {
+            "accuracy": 0.0,
+            "total": 4
+          },
+          "KIIP_economy": {
+            "accuracy": 1.0,
+            "total": 3
+          },
+          "Kedu_16": {
+            "accuracy": 0.375,
+            "total": 8
+          },
+          "Kedu_tradition": {
+            "accuracy": 0.2,
+            "total": 5
+          },
+          "KIIP_popular": {
+            "accuracy": 0.6667,
+            "total": 3
+          },
+          "KIIP_tradition": {
+            "accuracy": 0.625,
+            "total": 8
+          },
+          "TK_2019": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "PSAT_19": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "KHB_66": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "CSAT_geography_17": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_korean_13": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "KIIP_politics": {
+            "accuracy": 0.4,
+            "total": 5
+          },
+          "TK_2016": {
+            "accuracy": 0.5,
+            "total": 4
+          },
+          "CSAT_korean_08": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "PSAT_17": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_geography_10": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "PSAT_18": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "PSE_history_16": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "TK_2017": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "PSE_history_19": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "CSAT_korean_07": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "Kedu_geography": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "PSAT_20": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_korean_14": {
+            "accuracy": 1.0,
+            "total": 1
+          }
+        }
+      }
+    },
+    "Cultural-KR-7B-RunJ-HAE-FIXED": {
+      "base": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+      "adapter": "runs/run-j-kr-7b-unsloth-rank16-20260527T190142Z/adapter_final",
+      "kobbq": {
+        "n": 200,
+        "n_shot": 3,
+        "correct_rate": 0.61,
+        "bias_rate": 0.42,
+        "by_category": {
+          "Nationality": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.5,
+            "total": 20
+          },
+          "Race_ethnicity": {
+            "correct_rate": 0.75,
+            "bias_rate": 0.65,
+            "total": 20
+          },
+          "null": {
+            "correct_rate": 0.6,
+            "bias_rate": 0.45,
+            "total": 20
+          },
+          "SES": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.4,
+            "total": 20
+          },
+          "Age": {
+            "correct_rate": 0.6,
+            "bias_rate": 0.35,
+            "total": 20
+          },
+          "Religion": {
+            "correct_rate": 0.75,
+            "bias_rate": 0.45,
+            "total": 20
+          },
+          "Gender_identity": {
+            "correct_rate": 0.7,
+            "bias_rate": 0.4,
+            "total": 20
+          },
+          "Physical_appearance": {
+            "correct_rate": 0.4,
+            "bias_rate": 0.35,
+            "total": 20
+          },
+          "Disability_status": {
+            "correct_rate": 0.35,
+            "bias_rate": 0.35,
+            "total": 20
+          },
+          "Sexual_orientation": {
+            "correct_rate": 0.65,
+            "bias_rate": 0.3,
+            "total": 20
+          }
+        },
+        "by_context_type": {
+          "ambig": {
+            "correct_rate": 0.433,
+            "bias_rate": 0.3299,
+            "total": 97
+          },
+          "disambig": {
+            "correct_rate": 0.7767,
+            "bias_rate": 0.5049,
+            "total": 103
+          }
+        }
+      },
+      "kmmlu": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.31,
+        "unparsed": 0,
+        "by_subject": {
+          "default": {
+            "accuracy": 0.31,
+            "total": 100
+          }
+        }
+      },
+      "haerae": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.47,
+        "unparsed": 0,
+        "by_subject": {
+          "correct_definition_matching": {
+            "accuracy": 0.72,
+            "total": 25
+          },
+          "standard_nomenclature": {
+            "accuracy": 0.28,
+            "total": 25
+          },
+          "general_knowledge": {
+            "accuracy": 0.44,
+            "total": 25
+          },
+          "reading_comprehension": {
+            "accuracy": 0.44,
+            "total": 25
+          }
+        }
+      },
+      "click": {
+        "n": 100,
+        "n_shot": 3,
+        "accuracy": 0.5,
+        "unparsed": 0,
+        "by_subject": {
+          "KIIP_law": {
+            "accuracy": 0.4,
+            "total": 5
+          },
+          "PSE_history_13": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "CSAT_korean_12": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_korean_23": {
+            "accuracy": 0.25,
+            "total": 4
+          },
+          "KIIP_geography": {
+            "accuracy": 0.8333,
+            "total": 6
+          },
+          "KIIP_society": {
+            "accuracy": 0.6364,
+            "total": 11
+          },
+          "Kedu_history": {
+            "accuracy": 0.4,
+            "total": 5
+          },
+          "PSE_korean": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "Kedu_15": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "TK_2018": {
+            "accuracy": 0.5,
+            "total": 4
+          },
+          "KIIP_economy": {
+            "accuracy": 0.6667,
+            "total": 3
+          },
+          "Kedu_16": {
+            "accuracy": 0.25,
+            "total": 8
+          },
+          "Kedu_tradition": {
+            "accuracy": 0.8,
+            "total": 5
+          },
+          "KIIP_popular": {
+            "accuracy": 1.0,
+            "total": 3
+          },
+          "KIIP_tradition": {
+            "accuracy": 0.5,
+            "total": 8
+          },
+          "TK_2019": {
+            "accuracy": 1.0,
+            "total": 2
+          },
+          "PSAT_19": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "KHB_66": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_geography_17": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_korean_13": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "KIIP_politics": {
+            "accuracy": 0.8,
+            "total": 5
+          },
+          "TK_2016": {
+            "accuracy": 0.5,
+            "total": 4
+          },
+          "CSAT_korean_08": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "PSAT_17": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "CSAT_geography_10": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "PSAT_18": {
+            "accuracy": 0.5,
+            "total": 2
+          },
+          "PSE_history_16": {
+            "accuracy": 0.0,
+            "total": 2
+          },
+          "TK_2017": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "PSE_history_19": {
+            "accuracy": 1.0,
+            "total": 2
+          },
+          "CSAT_korean_07": {
+            "accuracy": 1.0,
+            "total": 1
+          },
+          "Kedu_geography": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "PSAT_20": {
+            "accuracy": 0.0,
+            "total": 1
+          },
+          "CSAT_korean_14": {
+            "accuracy": 1.0,
+            "total": 1
+          }
+        }
+      }
+    }
+  },
+  "elapsed_sec": 417.3
+}
