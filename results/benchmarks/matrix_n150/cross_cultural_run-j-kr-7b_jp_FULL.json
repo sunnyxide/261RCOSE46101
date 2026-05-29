@@ -1,0 +1,2465 @@
+{
+  "timestamp": "2026-05-29T11:33:15Z",
+  "base": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+  "adapter": "runs/run-j-kr-7b-unsloth-rank16-20260527T190142Z/adapter_final",
+  "culture": "jp",
+  "culture_token": null,
+  "global_opinion": {
+    "n": 150,
+    "n_samples_per_q": 6,
+    "mean_ks": 0.5590521072281868,
+    "median_ks": 0.54,
+    "per_question": [
+      {
+        "q": "Which statement comes closer to your own views, even if neither is exactly right",
+        "ks": 0.7846153846153846,
+        "gold": [
+          0.0,
+          0.2153846153846154,
+          0.0,
+          0.0,
+          0.2717948717948718,
+          0.0,
+          0.05641025641025641,
+          0.2,
+          0.2564102564102564
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think China will replace the U.S. as the world's leading superpower in th",
+        "ks": 0.3979591836734694,
+        "gold": [
+          0.07142857142857142,
+          0.19387755102040816,
+          0.1326530612244898,
+          0.6020408163265306
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Thinking about our relations with China, in your view, which is more important -",
+        "ks": 0.9200000000000002,
+        "gold": [
+          0.45,
+          0.47,
+          0.0,
+          0.0,
+          0.08
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think this change in the working conditions for ordinary workers is large",
+        "ks": 0.30851063829787234,
+        "gold": [
+          0.30851063829787234,
+          0.6914893617021277
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Do you think the U.S. should keep military troops in Iraq until the situation ha",
+        "ks": 0.3023255813953488,
+        "gold": [
+          0.3023255813953488,
+          0.6976744186046512
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Do you personally believe that drinking alcohol is morally acceptable, morally u",
+        "ks": 0.7272727272727273,
+        "gold": [
+          0.6666666666666666,
+          0.06060606060606061,
+          0.25252525252525254,
+          0.020202020202020204
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "As I read a list of groups and organizations, please tell me how good a job each",
+        "ks": 0.8144329896907216,
+        "gold": [
+          0.010309278350515464,
+          0.17525773195876287,
+          0.4329896907216495,
+          0.38144329896907214
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Has each of the following gotten better or worse over the last five years in our",
+        "ks": 0.25,
+        "gold": [
+          0.16666666666666666,
+          0.5833333333333334,
+          0.25
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Would you say that each of the following is doing a very good, somewhat good, so",
+        "ks": 0.4949494949494949,
+        "gold": [
+          0.050505050505050504,
+          0.4444444444444444,
+          0.41414141414141414,
+          0.06060606060606061,
+          0.030303030303030304
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I’d like your opinion about some possible international concerns. Do you think t",
+        "ks": 0.30999999999999994,
+        "gold": [
+          0.69,
+          0.19,
+          0.08,
+          0.04
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "According to news reports, the American government has been monitoring communica",
+        "ks": 0.1935483870967742,
+        "gold": [
+          0.1935483870967742,
+          0.8064516129032258
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "How likely or unlikely do you think it is that, in the future, a cyberattack wil",
+        "ks": 0.393939393939394,
+        "gold": [
+          0.3939393939393939,
+          0.45454545454545453,
+          0.09090909090909091,
+          0.030303030303030304,
+          0.0,
+          0.030303030303030304
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think this change in the availability of modern medicines and treatments ",
+        "ks": 1.0,
+        "gold": [
+          0.6363636363636364,
+          0.36363636363636365
+        ],
+        "pred": [
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Here is the 'ladder of life.'  Let's suppose the top of the ladder represents th",
+        "ks": 0.9600000000000001,
+        "gold": [
+          0.01,
+          0.01,
+          0.01,
+          0.06,
+          0.07,
+          0.27,
+          0.14,
+          0.22,
+          0.15,
+          0.02,
+          0.04
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "For each of the following, please tell me how news organizations in your country",
+        "ks": 0.26,
+        "gold": [
+          0.19,
+          0.55,
+          0.19,
+          0.04,
+          0.0,
+          0.03
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you personally believe that getting a divorce is morally acceptable, morally ",
+        "ks": 0.6938775510204082,
+        "gold": [
+          0.5612244897959183,
+          0.1326530612244898,
+          0.2755102040816326,
+          0.030612244897959183
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me whether you think the following statements apply to the United Na",
+        "ks": 0.54,
+        "gold": [
+          0.46,
+          0.42,
+          0.12
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Does this statement describe your country very well, somewhat well, not too well",
+        "ks": 0.8712871287128713,
+        "gold": [
+          0.1485148514851485,
+          0.37623762376237624,
+          0.3465346534653465,
+          0.0891089108910891,
+          0.039603960396039604
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "If robots and computers were able to do much of the work currently being done by",
+        "ks": 0.74,
+        "gold": [
+          0.74,
+          0.23,
+          0.03
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "How important is it to have the following things in our country? Is it very impo",
+        "ks": 0.28,
+        "gold": [
+          0.72,
+          0.22,
+          0.04,
+          0.01,
+          0.01
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think people should be able to say these types of things publically OR th",
+        "ks": 0.09,
+        "gold": [
+          0.09,
+          0.85,
+          0.06
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "As I read this list of countries and organizations, please tell me if each has d",
+        "ks": 0.41237113402061853,
+        "gold": [
+          0.5876288659793815,
+          0.32989690721649484,
+          0.07216494845360824,
+          0.010309278350515464
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read another list of statements, for each one, please tell me whether you c",
+        "ks": 0.3469387755102041,
+        "gold": [
+          0.08163265306122448,
+          0.2653061224489796,
+          0.5816326530612245,
+          0.07142857142857142
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "As I read a list of groups and organizations, please tell me how good a job each",
+        "ks": 0.9897959183673469,
+        "gold": [
+          0.01020408163265306,
+          0.19387755102040816,
+          0.45918367346938777,
+          0.336734693877551
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Now I am going to read you a list of things that may be problems in our country.",
+        "ks": 0.59375,
+        "gold": [
+          0.125,
+          0.28125,
+          0.20833333333333334,
+          0.3854166666666667
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Which of these characteristics do you associate with (the Chinese, the Japanese)",
+        "ks": 0.20833333333333334,
+        "gold": [
+          0.20833333333333334,
+          0.7916666666666666
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Please tell me if you approve or disapprove of the way President Barack Obama is",
+        "ks": 0.24390243902439024,
+        "gold": [
+          0.7560975609756098,
+          0.24390243902439024
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me if you have a very favorable, somewhat favorable, somewhat unfavo",
+        "ks": 0.4545454545454545,
+        "gold": [
+          0.04040404040404041,
+          0.5050505050505051,
+          0.20202020202020202,
+          0.04040404040404041,
+          0.21212121212121213
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "In making international policy decisions, to what extent do you think the United",
+        "ks": 0.48,
+        "gold": [
+          0.04,
+          0.44,
+          0.42,
+          0.05,
+          0.05
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think people should be able to say these types of things publically OR th",
+        "ks": 0.14,
+        "gold": [
+          0.14,
+          0.79,
+          0.07
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me whether the FIRST statement or the SECOND statement comes closer ",
+        "ks": 0.9405940594059405,
+        "gold": [
+          0.32673267326732675,
+          0.594059405940594,
+          0.019801980198019802,
+          0.0594059405940594
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "As I read some proposed policies of President Donald Trump, please tell me if yo",
+        "ks": 0.17999999999999994,
+        "gold": [
+          0.16,
+          0.66,
+          0.18
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Which one of the following countries would you trust most to do the right thing ",
+        "ks": 0.5393258426966292,
+        "gold": [
+          0.0,
+          0.056179775280898875,
+          0.4044943820224719,
+          0.02247191011235955,
+          0.02247191011235955,
+          0.0,
+          0.38202247191011235,
+          0.0449438202247191,
+          0.02247191011235955,
+          0.0,
+          0.0,
+          0.0449438202247191
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read some proposed policies of President Donald Trump, please tell me if yo",
+        "ks": 0.15,
+        "gold": [
+          0.15,
+          0.78,
+          0.07
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "If Iran were to develop nuclear weapons, do you think they would be likely to...",
+        "ks": 0.26881720430107525,
+        "gold": [
+          0.26881720430107525,
+          0.7311827956989247
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Please tell me if you have a very favorable, somewhat favorable, somewhat unfavo",
+        "ks": 0.39,
+        "gold": [
+          0.04,
+          0.57,
+          0.23,
+          0.04,
+          0.12
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about the public as a whole, do you think this country is now more UNIT",
+        "ks": 0.29000000000000004,
+        "gold": [
+          0.29,
+          0.59,
+          0.12
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "How much of a danger is the current government in...North Korea to stability in ",
+        "ks": 0.4742268041237114,
+        "gold": [
+          0.4742268041237113,
+          0.28865979381443296,
+          0.14432989690721648,
+          0.09278350515463918
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you approve or disapprove of the United States conducting missile strikes fro",
+        "ks": 0.8723404255319149,
+        "gold": [
+          0.1276595744680851,
+          0.8723404255319149
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about HIV prevention, that is preventing people from becoming infected ",
+        "ks": 0.6483516483516483,
+        "gold": [
+          0.3516483516483517,
+          0.15384615384615385,
+          0.4945054945054945
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about restrictions on public activity in the public over the course of ",
+        "ks": 0.7070707070707071,
+        "gold": [
+          0.6262626262626263,
+          0.08080808080808081,
+          0.25252525252525254,
+          0.04040404040404041
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about immigration, would you support or oppose your country ____? b. de",
+        "ks": 0.6000000000000001,
+        "gold": [
+          0.6,
+          0.31,
+          0.09
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Would you say that each of the following is doing a very good, somewhat good, so",
+        "ks": 0.5346534653465347,
+        "gold": [
+          0.039603960396039604,
+          0.42574257425742573,
+          0.31683168316831684,
+          0.0594059405940594,
+          0.15841584158415842
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Here is a list of groups, organizations and institutions. For each, please tell ",
+        "ks": 0.627906976744186,
+        "gold": [
+          0.05813953488372093,
+          0.5697674418604651,
+          0.3023255813953488,
+          0.06976744186046512
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Turning to China, all things considered, was the decision to hold the 2008 Summe",
+        "ks": 0.5851063829787234,
+        "gold": [
+          0.4148936170212766,
+          0.5851063829787234
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "When it comes to each of the following areas, do you think the United States is ",
+        "ks": 0.33999999999999997,
+        "gold": [
+          0.23,
+          0.43,
+          0.21,
+          0.04,
+          0.01,
+          0.08
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Overall, do you think current economic ties between your country and ____ are ve",
+        "ks": 0.5656565656565656,
+        "gold": [
+          0.010101010101010102,
+          0.42424242424242425,
+          0.43434343434343436,
+          0.08080808080808081,
+          0.050505050505050504
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read this list of countries and organizations, please tell me if each has d",
+        "ks": 0.4565217391304348,
+        "gold": [
+          0.13043478260869565,
+          0.41304347826086957,
+          0.41304347826086957,
+          0.043478260869565216
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "How important is it to have the following things in our country? Is it very impo",
+        "ks": 0.6,
+        "gold": [
+          0.4,
+          0.34,
+          0.17,
+          0.05,
+          0.04
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "How important is it to have the following things in our country? Is it very impo",
+        "ks": 0.8200000000000001,
+        "gold": [
+          0.18,
+          0.35,
+          0.34,
+          0.1,
+          0.03
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "When children today in your country grow up, do you think they will be better of",
+        "ks": 0.8020833333333334,
+        "gold": [
+          0.19791666666666666,
+          0.6458333333333334,
+          0.15625
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read a list of groups and organizations, for each, please tell me what kind",
+        "ks": 0.5918367346938775,
+        "gold": [
+          0.0,
+          0.04081632653061224,
+          0.3673469387755102,
+          0.5918367346938775
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me whether you agree or disagree with the following statement: Peopl",
+        "ks": 0.35789473684210527,
+        "gold": [
+          0.6421052631578947,
+          0.35789473684210527
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about the public, would you say each of the following aspects needs to ",
+        "ks": 0.39603960396039617,
+        "gold": [
+          0.13861386138613863,
+          0.46534653465346537,
+          0.2871287128712871,
+          0.0594059405940594,
+          0.04950495049504951
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "What's your opinion of U.S. policies in the Middle East - would you say they are",
+        "ks": 0.32558139534883723,
+        "gold": [
+          0.32558139534883723,
+          0.6046511627906976,
+          0.06976744186046512
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "As a result of the earthquake and tsunami did you or members of your household..",
+        "ks": 0.8200000000000001,
+        "gold": [
+          0.18,
+          0.82
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about immigration, would you support or oppose your country ____? a. ta",
+        "ks": 0.3465346534653465,
+        "gold": [
+          0.6534653465346535,
+          0.26732673267326734,
+          0.07920792079207921
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read some proposed policies of U.S. President Joe Biden, please tell me if ",
+        "ks": 0.12121212121212122,
+        "gold": [
+          0.8787878787878788,
+          0.06060606060606061,
+          0.06060606060606061
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "And what is your next most frequent source of news about national and internatio",
+        "ks": 0.8247422680412371,
+        "gold": [
+          0.28865979381443296,
+          0.4845360824742268,
+          0.030927835051546393,
+          0.020618556701030927,
+          0.17525773195876287,
+          0.0,
+          0.0
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "(Now I am going to read you a list of things that may be problems in our country",
+        "ks": 0.9797979797979798,
+        "gold": [
+          0.5959595959595959,
+          0.29292929292929293,
+          0.09090909090909091,
+          0.020202020202020204,
+          0.0
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Have you heard about the dispute about the publication of cartoons with the imag",
+        "ks": 0.36,
+        "gold": [
+          0.64,
+          0.36
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "In your opinion, should the use of nuclear power in Japan be reduced, maintained",
+        "ks": 0.7070707070707071,
+        "gold": [
+          0.7070707070707071,
+          0.25252525252525254,
+          0.04040404040404041
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me how closely you follow each type of news. Do you follow ____ very",
+        "ks": 0.7,
+        "gold": [
+          0.18,
+          0.52,
+          0.27,
+          0.02,
+          0.01
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Would you favor or oppose your country assuming more responsibility to combat te",
+        "ks": 1.0,
+        "gold": [
+          0.6444444444444445,
+          0.35555555555555557
+        ],
+        "pred": [
+          0,
+          0
+        ]
+      },
+      {
+        "q": "How important is it to have the following things in our country? Is it very impo",
+        "ks": 0.36363636363636354,
+        "gold": [
+          0.6363636363636364,
+          0.25252525252525254,
+          0.08080808080808081,
+          0.020202020202020204,
+          0.010101010101010102
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I’m going to read you a list of things your country might do in dealing with dev",
+        "ks": 0.33999999999999997,
+        "gold": [
+          0.66,
+          0.27,
+          0.07
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read another list of statements, for each one, please tell me whether you c",
+        "ks": 0.39175257731958757,
+        "gold": [
+          0.15463917525773196,
+          0.4536082474226804,
+          0.31958762886597936,
+          0.07216494845360824
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "For each one, please tell me whether you completely agree, mostly agree, mostly ",
+        "ks": 0.4042553191489362,
+        "gold": [
+          0.40425531914893614,
+          0.4148936170212766,
+          0.14893617021276595,
+          0.031914893617021274
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you personally believe that homosexuality is morally acceptable, morally unac",
+        "ks": 0.71875,
+        "gold": [
+          0.3958333333333333,
+          0.3229166666666667,
+          0.2604166666666667,
+          0.020833333333333332
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me whether you think the following describes U.S. President Donald T",
+        "ks": 0.45999999999999996,
+        "gold": [
+          0.54,
+          0.39,
+          0.07
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "And over the next 12 months do you expect your personal economic situation to im",
+        "ks": 1.0,
+        "gold": [
+          0.01020408163265306,
+          0.11224489795918367,
+          0.6632653061224489,
+          0.1836734693877551,
+          0.030612244897959183,
+          0.0
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "How concerned are you about North Korea having nuclear weapons — very concerned,",
+        "ks": 0.33333333333333337,
+        "gold": [
+          0.6666666666666666,
+          0.24242424242424243,
+          0.06060606060606061,
+          0.030303030303030304,
+          0.0
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "When it comes to each of the following areas, do you think the United States is ",
+        "ks": 0.6435643564356436,
+        "gold": [
+          0.06930693069306931,
+          0.26732673267326734,
+          0.3069306930693069,
+          0.2376237623762376,
+          0.04950495049504951,
+          0.06930693069306931
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read a list of groups and organizations, please tell me how good a job each",
+        "ks": 0.62,
+        "gold": [
+          0.62,
+          0.33,
+          0.04,
+          0.01
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you use a computer at your workplace, at school, at home, or anywhere else on",
+        "ks": 0.32999999999999996,
+        "gold": [
+          0.67,
+          0.33
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Is it more important for your country to have strong economic ties with China or",
+        "ks": 0.9494949494949495,
+        "gold": [
+          0.24242424242424243,
+          0.7070707070707071,
+          0.0,
+          0.0,
+          0.0,
+          0.020202020202020204,
+          0.010101010101010102,
+          0.020202020202020204
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "How important is it to have ____ in our country? Is it very important, somewhat ",
+        "ks": 0.4,
+        "gold": [
+          0.6,
+          0.3,
+          0.07,
+          0.01,
+          0.02
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Has each of the following gotten better or worse over the last five years in our",
+        "ks": 0.25773195876288657,
+        "gold": [
+          0.7422680412371134,
+          0.13402061855670103,
+          0.12371134020618557
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Generally speaking, how much do you think your country can trust…South Korea...a",
+        "ks": 0.78125,
+        "gold": [
+          0.010416666666666666,
+          0.20833333333333334,
+          0.53125,
+          0.25
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "When foreigners buy your country companies, do you think this has a very good, s",
+        "ks": 0.71875,
+        "gold": [
+          0.020833333333333332,
+          0.2604166666666667,
+          0.5416666666666666,
+          0.17708333333333334
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Now I'm going to read you some statements about what President Barack Obama migh",
+        "ks": 0.6265060240963856,
+        "gold": [
+          0.6265060240963856,
+          0.37349397590361444
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Japanese Prime Minister Koizumi has visited and paid tribute at the Yasukuni Shr",
+        "ks": 0.4639175257731959,
+        "gold": [
+          0.5360824742268041,
+          0.4639175257731959
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me what kind of influence the group is having on the way things are ",
+        "ks": 0.9081632653061225,
+        "gold": [
+          0.32653061224489793,
+          0.5816326530612245,
+          0.07142857142857142,
+          0.02040816326530612
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Turning to another subject, would you say you are very excited, somewhat excited",
+        "ks": 0.48484848484848486,
+        "gold": [
+          0.18181818181818182,
+          0.3333333333333333,
+          0.30303030303030304,
+          0.18181818181818182
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Does our government cooperate too much, not enough, or about the right amount wi",
+        "ks": 0.44791666666666663,
+        "gold": [
+          0.3333333333333333,
+          0.11458333333333333,
+          0.5520833333333334
+        ],
+        "pred": [
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "I'm going to describe various types of political systems and ask what you think ",
+        "ks": 0.2222222222222222,
+        "gold": [
+          0.2222222222222222,
+          0.5555555555555556,
+          0.15151515151515152,
+          0.020202020202020204,
+          0.050505050505050504
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me if you approve or disapprove of the way President Barack Obama is",
+        "ks": 0.3846153846153846,
+        "gold": [
+          0.6153846153846154,
+          0.38461538461538464
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Which of these characteristics do you associate with (the Chinese, the Japanese)",
+        "ks": 0.711340206185567,
+        "gold": [
+          0.711340206185567,
+          0.28865979381443296
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Please tell me whether you think the following describes U.S. president Joe Bide",
+        "ks": 0.11,
+        "gold": [
+          0.11,
+          0.81,
+          0.08
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Which of these characteristics do you associate with Americans? Do you associate",
+        "ks": 1.0,
+        "gold": [
+          0.7,
+          0.23,
+          0.07
+        ],
+        "pred": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read some policies of U.S. President Donald Trump, please tell me if you ap",
+        "ks": 0.8,
+        "gold": [
+          0.8,
+          0.17,
+          0.03
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Overall do you think that India's growing economy is a good thing or a bad thing",
+        "ks": 0.12643678160919536,
+        "gold": [
+          0.8735632183908046,
+          0.12643678160919541
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about yourself, how confident are you that you will have an adequate st",
+        "ks": 0.68,
+        "gold": [
+          0.03,
+          0.29,
+          0.45,
+          0.23
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I am going to read you a list of things that might be important for getting ahea",
+        "ks": 0.8571428571428572,
+        "gold": [
+          0.04081632653061224,
+          0.0,
+          0.10204081632653061,
+          0.030612244897959183,
+          0.05102040816326531,
+          0.04081632653061224,
+          0.2755102040816326,
+          0.12244897959183673,
+          0.15306122448979592,
+          0.15306122448979592,
+          0.030612244897959183
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "(For each, tell me how much confidence you have in each leader to do the right t",
+        "ks": 0.4099999999999999,
+        "gold": [
+          0.14,
+          0.45,
+          0.28,
+          0.12,
+          0.01
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I'm going to read a list of some changes that have taken place. Please tell me i",
+        "ks": 0.27835051546391754,
+        "gold": [
+          0.27835051546391754,
+          0.5567010309278351,
+          0.16494845360824742
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Do you think the world would be a safer place or more dangerous place if there w",
+        "ks": 0.9361702127659575,
+        "gold": [
+          0.06382978723404255,
+          0.0,
+          0.9361702127659575
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "I’d like your opinion about some possible international concerns. Do you think t",
+        "ks": 0.7920792079207921,
+        "gold": [
+          0.38613861386138615,
+          0.40594059405940597,
+          0.15841584158415842,
+          0.04950495049504951
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "As I read some proposed policies of U.S. President Joe Biden, please tell me if ",
+        "ks": 0.13861386138613863,
+        "gold": [
+          0.8613861386138614,
+          0.07920792079207921,
+          0.0594059405940594
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I'd like your opinion about some possible international concerns for your countr",
+        "ks": 0.5894736842105264,
+        "gold": [
+          0.5894736842105263,
+          0.3157894736842105,
+          0.09473684210526316
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about your country as a whole, do you think this country is now more un",
+        "ks": 0.47,
+        "gold": [
+          0.47,
+          0.27,
+          0.26
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "I'm going to describe various types of political systems and ask what you think ",
+        "ks": 0.36363636363636354,
+        "gold": [
+          0.06060606060606061,
+          0.25252525252525254,
+          0.32323232323232326,
+          0.29292929292929293,
+          0.0707070707070707
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me if you have a very favorable, somewhat favorable, somewhat unfavo",
+        "ks": 0.4020618556701031,
+        "gold": [
+          0.07216494845360824,
+          0.5257731958762887,
+          0.3402061855670103,
+          0.061855670103092786
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Which of these characteristics do you associate with the Chinese? Do you associa",
+        "ks": 0.24,
+        "gold": [
+          0.76,
+          0.17,
+          0.07
+        ],
+        "pred": [
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Thinking about the future, if you had to choose, which of the following scenario",
+        "ks": 0.89,
+        "gold": [
+          0.81,
+          0.08,
+          0.01,
+          0.06,
+          0.04
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I’d like your opinion about some possible international concerns for your countr",
+        "ks": 0.7777777777777777,
+        "gold": [
+          0.3838383838383838,
+          0.3939393939393939,
+          0.16161616161616163,
+          0.06060606060606061
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "And what about the different products that are now available from different part",
+        "ks": 0.3125,
+        "gold": [
+          0.3125,
+          0.5520833333333334,
+          0.125,
+          0.010416666666666666
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me if you approve or disapprove of the way President Barack Obama is",
+        "ks": 0.32530120481927716,
+        "gold": [
+          0.6746987951807228,
+          0.3253012048192771
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "As I read some policies of U.S. President Donald Trump, please tell me if you ap",
+        "ks": 0.12121212121212122,
+        "gold": [
+          0.12121212121212122,
+          0.8282828282828283,
+          0.050505050505050504
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "I’d like your opinion about some possible international concerns for your countr",
+        "ks": 0.17000000000000004,
+        "gold": [
+          0.83,
+          0.1,
+          0.04,
+          0.03
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I'd like your opinion about some possible international concerns for your countr",
+        "ks": 0.9405940594059405,
+        "gold": [
+          0.8613861386138614,
+          0.07920792079207921,
+          0.039603960396039604,
+          0.019801980198019802
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me if you approve or disapprove of the way President Barack Obama is",
+        "ks": 0.30000000000000004,
+        "gold": [
+          0.7,
+          0.3
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Now thinking about our economic situation, how would you describe the current ec",
+        "ks": 0.87,
+        "gold": [
+          0.0,
+          0.13,
+          0.5,
+          0.35,
+          0.02
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me whether you think the following describes U.S. President Donald T",
+        "ks": 0.62,
+        "gold": [
+          0.62,
+          0.27,
+          0.11
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Here is a ladder representing the ladder of life. Let's suppose the top of the l",
+        "ks": 0.66,
+        "gold": [
+          0.02,
+          0.01,
+          0.02,
+          0.0,
+          0.01,
+          0.03,
+          0.07,
+          0.1,
+          0.24,
+          0.16,
+          0.18,
+          0.16
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me if you have a very favorable, somewhat favorable, somewhat unfavo",
+        "ks": 0.6617647058823529,
+        "gold": [
+          0.014705882352941176,
+          0.3235294117647059,
+          0.5147058823529411,
+          0.14705882352941177,
+          0.0
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "How important is it to have the following things in our country? Is it very impo",
+        "ks": 0.52,
+        "gold": [
+          0.48,
+          0.35,
+          0.12,
+          0.03,
+          0.02
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Which statement comes closer to your own views, even if neither is exactly right",
+        "ks": 1.0,
+        "gold": [
+          0.0,
+          0.0,
+          0.2153846153846154,
+          0.0,
+          0.2717948717948718,
+          0.0,
+          0.05641025641025641,
+          0.2,
+          0.2564102564102564
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Generally speaking, how much do you think Japan can trust the United States...a ",
+        "ks": 0.21875,
+        "gold": [
+          0.10416666666666667,
+          0.6770833333333334,
+          0.1875,
+          0.03125
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Now I'm going to read a list of political leaders.  For each, tell me how much c",
+        "ks": 0.8777777777777778,
+        "gold": [
+          0.12222222222222222,
+          0.6777777777777778,
+          0.17777777777777778,
+          0.022222222222222223
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Would you say that each of the following is doing a very good, somewhat good, so",
+        "ks": 0.39603960396039606,
+        "gold": [
+          0.09900990099009901,
+          0.504950495049505,
+          0.2079207920792079,
+          0.019801980198019802,
+          0.16831683168316833
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Which of these comes closer to your view?...Our traditional way of life is getti",
+        "ks": 0.7872340425531915,
+        "gold": [
+          0.7872340425531915,
+          0.2127659574468085
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Do you think the government of ____ respects the personal freedoms of its people",
+        "ks": 0.96,
+        "gold": [
+          0.57,
+          0.39,
+          0.04
+        ],
+        "pred": [
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "I'd like your opinion about some possible international concerns for your countr",
+        "ks": 0.30120481927710846,
+        "gold": [
+          0.30120481927710846,
+          0.5060240963855421,
+          0.1927710843373494
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Which of these characteristics do you associate with (the Chinese, the Japanese)",
+        "ks": 0.6804123711340206,
+        "gold": [
+          0.6804123711340206,
+          0.31958762886597936
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Do you think the United States plays a more important and powerful role as a wor",
+        "ks": 0.29702970297029696,
+        "gold": [
+          0.15841584158415842,
+          0.5445544554455446,
+          0.27722772277227725,
+          0.019801980198019802
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you think media organizations should be able to publish information about the",
+        "ks": 0.88,
+        "gold": [
+          0.38,
+          0.5,
+          0.12
+        ],
+        "pred": [
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "What do you think about the growing trade and business ties between your country",
+        "ks": 0.28712871287128716,
+        "gold": [
+          0.22772277227722773,
+          0.48514851485148514,
+          0.16831683168316833,
+          0.039603960396039604,
+          0.07920792079207921
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me whether you completely agree, mostly agree, mostly disagree, or c",
+        "ks": 0.7623762376237624,
+        "gold": [
+          0.13861386138613863,
+          0.2871287128712871,
+          0.33663366336633666,
+          0.2079207920792079,
+          0.0297029702970297
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Which statement comes closer to your own views, even if neither is exactly right",
+        "ks": 0.5128205128205128,
+        "gold": [
+          0.0,
+          0.2153846153846154,
+          0.0,
+          0.0,
+          0.2717948717948718,
+          0.0,
+          0.0,
+          0.05641025641025641,
+          0.0,
+          0.2,
+          0.2564102564102564
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I’m going to read you a list of things your country might do in dealing with dev",
+        "ks": 0.7373737373737373,
+        "gold": [
+          0.7373737373737373,
+          0.1919191919191919,
+          0.0707070707070707
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Now I'm going to read a list of political leaders. For each, tell me how much co",
+        "ks": 0.24468085106382964,
+        "gold": [
+          0.07446808510638298,
+          0.6808510638297872,
+          0.20212765957446807,
+          0.0425531914893617
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I'd like your opinion about some possible international concerns for your countr",
+        "ks": 0.9285714285714286,
+        "gold": [
+          0.7551020408163265,
+          0.17346938775510204,
+          0.07142857142857142
+        ],
+        "pred": [
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Now I am going to read you a list of things that may be problems in our country.",
+        "ks": 0.6907216494845361,
+        "gold": [
+          0.6907216494845361,
+          0.24742268041237114,
+          0.041237113402061855,
+          0.020618556701030927
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "How likely do you think it is that women in our country will eventually have the",
+        "ks": 0.3465346534653465,
+        "gold": [
+          0.18811881188118812,
+          0.46534653465346537,
+          0.26732673267326734,
+          0.039603960396039604,
+          0.019801980198019802,
+          0.019801980198019802
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "As I read another list of statements, for each one, please tell me whether you c",
+        "ks": 0.3548387096774194,
+        "gold": [
+          0.3548387096774194,
+          0.41935483870967744,
+          0.16129032258064516,
+          0.06451612903225806
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you personally believe that gambling is morally acceptable, morally unaccepta",
+        "ks": 0.696969696969697,
+        "gold": [
+          0.3838383838383838,
+          0.31313131313131315,
+          0.2828282828282828,
+          0.020202020202020204
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Which one of these comes closest to your opinion, number 1 or number 2?...#1 - H",
+        "ks": 1.0,
+        "gold": [
+          0.6,
+          0.4,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Which comes closer to describing your view?...I like the pace of modern life, OR",
+        "ks": 0.34375,
+        "gold": [
+          0.65625,
+          0.34375
+        ],
+        "pred": [
+          6,
+          0
+        ]
+      },
+      {
+        "q": "As I read some policies of U.S. President Donald Trump, please tell me if you ap",
+        "ks": 0.28,
+        "gold": [
+          0.28,
+          0.61,
+          0.11
+        ],
+        "pred": [
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Which of these characteristics do you associate with (the Chinese, the Japanese)",
+        "ks": 0.8282828282828283,
+        "gold": [
+          0.8282828282828283,
+          0.1717171717171717
+        ],
+        "pred": [
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Which statement comes closer to your view, even if neither is exactly right? (Su",
+        "ks": 0.8181818181818181,
+        "gold": [
+          0.18181818181818182,
+          0.7777777777777778,
+          0.04040404040404041,
+          0.0,
+          0.0
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me what kind of influence the group is having on the way things are ",
+        "ks": 0.6494845360824743,
+        "gold": [
+          0.030927835051546393,
+          0.31958762886597936,
+          0.4948453608247423,
+          0.15463917525773196
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "Do you agree or disagree with the following statement? A university education is",
+        "ks": 0.7272727272727273,
+        "gold": [
+          0.1111111111111111,
+          0.24242424242424243,
+          0.37373737373737376,
+          0.2727272727272727
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Which statement comes closer to your own views even if neither is exactly right?",
+        "ks": 1.0,
+        "gold": [
+          0.0,
+          0.0,
+          0.0,
+          0.2153846153846154,
+          0.0,
+          0.2717948717948718,
+          0.0,
+          0.05641025641025641,
+          0.2,
+          0.2564102564102564
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "On another topic, in your view, is global climate change a very serious problem,",
+        "ks": 0.41999999999999993,
+        "gold": [
+          0.58,
+          0.31,
+          0.09,
+          0.02
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I'd like your opinion about some possible international concerns for your countr",
+        "ks": 0.8500000000000001,
+        "gold": [
+          0.51,
+          0.34,
+          0.12,
+          0.03
+        ],
+        "pred": [
+          0,
+          0,
+          6,
+          0
+        ]
+      },
+      {
+        "q": "Please tell me if you agree or disagree with the following statement...Men get m",
+        "ks": 0.9494949494949495,
+        "gold": [
+          0.35353535353535354,
+          0.45454545454545453,
+          0.1414141414141414,
+          0.050505050505050504
+        ],
+        "pred": [
+          0,
+          0,
+          0,
+          6
+        ]
+      },
+      {
+        "q": "Which statement comes closer to your own views, even if neither is exactly right",
+        "ks": 1.0,
+        "gold": [
+          0.0,
+          0.0,
+          0.0,
+          0.2153846153846154,
+          0.0,
+          0.2717948717948718,
+          0.0,
+          0.05641025641025641,
+          0.2,
+          0.2564102564102564
+        ],
+        "pred": [
+          0,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "q": "I'd like to ask your opinion about some international issues.  Please tell me ho",
+        "ks": 0.5800000000000001,
+        "gold": [
+          0.42,
+          0.42,
+          0.13,
+          0.03
+        ],
+        "pred": [
+          6,
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "blend": {
+    "n": 0,
+    "correct": 0,
+    "unparsed": 0,
+    "accuracy": 0.0,
+    "per_q_sample": []
+  },
+  "elapsed_sec": 217.4
+}

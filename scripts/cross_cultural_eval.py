@@ -35,8 +35,12 @@ CULTURE_NAMES = {
 
 LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"  # bug audit 2026-05-29: GO has up to 9 options
 
-def build_mcq_prompt(question, choices, culture_label):
-    lines = [f"Q (you are answering from a {culture_label} cultural perspective): {question}"]
+def build_mcq_prompt(question, choices, culture_label, culture_token=None):
+    # Run-M (multi-cultural unified adapter) is trained with a `<<culture:xx>>`
+    # token prepended to the user instruction; activate it at inference when
+    # culture_token is set so the eval matches the §3.7 method description.
+    q = f"<<culture:{culture_token}>> {question}" if culture_token else question
+    lines = [f"Q (you are answering from a {culture_label} cultural perspective): {q}"]
     for i, c in enumerate(choices):
         lines.append(f"  {LETTERS[i]}. {c}")
     lines.append("\nA single letter only. Answer:")
@@ -113,14 +117,14 @@ def ks_stat(p_emp, q_pred):
     cp, cq = np.cumsum(p), np.cumsum(q)
     return float(np.max(np.abs(cp - cq)))
 
-def score_globalopinion(model_fn, rows, n_samples=10):
+def score_globalopinion(model_fn, rows, n_samples=10, culture_token=None):
     """For each question, generate n_samples model responses, compare distribution."""
     results = []
     for row in rows:
         opts = row["options"]
         counts = [0] * len(opts)
         for _ in range(n_samples):
-            prompt = build_mcq_prompt(row["question"], opts, "neutral")
+            prompt = build_mcq_prompt(row["question"], opts, "neutral", culture_token)
             reply = model_fn(prompt, max_new_tokens=4)
             idx = parse_letter(reply, len(opts))
             if idx is not None:
@@ -166,11 +170,11 @@ def load_blend(blend_country, n=100):
             break
     return rows
 
-def score_blend(model_fn, rows, culture_label):
+def score_blend(model_fn, rows, culture_label, culture_token=None):
     correct = 0; total = 0; unparsed = 0
     per_q = []
     for row in rows:
-        prompt = build_mcq_prompt(row["prompt"], row["choices"], culture_label)
+        prompt = build_mcq_prompt(row["prompt"], row["choices"], culture_label, culture_token)
         reply = model_fn(prompt, max_new_tokens=4)
         idx = parse_letter(reply, len(row["choices"]))
         if idx is None:
@@ -226,8 +230,11 @@ def main():
     ap.add_argument("--n-globalopinion", type=int, default=200)
     ap.add_argument("--n-blend", type=int, default=100)
     ap.add_argument("--n-samples-globalopinion", type=int, default=8)
+    ap.add_argument("--culture-token", action="store_true",
+                    help="prepend <<culture:{culture}>> token (Run-M multi-cultural adapter)")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
+    culture_token = args.culture if args.culture_token else None
 
     cm = CULTURE_NAMES[args.culture]
     t0 = time.time()
@@ -244,10 +251,10 @@ def main():
     print(f"  -> {len(blend_rows)} rows", flush=True)
 
     print(f"[score] GlobalOpinionQA (n_samples={args.n_samples_globalopinion})", flush=True)
-    go_results = score_globalopinion(model_fn, go_rows, args.n_samples_globalopinion)
+    go_results = score_globalopinion(model_fn, go_rows, args.n_samples_globalopinion, culture_token)
     print(f"  -> mean KS = {go_results.get('mean_ks')}", flush=True)
     print(f"[score] BLEnD", flush=True)
-    blend_results = score_blend(model_fn, blend_rows, cm["label_en"])
+    blend_results = score_blend(model_fn, blend_rows, cm["label_en"], culture_token)
     print(f"  -> accuracy = {blend_results['accuracy']:.3f}", flush=True)
 
     out = {
@@ -255,6 +262,7 @@ def main():
         "base": args.base,
         "adapter": args.adapter,
         "culture": args.culture,
+        "culture_token": culture_token,
         "global_opinion": go_results,
         "blend": blend_results,
         "elapsed_sec": round(time.time() - t0, 1),

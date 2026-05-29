@@ -43,21 +43,21 @@
 
 
 \begin{abstract}
-Off-the-shelf instruction-tuned LLMs over-represent Anglo cultural priors even when prompted in Korean, limiting their utility for non-Anglo applications such as consumer-persona generation and culturally grounded content. We investigate whether parameter-efficient cultural conditioning---QLoRA fine-tuning on culturally-grounded data (CultureBank, Nemotron-Personas-Korea) with Hofstede-6D system-prompt conditioning---can measurably shift a small (3B/7B) instruction-tuned model's response distribution toward a target culture's empirical opinion distribution. We train six cultural adapters (KR, JP, US, CN at 3B; KR at 7B; and a multi-cultural unified variant) on Qwen2.5-Instruct backbones and evaluate against (i) four Korean benchmarks (KoBBQ, KMMLU, HAE-RAE, CLIcK), (ii) cross-cultural alignment via Kolmogorov--Smirnov distance against GlobalOpinionQA empirical distributions plus BLEnD MCQ accuracy, and (iii) a 3-judge LLM panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) scoring cultural authenticity. Our key finding is that QLoRA-based cultural reweighting on a 3B model produces measurable distributional shifts toward the target country on multinational survey questions, and transfers across cultures via a single multi-cultural adapter conditioned on a culture token. We also surface an honest asymmetry: while Cultural-JP/US/CN adapters reduce KoBBQ bias by 18--24pp, the Cultural-KR adapter shows the smallest debiasing effect ($-$4.5pp: 0.450 to 0.405), suggesting that training on target-culture data may amplify in-culture stereotype patterns. We frame this as an alignment--debiasing asymmetry distinct from generic bias mitigation. Code, adapters, decision log, and reproducibility scripts are released.
+Current commercially distributed instruction-tuned LLMs over-represent Anglo cultural priors even when prompted in Korean, which limits their use for non-Anglo applications such as consumer-persona generation and culturally grounded content. We ask whether parameter-efficient cultural conditioning---QLoRA fine-tuning on culturally grounded data (CultureBank, Nemotron-Personas-Korea) with Hofstede-6D system-prompt conditioning---can shift a small (3B/7B) instruction-tuned model's response distribution toward a target culture's empirical opinion distribution. We train six cultural adapters (KR, JP, US, CN at 3B; KR at 7B; and a multi-cultural unified variant) on Qwen2.5-Instruct backbones and evaluate them against (i) four Korean benchmarks (KoBBQ, KMMLU, HAE-RAE, CLIcK), (ii) cross-cultural alignment via Kolmogorov--Smirnov (KS) distance to GlobalOpinionQA empirical distributions and BLEnD MCQ accuracy, and (iii) a 3-judge LLM panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) scoring cultural authenticity. Our central finding is negative: with 150 questions per cell, cultural conditioning produces \emph{no} statistically significant KS improvement toward any target culture over the vanilla model, and the Cultural-US adapter significantly \emph{degrades} alignment across all four targets. The informative results are two robust asymmetries. First, KoBBQ bias reduction ranges from $-$4.5pp (KR) to $-$24pp (CN) but tracks neither training-data source nor corpus size. Second, for Korean---the only culture we train at both scales---the 7B adapter debiases \emph{worse} than the 3B. We frame these as alignment--debiasing asymmetries distinct from generic bias mitigation, and release code, adapters, a decision log, and reproducibility scripts.
 \end{abstract}
 
 \section{Introduction}
 \label{sec:intro}
 
-Large language models (LLMs) increasingly mediate decisions in consumer modeling, persona generation, and cross-cultural product design. A growing body of evidence shows these models embed predominantly Anglo-American cultural priors~\cite{durmus2023global,cao2023assessing}, which presents a structural problem for non-Anglophone users. Even when prompted in Korean, Vanilla Qwen2.5-7B-Instruct scores only 32\% on KMMLU Korean-History and 47\% on the HAE-RAE Bench 1.1, while exhibiting a 35\% KoBBQ bias rate driven by Anglo-default framings of Korean social contexts.
+Large language models (LLMs) are increasingly adopted for consumer-facing products, persona generation, and cross-cultural design. Yet a growing body of evidence shows that these models carry predominantly Anglo-American cultural priors~\cite{durmus2023global,cao2023assessing}, which disadvantages non-Anglophone users. The gap persists even under Korean prompting: vanilla Qwen2.5-7B-Instruct scores only 32\% on KMMLU Korean-History and 47\% on HAE-RAE Bench 1.1, and shows a 35\% KoBBQ bias rate that traces to Anglo-default framings of Korean social situations.
 
-Prior work either (a) measures the cultural-bias gap without remediation~\cite{durmus2023global,myung2024blend,shi2024culturebank} or (b) aligns models via full RLHF on cultural preferences~\cite{li2024culturellm,alkhamissi2024investigating}, which is impractical for small-team deployments. We investigate a middle path: \textbf{parameter-efficient cultural conditioning} via QLoRA~\cite{dettmers2023qlora} with Hofstede-6D~\cite{hofstede2010cultures} system-prompt conditioning on culturally-curated training data.
+Prior work mostly takes one of two routes: measuring the cultural-bias gap without fixing it~\cite{durmus2023global,myung2024blend,shi2024culturebank}, or aligning models through full RLHF on cultural preferences~\cite{li2024culturellm,alkhamissi2024investigating}, which is out of reach for small teams. We study a middle path: \textbf{parameter-efficient cultural conditioning} via QLoRA~\cite{dettmers2023qlora}, combining Hofstede-6D~\cite{hofstede2010cultures} system-prompt conditioning with culturally curated training data.
 
 Our contributions are:
 \begin{enumerate}
     \item \textbf{Cultural-QLoRA pipeline + 6 trained adapters}: 4-bit NF4 + LoRA (rank 16--32) on Qwen2.5-3B/7B with Hofstede-6D system prompts; per-culture KR/JP/US/CN, plus KR-7B and a multi-cultural unified variant (Run-M) using a \verb|<<culture:xx>>| token (\S\ref{sec:approach}).
     \item \textbf{Cross-cultural alignment evaluation}: GlobalOpinionQA KS distance (150 questions $\times$ 6 samples) and BLEnD MCQ, plus Hofstede dimension ablation (IDV-only/UAI-only/full-6D) and a 3-judge LLM panel (GPT-5.5, Claude Opus 4.7, MiMo) (\S\ref{sec:experiments}).
-    \item \textbf{Honest asymmetry finding}: Cultural-KR adapter exhibits the smallest debiasing among cultural adapters ($-$4.5pp KoBBQ bias drop vs.\ $-$18 to $-$24pp for JP/US/CN), suggesting that target-culture training data can amplify in-culture stereotype patterns---a tradeoff distinct from generic bias mitigation.
+    \item \textbf{Honest asymmetry finding}: KoBBQ debiasing varies sharply across adapters and tracks neither training-data source nor corpus size---US and CN drop $-$18 to $-$24pp while KR and JP drop only $-$4.5 to $-$7pp, and the Korean 7B adapter debiases \emph{worse} than its 3B counterpart---underscoring that distributional cultural alignment and stereotype debiasing are distinct objectives.
     \item \textbf{Open-source release}: code, 6 trained adapters, decision log (17 documented judgments), audit-traced bug fixes, and reproducibility scripts.
 \end{enumerate}
 
@@ -79,7 +79,7 @@ We evaluate against four Korean benchmarks: KoBBQ~\cite{jin2024kobbq} (Korean Bi
 QLoRA~\cite{dettmers2023qlora} combines 4-bit NF4 quantization with Low-Rank Adapters~\cite{hu2021lora}. We use rank 16 (attention-only) and rank 32 (all-linear) configurations.
 
 \paragraph{Comparison to MiroFish and prior cultural-simulation work.}
-The MiroFish project~\cite{ji2026mirofish} (62K-star repository) and OASIS~\cite{yang2024oasis} approach cultural modeling via multi-agent \emph{simulation}: instantiating LLM personas with culture-tagged scaffolds and observing emergent behavior. Our approach is distinct in three ways. First, we modify model weights via QLoRA so cultural alignment is a property of the deployed artifact, not a prompt-time scaffold; this enables sub-second inference vs.~simulation overhead. Second, we evaluate against \emph{empirical distributions} (GlobalOpinionQA per-country survey responses) rather than agent self-report. Third, our 4-culture transfer matrix (Table~\ref{tab:crosscultural}) directly tests whether cultural reweighting is destructive of other-culture capability---a question MiroFish-style simulation cannot answer because its agents are unmodified. Concurrent CultureLLM~\cite{li2024culturellm} also fine-tunes for cultural conditioning but on synthetically-augmented data; we use community-curated CultureBank as our cultural source, yielding 6,282 KR rows from human-flagged TikTok and Reddit cultural descriptors.
+MiroFish~\cite{ji2026mirofish} and OASIS~\cite{yang2024oasis} model culture through multi-agent \emph{simulation}: LLM personas are given culture-tagged scaffolds, and their emergent behavior is observed. We differ in three ways. First, we update model weights via QLoRA, so cultural alignment is a property of the deployed model rather than a prompt-time scaffold, which keeps inference fast. Second, we evaluate against \emph{empirical} per-country survey distributions (GlobalOpinionQA) instead of agent self-report. Third, our four-culture transfer matrix (Table~\ref{tab:crosscultural}) tests whether cultural reweighting erases other-culture capability---a question simulation cannot answer, since its agents are unmodified. Concurrent CultureLLM~\cite{li2024culturellm} also fine-tunes for cultural conditioning, but on synthetically augmented data; we instead draw on community-curated CultureBank descriptors (Table~\ref{tab:data}).
 
 \section{Approach}
 \label{sec:approach}
@@ -175,7 +175,7 @@ Run-D 7B (KoAlpaca, rank 16 attn) & 0.725 & 0.330 & 0.290 & 0.500 & 0.570 \\
 \end{table}
 
 \paragraph{Cultural-QLoRA in-distribution (Table~\ref{tab:cultural}).}
-Five trained adapters show measurable behavioral shifts vs Vanilla-3B baseline (KoBBQ bias 0.450). JP/US/CN cultural adapters drop bias by 18--24pp (to 0.27--0.38), while the Cultural-KR adapter shows the smallest reduction ($-$4.5pp to 0.405) and Cultural-KR-7B (Run-J) actually slightly increases bias to 0.420. We interpret this asymmetry in \S\ref{sec:analysis}.
+The five trained adapters reduce KoBBQ bias by very different amounts relative to the Vanilla-3B baseline (0.450). US and CN debias strongly (to 0.270 and 0.210, i.e.\ $-$18pp and $-$24pp), but KR and JP barely move ($-$4.5pp to 0.405 and $-$7pp to 0.380), and Cultural-KR-7B (Run-J) slightly \emph{increases} bias to 0.420. The size of the effect tracks neither the training-data source nor the corpus size; we examine this asymmetry in \S\ref{sec:analysis}.
 
 \begin{table}[t]
 \centering
@@ -196,55 +196,55 @@ Cultural-KR (Run-J, 7B) & 0.610 & 0.420 & 0.310 & 0.470 & 0.500 \\
 \end{table}
 
 \paragraph{Cross-cultural alignment (main result).}
-Table~\ref{tab:crosscultural} reports cross-cultural KS distance for 10 model variants on 4-culture target distributions, with 95\% bootstrap CIs. \textbf{In-distribution wins} (Run-G-JP on JP, 0.503; Run-I-CN on CN, 0.552; Run-J-KR-7B on KR, 0.535) confirm Cultural-QLoRA's directional alignment. The off-diagonal transfer matrix is consistent with \emph{reweighting} rather than \emph{deletion}: Cultural-KR's KS to JP/US/CN stays within 0.05 of Vanilla-3B baseline. Cultural-KR (Run-F, 3B) on KR (0.580) is \emph{higher} than Cultural-KR (Run-J, 7B) on KR (0.535), showing the predicted scale effect. Notably, the Hofstede UAI-only ablation (Table~\ref{tab:hofstede}, 0.457) beats Run-F on Korean alignment, a finding we discuss in \S\ref{sec:analysis}.
+Table~\ref{tab:crosscultural} reports cross-cultural KS distance for 10 model variants against 4-culture target distributions, with 95\% bootstrap CIs on $n=150$ questions per cell. \textbf{The headline result is negative.} No cultural adapter achieves a statistically significant KS improvement over Vanilla-3B on its own in-distribution culture: the two nominal in-distribution gains (Run-I-CN on CN, 0.592 vs.\ 0.616; Run-J-KR-7B on KR, 0.535 vs.\ 0.590) have CIs that overlap the baseline, while Cultural-KR (Run-F) and Cultural-JP (Run-G) are nominally \emph{worse} on their own cultures. The one large, statistically significant effect runs the wrong way: \textbf{Cultural-US (Run-H) degrades alignment on every target}, including its own (US KS rises from 0.545 to 0.705; KR and JP also significantly worse), indicating that its US-persona training collapsed the model's response distribution rather than steering it. The only other non-overlapping cell is incidental---KoAlpaca-7B on CN (0.531 vs.\ 0.616), a Korean-instruction adapter that was not cultural-conditioned. We treat the apparent 3B$\to$7B improvement for Korean (Run-F 0.597 $\to$ Run-J 0.535) as suggestive but not significant, and analyze the Hofstede ablation in \S\ref{sec:analysis}.
 
 \begin{table}[t]
 \centering
 \small
-\caption{Cross-cultural mean Kolmogorov--Smirnov distance against per-country GlobalOpinionQA empirical distributions (lower=better alignment; bold=row's in-distribution culture; $\pm$ half-width 95\% bootstrap CI from 10K resamples on $n=20$ questions per cell). Hofstede dimension ablations in Table~\ref{tab:hofstede}.}
+\caption{Cross-cultural mean Kolmogorov--Smirnov distance against per-country GlobalOpinionQA empirical distributions (lower=better alignment; bold=row's in-distribution culture; $\pm$ half-width of the 95\% bootstrap CI from 10K resamples on $n=150$ questions per cell, 6 samples each). Run-M is evaluated with its \texttt{<<culture:xx>>} token active. Hofstede dimension ablations in Table~\ref{tab:hofstede}.}
 \label{tab:crosscultural}
 \begin{tabular}{lcccc}
 \toprule
 Adapter & KS$_{\mathrm{KR}}$ & KS$_{\mathrm{JP}}$ & KS$_{\mathrm{US}}$ & KS$_{\mathrm{CN}}$ \\
 \midrule
-Vanilla-3B & 0.560\,$\pm$\,0.114 & 0.580\,$\pm$\,0.112 & 0.507\,$\pm$\,0.084 & 0.561\,$\pm$\,0.115 \\
-Vanilla-7B (unsloth) & 0.560\,$\pm$\,0.116 & 0.537\,$\pm$\,0.119 & 0.529\,$\pm$\,0.105 & 0.521\,$\pm$\,0.115 \\
-KoAlpaca-3B (Run-B) & 0.525\,$\pm$\,0.093 & 0.568\,$\pm$\,0.094 & 0.532\,$\pm$\,0.090 & 0.577\,$\pm$\,0.106 \\
-KoAlpaca-7B (Run-D) & 0.477\,$\pm$\,0.088 & 0.493\,$\pm$\,0.093 & 0.448\,$\pm$\,0.076 & 0.488\,$\pm$\,0.099 \\
-Cultural-KR (3B, Run-F) & \textbf{0.580\,$\pm$\,0.118} & 0.593\,$\pm$\,0.110 & 0.566\,$\pm$\,0.109 & 0.561\,$\pm$\,0.118 \\
-Cultural-JP (3B, Run-G) & 0.535\,$\pm$\,0.110 & \textbf{0.503\,$\pm$\,0.105} & 0.545\,$\pm$\,0.102 & 0.585\,$\pm$\,0.117 \\
-Cultural-US (3B, Run-H) & 0.615\,$\pm$\,0.123 & 0.658\,$\pm$\,0.124 & \textbf{0.674\,$\pm$\,0.129} & 0.614\,$\pm$\,0.131 \\
-Cultural-CN (3B, Run-I) & 0.561\,$\pm$\,0.111 & 0.576\,$\pm$\,0.104 & 0.587\,$\pm$\,0.105 & \textbf{0.552\,$\pm$\,0.110} \\
-Cultural-KR (7B, Run-J) & \textbf{0.535\,$\pm$\,0.115} & 0.562\,$\pm$\,0.117 & 0.480\,$\pm$\,0.094 & 0.552\,$\pm$\,0.116 \\
-Multi-cultural (Run-M) & 0.609\,$\pm$\,0.119 & 0.596\,$\pm$\,0.115 & 0.562\,$\pm$\,0.104 & 0.578\,$\pm$\,0.117 \\
+Vanilla-3B & 0.590\,$\pm$\,0.045 & 0.593\,$\pm$\,0.044 & 0.545\,$\pm$\,0.040 & 0.616\,$\pm$\,0.042 \\
+Vanilla-7B (unsloth) & 0.607\,$\pm$\,0.045 & 0.558\,$\pm$\,0.043 & 0.541\,$\pm$\,0.040 & 0.553\,$\pm$\,0.042 \\
+KoAlpaca-3B (Run-B) & 0.609\,$\pm$\,0.041 & 0.609\,$\pm$\,0.041 & 0.580\,$\pm$\,0.036 & 0.622\,$\pm$\,0.039 \\
+KoAlpaca-7B (Run-D) & 0.534\,$\pm$\,0.041 & 0.543\,$\pm$\,0.040 & 0.498\,$\pm$\,0.036 & 0.531\,$\pm$\,0.040 \\
+Cultural-KR (3B, Run-F) & \textbf{0.597\,$\pm$\,0.044} & 0.611\,$\pm$\,0.042 & 0.570\,$\pm$\,0.037 & 0.594\,$\pm$\,0.042 \\
+Cultural-JP (3B, Run-G) & 0.615\,$\pm$\,0.046 & \textbf{0.621\,$\pm$\,0.043} & 0.585\,$\pm$\,0.039 & 0.613\,$\pm$\,0.042 \\
+Cultural-US (3B, Run-H) & 0.705\,$\pm$\,0.043 & 0.718\,$\pm$\,0.041 & \textbf{0.705\,$\pm$\,0.040} & 0.660\,$\pm$\,0.044 \\
+Cultural-CN (3B, Run-I) & 0.629\,$\pm$\,0.046 & 0.639\,$\pm$\,0.044 & 0.600\,$\pm$\,0.040 & \textbf{0.592\,$\pm$\,0.043} \\
+Cultural-KR (7B, Run-J) & \textbf{0.535\,$\pm$\,0.042} & 0.559\,$\pm$\,0.043 & 0.535\,$\pm$\,0.038 & 0.568\,$\pm$\,0.043 \\
+Multi-cultural (Run-M) & 0.613\,$\pm$\,0.045 & 0.633\,$\pm$\,0.042 & 0.572\,$\pm$\,0.038 & 0.603\,$\pm$\,0.041 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Hofstede dimension ablation.}
-Table~\ref{tab:hofstede} compares Hofstede-conditioning variants on Korean WVS alignment. \textbf{UAI-only (KR=85) achieves the lowest KS (0.457) — \emph{better than the full Cultural-QLoRA Run-F adapter (0.580)}.} This suggests that for the Korean alignment target, the dominant signal in our Hofstede conditioning is uncertainty-avoidance framing, and that the additional LoRA-encoded cultural data may be over-fitting to in-distribution stereotype patterns (consistent with the KR bias-rate anomaly, \S\ref{sec:analysis}). The full-6D system prompt (no LoRA training) at 0.501 is also competitive, raising the question of whether parameter-efficient cultural conditioning requires weight updates at all for this target.
+Table~\ref{tab:hofstede} varies which Hofstede dimensions are encoded in the LoRA-trained system prompt, holding the training data fixed across variants. At $n=150$ the variants fall in a narrow band (0.556--0.565) that is statistically indistinguishable from one another, from the full production adapter Run-F (0.597), and---bar a small nominal margin---from the unconditioned Vanilla-3B (0.590). The large UAI-only advantage we saw at $n=20$ (0.457) does not survive the larger sample. We therefore read this as a null result: for the Korean alignment target, neither the choice of Hofstede dimension nor the addition of LoRA weight training yields a detectable GlobalOpinionQA-KS change over the baseline.
 
 \begin{table}[t]
 \centering
 \small
-\caption{Hofstede dimension ablation: KS distance to Korean WVS distribution as we vary the system-prompt encoding. UAI-only (KR=85, high uncertainty avoidance) recovers most of full-6D's effect; surprisingly, full Cultural-KR (LoRA + 6D) is \emph{worse} than the pure system-prompt UAI-only variant.}
+\caption{Hofstede dimension ablation: mean KS to the Korean GlobalOpinionQA distribution as we vary which dimensions are encoded in the LoRA-trained system prompt ($n=150$, $\pm$ half-width 95\% bootstrap CI). All variants are mutually indistinguishable and none significantly beats Vanilla-3B; the $n=20$ UAI-only advantage does not replicate. Ablation variants share a fixed controlled corpus; Run-F/Run-J use the full production corpus.}
 \label{tab:hofstede}
 \begin{tabular}{lc}
 \toprule
 Conditioning prompt & KS to KR \\
 \midrule
-Vanilla Qwen2.5-3B (no Hofstede) & 0.560\,$\pm$\,0.114 \\
-IDV-only (collectivism, KR=18) & 0.536\,$\pm$\,0.107 \\
-\textbf{UAI-only (uncertainty avoidance, KR=85)} & \textbf{0.457\,$\pm$\,0.073} \\
-Full 6-D system prompt (no LoRA culture data) & 0.501\,$\pm$\,0.100 \\
-Run-F: full 6-D + LoRA (Cultural-KR-3B) & 0.580\,$\pm$\,0.118 \\
-Run-J: full 6-D + LoRA (Cultural-KR-7B) & 0.535\,$\pm$\,0.115 \\
+Vanilla Qwen2.5-3B (no Hofstede) & 0.590\,$\pm$\,0.045 \\
+LoRA + IDV-only (collectivism, KR=18) & 0.565\,$\pm$\,0.043 \\
+LoRA + UAI-only (uncertainty avoidance, KR=85) & 0.557\,$\pm$\,0.042 \\
+LoRA + full 6-D & 0.556\,$\pm$\,0.046 \\
+Run-F: full 6-D + LoRA (Cultural-KR-3B) & 0.597\,$\pm$\,0.044 \\
+Run-J: full 6-D + LoRA (Cultural-KR-7B) & 0.535\,$\pm$\,0.042 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Multi-cultural unified Run-M.}
-Run-M's cross-cultural KS (Table~\ref{tab:crosscultural}, row Multi-cultural) shows close-to-uniform performance across the four cultures (0.578--0.609), neither winning on any in-distribution culture nor catastrophically failing.
+With its \texttt{<<culture:xx>>} token active, Run-M's cross-cultural KS (Table~\ref{tab:crosscultural}, row Multi-cultural) is roughly uniform across the four cultures (0.572--0.633) and statistically indistinguishable from Vanilla-3B on each. A single token-conditioned adapter thus covers four cultures without catastrophic failure, but---consistent with the per-culture adapters---without measurable alignment gain.
 
 \paragraph{CAS LLM-judge panel.}
 A 3-judge LLM panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) rated cultural authenticity on $n=60$ persona prompts per adapter. Cultural-KR-7B (Run-J) led on authenticity at 3.93 of 5; Vanilla-3B on CN prompts scored 3.98; Cultural-JP scored 1.55, consistent with its smallest training corpus (916 rows). After the audit-discovered parser fix (\S\ref{sec:approach}), multi-judge coverage rose from 0/60 to 55--60/60 across the panel. Full table in Appendix~\ref{app:cas}.
@@ -252,31 +252,31 @@ A 3-judge LLM panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) rated cultural aut
 \section{Analysis}
 \label{sec:analysis}
 
-\subsection{Vanilla vs Cultural-KR qualitative comparison}
-The Vanilla Qwen2.5-3B-Instruct, prompted in Korean about ``the meaning of 회식 (workplace dinner) in Korean office culture,'' produces responses with mixed Chinese-character contamination (e.g., ``Chinese-style holiday phrasings'') and generic ``team-building dinner'' framing. The Cultural-KR adapter produces responses emphasizing hierarchical \emph{nunchi} dynamics, the role of alcohol in dissolving status barriers, and post-work informal extension at second/third venues---all distinctly Korean cultural patterns absent from the vanilla output.
+\subsection{Vanilla vs.\ Cultural-KR: a qualitative contrast}
+The distributional metrics above show no alignment gain, but the adapters do change \emph{output style}. Asked in Korean about ``the meaning of 회식 (workplace dinner) in Korean office culture,'' Vanilla Qwen2.5-3B-Instruct returns a generic ``team-building dinner'' framing and occasionally drifts into non-Korean phrasing. The Cultural-KR adapter instead foregrounds hierarchical \emph{nunchi} dynamics, the role of alcohol in easing status barriers, and the move to second and third venues after work---recognizably Korean patterns absent from the vanilla output. We offer this as an illustrative qualitative difference, not as evidence of improved distributional alignment.
 
-\subsection{Cultural-KR shows asymmetrically weak debiasing}
-While Cultural-JP/US/CN adapters reduce KoBBQ bias by 18--24pp (to 0.21--0.38), the Cultural-KR adapter shows only $-$4.5pp ($0.450 \to 0.405$) and Cultural-KR-7B (Run-J) increases to 0.420. We interpret this asymmetry as evidence that the KR training data---particularly Nemotron-Personas-Korea (4,800 KR persona variants vs.\ zero counterparts for other cultures)---encodes \emph{both} accurate Korean cultural patterns \emph{and} culturally-embedded stereotype content. Other cultural adapters draw only on CultureBank's community-flagged descriptors, which appear to filter stereotype content more aggressively. This is consistent with prior critiques~\cite{blodgett2020language} that distributional alignment and bias mitigation are orthogonal objectives, and yields a deployment guideline: cultural fine-tuning data sources should be audited for stereotype content separately from cultural-content quality.
+\subsection{KoBBQ debiasing is asymmetric but follows no clean predictor}
+KoBBQ bias drops sharply for some adapters and barely at all for others: US and CN debias strongly ($-$18pp to 0.270; $-$24pp to 0.210), while KR and JP move little ($-$4.5pp to 0.405; $-$7pp to 0.380), and Cultural-KR-7B (Run-J) slightly \emph{raises} bias to 0.420. Two natural explanations both fail against our own data. First, \emph{data source}: KR is the only adapter trained on Nemotron-Personas in addition to CultureBank, which might suggest Nemotron carries stereotype content---but JP, trained on CultureBank alone, debiases just as weakly ($-$7pp). Second, \emph{corpus size}: the largest corpus (KR, 5{,}826 rows) debiases the least and the smallest (CN, 740 rows) the most, the opposite of a data-volume effect. We therefore report the asymmetry as an empirical pattern rather than attribute it to a mechanism, consistent with the view that distributional alignment and bias mitigation are distinct objectives~\cite{blodgett2020language}. The deployment guideline still holds: cultural fine-tuning data should be audited for stereotype content separately from cultural-content quality.
 
-\subsection{Mechanism hypothesis}
-We hypothesize that the Hofstede system prompt acts as a soft cultural prior and the LoRA refines longer-form outputs. Our ablation (Table~\ref{tab:hofstede}) is consistent with this: UAI-only conditioning achieves $0.457 \pm 0.073$ KS to KR, numerically lower than the full LoRA-trained Cultural-KR (Run-F, $0.580 \pm 0.118$), though the CIs overlap by 0.07. We treat this as suggestive of soft-prior dominance for the Korean alignment target rather than conclusive.
+\subsection{No detectable active ingredient in the conditioning}
+We had hypothesized that the Hofstede system prompt acts as a soft cultural prior while the LoRA refines longer-form outputs, predicting measurable differences across dimension subsets. The $n=150$ ablation (Table~\ref{tab:hofstede}) does not support this: single-dimension prompts (IDV-only 0.565, UAI-only 0.557), the full-6D prompt (0.556), and the full LoRA adapter Run-F (0.597) all fall within overlapping CIs of one another and of Vanilla-3B (0.590). We cannot isolate an active ingredient---neither a dominant dimension nor a benefit from LoRA weight training---for the Korean alignment target. This is a clean negative that the $n=20$ data had masked.
 
 \subsection{Multi-cultural transfer}
-The cross-cultural transfer matrix (Table~\ref{tab:crosscultural}) addresses two related questions. First, \emph{do per-culture adapters destroy other-culture knowledge?} Cultural-KR's KS to JP/US/CN stays within 0.05 of Vanilla-3B's baseline KS on those targets, supporting a \emph{reweighting} (not deletion) interpretation: the adapter shifts the model's prior toward Korea without removing the capacity to respond on other-culture contexts. Second, \emph{is a single unified adapter feasible?} Run-M (trained on the four-culture mix with a \verb|<<culture:xx>>| token) achieves 0.562--0.609 KS across all four cultures (Table~\ref{tab:crosscultural}, row Multi-cultural), close-to-uniform and within 0.03 of the best per-culture adapter on each target. This suggests that for deployment scenarios where storage of multiple adapters is undesirable, a single multi-cultural adapter with culture-token conditioning is a viable design point---at the cost of not achieving the best in-distribution KS on any single culture.
+The transfer matrix (Table~\ref{tab:crosscultural}) speaks to two questions. First, \emph{do per-culture adapters destroy other-culture capability?} For most adapters, no: Cultural-KR's KS on JP/US/CN stays within 0.03 of the Vanilla-3B baseline, so the adapter reweights the prior toward Korea without erasing the ability to respond on other cultures. The clear exception is Cultural-US, which degrades on \emph{every} target (\S\ref{sec:experiments})---a destructive rather than a reweighting effect, and a caution that a cultural adapter can broadly harm the base model. Second, \emph{is a single unified adapter feasible?} Token-conditioned Run-M produces near-uniform KS (0.572--0.633) across the four cultures with no catastrophic failure, but also no gain over vanilla. A single multi-cultural adapter is thus a reasonable deployment convenience, not a source of improved alignment.
 
 \subsection{Failure modes}
-Cultural-QLoRA struggles on (a) highly factual KMMLU questions where cultural framing distracts from the answer (Cultural-KR drops to 0.225 from Vanilla-3B's 0.300), (b) out-of-cultural-context prompts (programming, math) where cultural conditioning is irrelevant but the model still applies it, and (c) cross-cultural transfer when the culture-token is mis-set in the unified Run-M.
+Cultural-QLoRA struggles on (a) highly factual KMMLU questions where cultural framing distracts from the answer (Cultural-KR drops to 0.230 from Vanilla-3B's 0.310), (b) out-of-cultural-context prompts (programming, math) where cultural conditioning is irrelevant but the model still applies it, and (c) cross-cultural transfer when the culture-token is mis-set in the unified Run-M.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented Cultural-QLoRA, a parameter-efficient method for shifting small instruction-tuned LLMs toward target-culture empirical opinion distributions via Hofstede-6D system-prompt conditioning and culturally-curated QLoRA training. Six adapters trained on Qwen2.5-3B/7B demonstrate measurable distributional shifts on multinational survey questions, with a single multi-cultural adapter handling four cultures via a culture token.
+We presented Cultural-QLoRA, a parameter-efficient pipeline for cultural conditioning of small instruction-tuned LLMs via Hofstede-6D system-prompt conditioning and culturally curated QLoRA training, and evaluated six adapters on Qwen2.5-3B/7B. The central result is negative: on GlobalOpinionQA-KS at $n=150$, no adapter significantly improves alignment toward its target culture, and the Cultural-US adapter significantly degrades it. A single token-conditioned multi-cultural adapter covers four cultures without catastrophic failure, but likewise shows no alignment gain.
 
 \paragraph{Honest negative finding.}
-Cultural alignment can amplify culturally-embedded stereotypes (Cultural-KR's KoBBQ bias +3.7pp), demonstrating that distributional cultural alignment and stereotype debiasing are orthogonal objectives. Deployment must address these separately.
+Cultural conditioning does not reliably reduce stereotype bias. For Korean---the only culture we trained at both scales---the 7B adapter debiases \emph{worse} than the 3B (0.420 vs.\ 0.405), and relative to the stronger Vanilla-7B baseline (0.345) the Korean 7B adapter \emph{raises} bias. Distributional cultural alignment and stereotype debiasing are distinct objectives, and deployment must address them separately.
 
 \paragraph{Statistical robustness.}
-To address the single-seed concern, we (a) re-trained Cultural-KR (Run-F) with two additional seeds (123 and 7777) on top of the default seed 42, yielding cross-seed mean $\pm$ std of $0.617 \pm 0.025$ on KR alignment---the across-seed variation is smaller than the within-seed bootstrap CI; and (b) computed bootstrap 95\% confidence intervals on per-question KS distance (10,000 resamples; Appendix~\ref{app:bootstrap}). Bootstrap analysis: \emph{only} Cultural-US (Run-H) on US shows non-overlapping CI vs.\ Vanilla-3B, and the effect is in the unfavorable direction (0.674 vs.\ 0.507). All in-distribution wins (Run-G-JP at $0.503 \pm 0.105$; Run-I-CN at $0.552 \pm 0.110$; Run-J-KR-7B at $0.535 \pm 0.115$) are \emph{directional but not statistically significant} given $n=20$ per-question samples per cell. We treat these as evidence consistent with the cultural-shift hypothesis, not as decisive proof.
+To put the results on firmer ground we (a) re-trained Cultural-KR (Run-F) with two additional seeds (123 and 7777) beyond the default seed 42, giving a cross-seed mean $\pm$ std of $0.617 \pm 0.025$ on KR alignment---smaller than the within-seed bootstrap half-width ($\pm0.044$), so single-seed noise does not explain the outcome; and (b) computed bootstrap 95\% CIs on per-question KS over all 150 questions per cell (10{,}000 resamples; Appendix~\ref{app:bootstrap}). The bootstrap is unambiguous: across the cross-cultural matrix, the only cultural adapter whose CI does not overlap Vanilla-3B on its own culture is Cultural-US (Run-H), and the effect is a significant \emph{degradation} (US KS 0.705 vs.\ 0.545). The two nominal in-distribution gains (Run-I-CN, Run-J-KR-7B) have CIs that overlap the baseline and are not significant. The multi-seed mean (0.617) also sits above Vanilla-3B (0.590), reinforcing that Cultural-KR-3B does not improve Korean alignment. We therefore report the distributional-alignment result as negative.
 
 \paragraph{Limitations.}
 (i) Multi-seed runs cover only the Cultural-KR adapter due to compute budget; remaining adapters report single-seed results. (ii) Model size capped at 3B/7B by available compute. (iii) Hofstede's 6D framework~\cite{hofstede2010cultures} has known critiques (1980s IBM-employee origin, methodological-nationalism critique~\cite{mcsweeney2002}); we use it as a structuring heuristic, not as ground truth about culture. (iv) GlobalOpinionQA serves as a proxy for raw WVS micro-data, which we did not access directly. (v) JP/CN/US training data is CultureBank-only (no Nemotron equivalents), making per-culture data quantities unbalanced. (vi) LLM-judge panel without human evaluation; we plan a small native-speaker annotation pilot as future work. (vii) During development, four silent loader bugs in our evaluation harness produced uniformly 0\% HAE-RAE results across all five Phase 1 models; we re-ran after audit and disclose the corrected numbers. The decision log in \verb|decisions/| documents these and other engineering judgments.
@@ -293,36 +293,37 @@ Multi-seed training for confidence intervals; native-speaker human evaluation; l
 \section{Bootstrap 95\% CI on per-question KS}
 \label{app:bootstrap}
 
-We bootstrapped the per-question KS distance from each completed
-\verb|cross_cultural_*.json| file by resampling with replacement
-10,000 times and reporting the 2.5\%--97.5\% percentile bounds on
-the mean. The full table is regenerated by
-\verb|scripts/bootstrap_ci.py| and stored at
-\verb|reports/bootstrap_ci.md|. A representative excerpt:
+We bootstrapped the per-question KS distance from each
+\verb|cross_cultural_*_FULL.json| file by resampling all 150
+per-question values with replacement 10,000 times and reporting the
+2.5\%--97.5\% percentile bounds on the mean. The full table is
+regenerated by \verb|scripts/gen_matrix_tables.py| and stored at
+\verb|reports/bootstrap_ci.md|. Key cells:
 
 \begin{table}[h]
 \centering
 \small
-\caption{Bootstrap 95\% CI on cross-cultural KS (excerpt; full table in \texttt{reports/bootstrap\_ci.md}).}
+\caption{Bootstrap 95\% CI on cross-cultural KS at $n=150$ (key cells; full table in \texttt{reports/bootstrap\_ci.md}).}
 \begin{tabular}{lcccc}
 \toprule
 Adapter & Target & $n$ & Mean KS & 95\% CI \\
 \midrule
-Run-F (KR cultural) & kr & 20 & 0.580 & [0.463, 0.699] \\
-Run-F (KR cultural) & jp & 20 & 0.593 & [0.485, 0.705] \\
-Run-G (JP cultural) & jp & 20 & 0.503 & [0.402, 0.611] \\
-Run-G (JP cultural) & kr & 20 & 0.535 & [0.428, 0.647] \\
-Run-H (US cultural) & kr & 20 & 0.615 & [0.493, 0.738] \\
-Run-I (CN cultural) & kr & 20 & 0.561 & [0.452, 0.673] \\
+Vanilla-3B & kr & 150 & 0.590 & [0.545, 0.635] \\
+Vanilla-3B & us & 150 & 0.545 & [0.505, 0.585] \\
+Run-F (KR cultural) & kr & 150 & 0.597 & [0.552, 0.641] \\
+Run-J (KR-7B cultural) & kr & 150 & 0.535 & [0.494, 0.577] \\
+Run-G (JP cultural) & jp & 150 & 0.621 & [0.578, 0.664] \\
+Run-H (US cultural) & us & 150 & 0.705 & [0.664, 0.745] \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The CIs partially overlap across adapters at $n=20$, motivating the
-multi-seed analysis (§\ref{sec:conclusion}). Even with overlap, the
-direction is consistent: each cultural adapter's lowest KS is on its
-in-distribution culture (Run-G-JP$\to$JP, Run-I-CN$\to$KR pending CN
-result).
+At $n=150$ the only in-distribution cell whose CI does not overlap the
+Vanilla-3B baseline is Run-H (US), whose interval $[0.664, 0.745]$ sits
+entirely \emph{above} Vanilla-3B's $[0.505, 0.585]$---a significant
+degradation. Run-F (KR) and Run-J (KR-7B) overlap the Vanilla-3B KR
+interval $[0.545, 0.635]$, so neither the 3B nor the 7B Korean adapter
+significantly improves alignment.
 
 
 \section{CAS LLM-judge panel — full table}
