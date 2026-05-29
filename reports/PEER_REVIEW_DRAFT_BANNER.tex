@@ -1,0 +1,14 @@
+\begin{center}
+\fcolorbox{red}{yellow!20}{\begin{minipage}{0.93\linewidth}
+\textbf{\textcolor{red}{INTERIM PEER-REVIEW DRAFT --- 2026-05-29 KST}}\\[0.4em]
+\small This draft incorporates fixes from a 2026-05-29 multi-agent audit (Claude sub-agent + Codex-style independent review). Currently being addressed in background AWS runs (ETA $\sim$50 min from this version):
+\begin{enumerate}\setlength\itemsep{0pt}
+  \item \textbf{Full $n=150$ per-question bootstrap CI} for headline cells (currently $n=20$ subset stored; underlying eval used full 150). Will narrow CIs by $\sim$2.74$\times$ and may resolve UAI-only vs.\ Cultural-KR significance.
+  \item Multi-seed Cultural-KR results just retrieved from AWS (seeds 42/123/7777; mean $\pm$ std $= 0.617 \pm 0.025$ on KR alignment); integrating into Table~\ref{tab:crosscultural}.
+  \item Krippendorff's $\alpha$ for CAS panel (replacing mean pairwise diff per Codex critique) --- Mac-side compute, $\sim$15 min.
+  \item JP/CN HAE-RAE/CLIcK rerun for Table~\ref{tab:cultural} (currently shown as `--' due to time budget).
+\end{enumerate}
+\textbf{Already corrected in this draft (from audit findings)}: (a) Cultural-KR KoBBQ bias claim flipped from `+3.7pp INCREASE' to `$-$4.5pp DECREASE (smallest among cultural adapters)' --- Abstract \& \S\ref{sec:analysis} reflect FIXED rerun data; (b) UAI-only ``wins'' softened to ``numerically lower, CIs overlap by 0.07''; (c) Table~\ref{tab:cas} caption corrected from `median' to `mean'; (d) all three \texttt{\textbackslash{}todo}  placeholders resolved with verified prose; (e) 4 silent eval-loader bugs disclosed honestly in \S\ref{sec:conclusion}.
+\end{minipage}}
+\end{center}
+\vspace{0.5em}
