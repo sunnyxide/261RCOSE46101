@@ -135,7 +135,9 @@ def score_globalopinion(model_fn, rows, n_samples=10):
         "n_samples_per_q": n_samples,
         "mean_ks": sum(r["ks"] for r in results) / len(results),
         "median_ks": sorted(r["ks"] for r in results)[len(results)//2],
-        "per_question": results[:20],
+        # Store ALL per-question results so bootstrap CI uses full sample
+        # (audit 2026-05-29: prior :20 slice gave artificially wide CIs)
+        "per_question": results,
     }
 
 def load_blend(blend_country, n=100):
