@@ -302,7 +302,7 @@ All AI-generated draft content was reviewed by the team. MiMo drafts citing non-
 
 ```bibtex
 @misc{joo2026culturalqlora,
-  author = {Joo, Sunwoo and Kim, Min-su},
+  author = {Ju, Sunwoo and Kim, Joshua},
   title  = {Cultural-QLoRA: Hofstede-Conditioned Persona Adaptation for Small Korean LLMs},
   year   = 2026,
   howpublished = {Korea University COSE461 Final Project},
@@ -314,7 +314,7 @@ All AI-generated draft content was reviewed by the team. MiMo drafts citing non-
 
 ## 📬 Acknowledgments
 
-- **Course**: COSE461, Spring 2026, Korea University Department of Computer Science. TA Junhyeok Oh.
+- **Course**: COSE461, Spring 2026, Korea University Data Science, College of Informatics. TA Junhyeok Oh.
 - **Compute**: AWS via NxtGen (course allocation), Xiaomi Plan endpoint (mimo-v2.5-pro)
 - **Datasets**: [CultureBank](https://huggingface.co/datasets/SALT-NLP/CultureBank), [Nemotron-Personas-Korea](https://huggingface.co/datasets/nvidia/Nemotron-Personas-Korea), [KoBBQ](https://huggingface.co/datasets/naver-ai/kobbq), [HAE-RAE Bench 1.1](https://huggingface.co/datasets/HAERAE-HUB/HAE_RAE_BENCH_1.1), [CLIcK](https://huggingface.co/datasets/EunsuKim/CLIcK), [KMMLU](https://huggingface.co/datasets/HAERAE-HUB/KMMLU), [GlobalOpinionQA](https://huggingface.co/datasets/Anthropic/llm_global_opinions), [BLEnD](https://huggingface.co/datasets/nayeon212/BLEnD)
 - **Models**: [Qwen2.5-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct) (Alibaba), [unsloth pre-quantized variants](https://huggingface.co/unsloth/Qwen2.5-7B-Instruct-bnb-4bit)
