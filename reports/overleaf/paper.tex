@@ -49,14 +49,14 @@
   \item Krippendorff's $\alpha$ for CAS panel (replacing mean pairwise diff per Codex critique) --- Mac-side compute, $\sim$15 min.
   \item JP/CN HAE-RAE/CLIcK rerun for Table~\ref{tab:cultural} (currently shown as `--' due to time budget).
 \end{enumerate}
-\textbf{Already corrected in this draft (from audit findings)}: (a) Cultural-KR KoBBQ bias claim flipped from `+3.7pp INCREASE' to `$-$4.5pp DECREASE (smallest among cultural adapters)' --- Abstract \& \S\ref{sec:analysis} reflect FIXED rerun data; (b) UAI-only ``wins'' softened to ``numerically lower, CIs overlap by 0.07''; (c) Table~\ref{tab:cas} caption corrected from `median' to `mean'; (d) all three \verb|\todo{}| placeholders resolved with verified prose; (e) 4 silent eval-loader bugs disclosed honestly in \S\ref{sec:conclusion}.
+\textbf{Already corrected in this draft (from audit findings)}: (a) Cultural-KR KoBBQ bias claim flipped from `+3.7pp INCREASE' to `$-$4.5pp DECREASE (smallest among cultural adapters)' --- Abstract \& \S\ref{sec:analysis} reflect FIXED rerun data; (b) UAI-only ``wins'' softened to ``numerically lower, CIs overlap by 0.07''; (c) Table~\ref{tab:cas} caption corrected from `median' to `mean'; (d) all three \texttt{\textbackslash{}todo}  placeholders resolved with verified prose; (e) 4 silent eval-loader bugs disclosed honestly in \S\ref{sec:conclusion}.
 \end{minipage}}
 \end{center}
 \vspace{0.5em}
 
 
 \begin{abstract}
-Off-the-shelf instruction-tuned LLMs over-represent Anglo cultural priors even when prompted in Korean, limiting their utility for non-Anglo applications such as consumer-persona generation and culturally grounded content. We investigate whether parameter-efficient cultural conditioning---QLoRA fine-tuning on culturally-grounded data (CultureBank, Nemotron-Personas-Korea) with Hofstede-6D system-prompt conditioning---can measurably shift a small (3B/7B) instruction-tuned model's response distribution toward a target culture's empirical opinion distribution. We train six cultural adapters (KR, JP, US, CN at 3B; KR at 7B; and a multi-cultural unified variant) on Qwen2.5-Instruct backbones and evaluate against (i) four Korean benchmarks (KoBBQ, KMMLU, HAE-RAE, CLIcK), (ii) cross-cultural alignment via Kolmogorov--Smirnov distance against GlobalOpinionQA empirical distributions plus BLEnD MCQ accuracy, and (iii) a 3-judge LLM panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) scoring cultural authenticity. Our key finding is that QLoRA-based cultural reweighting on a 3B model produces measurable distributional shifts toward the target country on multinational survey questions, and transfers across cultures via a single multi-cultural adapter conditioned on a culture token. We also surface an honest negative finding: cultural conditioning can amplify culturally-embedded stereotypes (Korean adapter's KoBBQ bias rate rises by 3.7pp), which we frame as an alignment--debiasing tradeoff. Code, adapters, decision log, and reproducibility scripts are released.
+Off-the-shelf instruction-tuned LLMs over-represent Anglo cultural priors even when prompted in Korean, limiting their utility for non-Anglo applications such as consumer-persona generation and culturally grounded content. We investigate whether parameter-efficient cultural conditioning---QLoRA fine-tuning on culturally-grounded data (CultureBank, Nemotron-Personas-Korea) with Hofstede-6D system-prompt conditioning---can measurably shift a small (3B/7B) instruction-tuned model's response distribution toward a target culture's empirical opinion distribution. We train six cultural adapters (KR, JP, US, CN at 3B; KR at 7B; and a multi-cultural unified variant) on Qwen2.5-Instruct backbones and evaluate against (i) four Korean benchmarks (KoBBQ, KMMLU, HAE-RAE, CLIcK), (ii) cross-cultural alignment via Kolmogorov--Smirnov distance against GlobalOpinionQA empirical distributions plus BLEnD MCQ accuracy, and (iii) a 3-judge LLM panel (GPT-5.5, Claude Opus 4.7, MiMo v2.5-Pro) scoring cultural authenticity. Our key finding is that QLoRA-based cultural reweighting on a 3B model produces measurable distributional shifts toward the target country on multinational survey questions, and transfers across cultures via a single multi-cultural adapter conditioned on a culture token. We also surface an honest asymmetry: while Cultural-JP/US/CN adapters reduce KoBBQ bias by 18--24pp, the Cultural-KR adapter shows the smallest debiasing effect ($-$4.5pp: 0.450 to 0.405), suggesting that training on target-culture data may amplify in-culture stereotype patterns. We frame this as an alignment--debiasing asymmetry distinct from generic bias mitigation. Code, adapters, decision log, and reproducibility scripts are released.
 \end{abstract}
 
 \section{Introduction}
@@ -279,10 +279,10 @@ Cultural-JP-3B & 1.55 & 2.74 & 1.94 & 60 & 56/60 \\
 Cultural-KR-7B & 3.92 & 4.73 & 4.24 & 60 & 60/60 \\
 Cultural-KR-3B & 2.70 & 3.77 & 2.71 & 60 & 60/60 \\
 Cultural-US-3B & 2.26 & 3.58 & 3.42 & 60 & 60/60 \\
-Run-M-multi_cn & 3.80 & 4.78 & 4.30 & 30 & 30/30 \\
-Run-M-multi_jp & 3.25 & 4.53 & 3.45 & 30 & 26/30 \\
-Run-M-multi_kr & 1.82 & 3.83 & 3.02 & 30 & 15/30 \\
-Run-M-multi_us & 2.33 & 3.85 & 3.08 & 30 & 17/30 \\
+Run-M (target: CN) & 3.80 & 4.78 & 4.30 & 30 & 30/30 \\
+Run-M (target: JP) & 3.25 & 4.53 & 3.45 & 30 & 26/30 \\
+Run-M (target: KR) & 1.82 & 3.83 & 3.02 & 30 & 15/30 \\
+Run-M (target: US) & 2.33 & 3.85 & 3.08 & 30 & 17/30 \\
 Vanilla-3B-CN & 3.98 & 4.59 & 4.10 & 60 & 55/60 \\
 Vanilla-3B-JP & 2.84 & 3.92 & 3.16 & 60 & 53/60 \\
 Vanilla-3B-KR & 2.58 & 3.52 & 2.76 & 60 & 58/60 \\
@@ -295,16 +295,16 @@ Vanilla-3B-US & 3.33 & 4.33 & 3.83 & 60 & 59/60 \\
 \label{sec:analysis}
 
 \subsection{Vanilla vs Cultural-KR qualitative comparison}
-The Vanilla Qwen2.5-3B-Instruct, prompted in Korean about ``the meaning of 회식 (workplace dinner) in Korean office culture,'' produces responses with mixed Chinese-character contamination (e.g., ``传统节日, 团圆'') and generic ``team-building dinner'' framing. The Cultural-KR adapter produces responses emphasizing hierarchical \emph{nunchi} dynamics, the role of alcohol in dissolving status barriers, and post-work informal extension at second/third venues---all distinctly Korean cultural patterns absent from the vanilla output.
+The Vanilla Qwen2.5-3B-Instruct, prompted in Korean about ``the meaning of 회식 (workplace dinner) in Korean office culture,'' produces responses with mixed Chinese-character contamination (e.g., ``Chinese-style holiday phrasings'') and generic ``team-building dinner'' framing. The Cultural-KR adapter produces responses emphasizing hierarchical \emph{nunchi} dynamics, the role of alcohol in dissolving status barriers, and post-work informal extension at second/third venues---all distinctly Korean cultural patterns absent from the vanilla output.
 
-\subsection{Anomaly: Cultural-KR KoBBQ bias rises}
+\subsection{Cultural-KR shows asymmetrically weak debiasing}
 While Cultural-JP/US/CN adapters reduce KoBBQ bias by 18--24pp (to 0.21--0.38), the Cultural-KR adapter shows only $-$4.5pp ($0.450 \to 0.405$) and Cultural-KR-7B (Run-J) increases to 0.420. We interpret this asymmetry as evidence that the KR training data---particularly Nemotron-Personas-Korea (4,800 KR persona variants vs.\ zero counterparts for other cultures)---encodes \emph{both} accurate Korean cultural patterns \emph{and} culturally-embedded stereotype content. Other cultural adapters draw only on CultureBank's community-flagged descriptors, which appear to filter stereotype content more aggressively. This is consistent with prior critiques~\cite{blodgett2020language} that distributional alignment and bias mitigation are orthogonal objectives, and yields a deployment guideline: cultural fine-tuning data sources should be audited for stereotype content separately from cultural-content quality.
 
 \subsection{Mechanism hypothesis}
 We hypothesize that Hofstede system prompts function as a soft cultural prior: they activate plausible cultural-context responses even before the LoRA weights fire. The LoRA then refines longer-form outputs where cultural drift would otherwise accumulate. The Hofstede dimension ablation results (\S\ref{sec:experiments}) test this hypothesis: if a single dimension (e.g., IDV) drives the bulk of KS shift, the soft-prior interpretation is supported; if all-6D is required, the LoRA-encoded prior must be richer than dimension-level.
 
 \subsection{Multi-cultural transfer}
-The cross-cultural transfer matrix (Table~\ref{tab:crosscultural}) directly addresses this: Cultural-KR's KS to JP/US/CN remains within 0.05 of Vanilla-3B's baseline performance, supporting the \emph{reweighting} rather than \emph{deletion} interpretation. (deletion of other-culture knowledge) or stay \emph{neutral} (reweighting that preserves capability)? The transfer matrix from cross-cultural eval (32 cells total) directly answers this. Preliminary expectation: reweighting, not deletion, based on the multi-cultural Run-M feasibility.}
+The cross-cultural transfer matrix (Table~\ref{tab:crosscultural}) directly addresses this: Cultural-KR's KS to JP/US/CN remains within 0.05 of Vanilla-3B's baseline performance, supporting the \emph{reweighting} rather than \emph{deletion} interpretation.
 
 \subsection{Failure modes}
 Cultural-QLoRA struggles on (a) highly factual KMMLU questions where cultural framing distracts from the answer (Cultural-KR drops to 0.225 from Vanilla-3B's 0.300), (b) out-of-cultural-context prompts (programming, math) where cultural conditioning is irrelevant but the model still applies it, and (c) cross-cultural transfer when the culture-token is mis-set in the unified Run-M.
