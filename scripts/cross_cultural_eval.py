@@ -187,7 +187,7 @@ def score_blend(model_fn, rows, culture_label, culture_token=None):
             "accuracy": correct / max(total, 1),
             "per_q_sample": per_q[:10]}
 
-def make_model_fn(base_model, adapter_path=None):
+def make_model_fn(base_model, adapter_path=None, temperature=0.0):
     import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
     from peft import PeftModel
@@ -212,13 +212,19 @@ def make_model_fn(base_model, adapter_path=None):
             adapter_path = matches[0]
         model = PeftModel.from_pretrained(model, adapter_path)
     model.train(False)  # inference mode
+    # temperature>0 -> stochastic decoding so the per-question samples form a
+    # real distribution (greedy makes all samples identical -> one-hot spike,
+    # which makes KS measure only the modal answer; see paper limitation viii).
+    gen_kw = dict(do_sample=False)
+    if temperature and temperature > 0:
+        gen_kw = dict(do_sample=True, temperature=temperature, top_p=0.9)
     def fn(prompt, max_new_tokens=4):
         msgs = [{"role": "user", "content": prompt}]
         text = tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
         inp = tok(text, return_tensors="pt").to("cuda")
         with torch.no_grad():
             out = model.generate(**inp, max_new_tokens=max_new_tokens,
-                                  do_sample=False, pad_token_id=tok.eos_token_id)
+                                  pad_token_id=tok.eos_token_id, **gen_kw)
         return tok.decode(out[0][inp.input_ids.shape[1]:], skip_special_tokens=True)
     return fn
 
@@ -232,6 +238,8 @@ def main():
     ap.add_argument("--n-samples-globalopinion", type=int, default=8)
     ap.add_argument("--culture-token", action="store_true",
                     help="prepend <<culture:{culture}>> token (Run-M multi-cultural adapter)")
+    ap.add_argument("--temperature", type=float, default=0.0,
+                    help="0=greedy (default); >0 enables sampling so samples form a real distribution")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
     culture_token = args.culture if args.culture_token else None
@@ -239,8 +247,8 @@ def main():
     cm = CULTURE_NAMES[args.culture]
     t0 = time.time()
 
-    print(f"[init] loading {args.base} + adapter={args.adapter}", flush=True)
-    model_fn = make_model_fn(args.base, args.adapter)
+    print(f"[init] loading {args.base} + adapter={args.adapter} (temp={args.temperature})", flush=True)
+    model_fn = make_model_fn(args.base, args.adapter, args.temperature)
     print(f"[{time.time()-t0:.1f}s] model loaded", flush=True)
 
     print(f"[load] GlobalOpinionQA for '{cm['globalopinion']}' (n={args.n_globalopinion})", flush=True)
@@ -263,6 +271,7 @@ def main():
         "adapter": args.adapter,
         "culture": args.culture,
         "culture_token": culture_token,
+        "temperature": args.temperature,
         "global_opinion": go_results,
         "blend": blend_results,
         "elapsed_sec": round(time.time() - t0, 1),
