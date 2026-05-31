@@ -274,6 +274,29 @@ The transfer matrix (Table~\ref{tab:crosscultural}) speaks to two questions. Fir
 \subsection{Failure modes}
 Cultural-QLoRA struggles on (a) highly factual KMMLU questions where cultural framing distracts from the answer (Cultural-KR drops to 0.230 from Vanilla-3B's 0.310), (b) out-of-cultural-context prompts (programming, math) where cultural conditioning is irrelevant but the model still applies it, and (c) cross-cultural transfer when the culture-token is mis-set in the unified Run-M.
 
+\subsection{Is the negative result a greedy-decoding artifact?}
+\label{sec:tempanalysis}
+Because greedy decoding makes every per-question output one-hot (limitation viii), KS could be measuring only modal accuracy and masking a real distributional shift. We tested this by re-evaluating the Korean cells at temperature 0.7 (30 samples per question), adding the missing same-size control (Vanilla-7B), and a decoding-entropy-independent \emph{mode-match} metric (does the model's most-sampled option equal the gold mode?). Table~\ref{tab:temp} summarizes.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Temperature-0.7 re-evaluation on the Korean target ($n=150$). KS is entropy-sensitive; mode-match is not. The gold distribution's entropy is 1.38 bits.}
+\label{tab:temp}
+\begin{tabular}{lccc}
+\toprule
+Model (temp 0.7) & KS to KR & Output entropy & Mode-match acc. \\
+\midrule
+Vanilla-3B & 0.566 & 0.157 & 0.380 \\
+Vanilla-7B & 0.576 & 0.144 & 0.427 \\
+Cultural-KR (3B, Run-F) & 0.537 & 0.379 & 0.440 \\
+Cultural-KR (7B, Run-J) & \textbf{0.458} & 0.429 & \textbf{0.547} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three points. (i) All KS values fall under sampling, but the fall tracks output entropy, not the adapter: the gold distribution has entropy 1.38 bits while even the most diffuse model reaches only 0.43, so KS is dominated by this entropy gap and mechanically rewards higher-entropy outputs. (ii) On KS, Cultural-KR-7B (0.458) beats its proper control Vanilla-7B (0.576) with non-overlapping CIs---but Vanilla-7B is the \emph{most} peaked model (entropy 0.14), so the gap conflates alignment with output spread. (iii) On the entropy-independent mode-match metric, Cultural-KR-7B is directionally better (0.547 vs.\ 0.427) but the CIs overlap, so it is not significant at $n=150$. We therefore read the 7B Korean result as \emph{suggestive but underpowered}: there may be a small mode-level alignment effect at 7B, but the larger KS advantage is inflated by output entropy, and GlobalOpinionQA-KS cannot cleanly adjudicate distributional cultural alignment under either decoding regime. This is a concrete caution for future work that uses distributional-distance metrics on the peaked outputs of instruction-tuned LLMs.
+
 \section{Conclusion}
 \label{sec:conclusion}
 
@@ -286,7 +309,7 @@ Cultural conditioning does not reliably reduce stereotype bias. For Korean---the
 Two checks support the negative reading. First, re-training Cultural-KR with two extra seeds (123, 7777) gives a cross-seed mean of $0.617 \pm 0.025$ on KR---below the within-seed bootstrap half-width ($\pm0.044$) yet above Vanilla-3B (0.590), so the null is not single-seed noise. Second, bootstrap 95\% CIs over all 150 questions (Appendix~\ref{app:bootstrap}) leave Cultural-US's significant \emph{degradation} as the only non-overlapping in-distribution cell; the nominal Run-I-CN and Run-J-KR-7B gains overlap the baseline.
 
 \paragraph{Limitations.}
-(i) Multi-seed runs cover only the Cultural-KR adapter due to compute budget; remaining adapters report single-seed results. (ii) Model size capped at 3B/7B by available compute. (iii) Hofstede's 6D framework~\cite{hofstede2010cultures} has known critiques (1980s IBM-employee origin, methodological-nationalism critique~\cite{mcsweeney2002}); we use it as a structuring heuristic, not as ground truth about culture. (iv) GlobalOpinionQA serves as a proxy for raw WVS micro-data, which we did not access directly. (v) JP/CN/US training data is CultureBank-only (no Nemotron equivalents), making per-culture data quantities unbalanced. (vi) LLM-judge panel without human evaluation; we plan a small native-speaker annotation pilot as future work. (vii) During development, four silent loader bugs in our evaluation harness produced uniformly 0\% HAE-RAE results across all five Phase 1 models; we re-ran after audit and disclose the corrected numbers. (viii) The GlobalOpinionQA eval decodes greedily, so the 6 samples per question coincide; KS thus compares the model's modal answer to the empirical distribution rather than a sampled one. This applies uniformly across models---comparisons stay valid---but a temperature-sampled re-run is a clear next step. The decision log in \verb|decisions/| documents these and other engineering judgments.
+(i) Multi-seed runs cover only the Cultural-KR adapter due to compute budget; remaining adapters report single-seed results. (ii) Model size capped at 3B/7B by available compute. (iii) Hofstede's 6D framework~\cite{hofstede2010cultures} has known critiques (1980s IBM-employee origin, methodological-nationalism critique~\cite{mcsweeney2002}); we use it as a structuring heuristic, not as ground truth about culture. (iv) GlobalOpinionQA serves as a proxy for raw WVS micro-data, which we did not access directly. (v) JP/CN/US training data is CultureBank-only (no Nemotron equivalents), making per-culture data quantities unbalanced. (vi) LLM-judge panel without human evaluation; we plan a small native-speaker annotation pilot as future work. (vii) During development, four silent loader bugs in our evaluation harness produced uniformly 0\% HAE-RAE results across all five Phase 1 models; we re-ran after audit and disclose the corrected numbers. (viii) The GlobalOpinionQA eval decodes greedily, so the 6 samples per question coincide and KS compares the modal answer to the empirical distribution. We probed this with a temperature-0.7 re-run (\S\ref{sec:tempanalysis}) and found KS to be entropy-confounded in the other direction; the metric does not cleanly adjudicate distributional alignment under either regime. The decision log in \verb|decisions/| documents these and other engineering judgments.
 
 \paragraph{Future work.}
 Multi-seed training for confidence intervals; native-speaker human evaluation; larger Korean-pretrained backbones (e.g., EXAONE-7.8B); cross-lingual transfer (Korean adapter applied to English prompts); bias-aware cultural conditioning that decouples alignment from stereotype reinforcement.
