@@ -1,0 +1,102 @@
+{
+  "46": {
+    "A": "Cultural-KR-7B",
+    "B": "Vanilla-3B",
+    "C": "Cultural-KR-3B"
+  },
+  "20": {
+    "A": "Cultural-KR-7B",
+    "B": "Cultural-KR-3B",
+    "C": "Vanilla-3B"
+  },
+  "48": {
+    "A": "Cultural-KR-7B",
+    "B": "Vanilla-3B",
+    "C": "Cultural-KR-3B"
+  },
+  "4": {
+    "A": "Cultural-KR-7B",
+    "B": "Cultural-KR-3B",
+    "C": "Vanilla-3B"
+  },
+  "36": {
+    "A": "Cultural-KR-3B",
+    "B": "Cultural-KR-7B",
+    "C": "Vanilla-3B"
+  },
+  "38": {
+    "A": "Vanilla-3B",
+    "B": "Cultural-KR-7B",
+    "C": "Cultural-KR-3B"
+  },
+  "34": {
+    "A": "Cultural-KR-7B",
+    "B": "Cultural-KR-3B",
+    "C": "Vanilla-3B"
+  },
+  "37": {
+    "A": "Cultural-KR-3B",
+    "B": "Cultural-KR-7B",
+    "C": "Vanilla-3B"
+  },
+  "26": {
+    "A": "Vanilla-3B",
+    "B": "Cultural-KR-3B",
+    "C": "Cultural-KR-7B"
+  },
+  "40": {
+    "A": "Vanilla-3B",
+    "B": "Cultural-KR-7B",
+    "C": "Cultural-KR-3B"
+  },
+  "39": {
+    "A": "Cultural-KR-3B",
+    "B": "Cultural-KR-7B",
+    "C": "Vanilla-3B"
+  },
+  "11": {
+    "A": "Cultural-KR-7B",
+    "B": "Cultural-KR-3B",
+    "C": "Vanilla-3B"
+  },
+  "5": {
+    "A": "Cultural-KR-3B",
+    "B": "Cultural-KR-7B",
+    "C": "Vanilla-3B"
+  },
+  "27": {
+    "A": "Cultural-KR-7B",
+    "B": "Vanilla-3B",
+    "C": "Cultural-KR-3B"
+  },
+  "17": {
+    "A": "Cultural-KR-3B",
+    "B": "Vanilla-3B",
+    "C": "Cultural-KR-7B"
+  },
+  "31": {
+    "A": "Cultural-KR-3B",
+    "B": "Cultural-KR-7B",
+    "C": "Vanilla-3B"
+  },
+  "14": {
+    "A": "Cultural-KR-3B",
+    "B": "Vanilla-3B",
+    "C": "Cultural-KR-7B"
+  },
+  "12": {
+    "A": "Vanilla-3B",
+    "B": "Cultural-KR-7B",
+    "C": "Cultural-KR-3B"
+  },
+  "19": {
+    "A": "Vanilla-3B",
+    "B": "Cultural-KR-3B",
+    "C": "Cultural-KR-7B"
+  },
+  "30": {
+    "A": "Vanilla-3B",
+    "B": "Cultural-KR-3B",
+    "C": "Cultural-KR-7B"
+  }
+}
